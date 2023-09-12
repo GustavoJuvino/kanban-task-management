@@ -49,7 +49,7 @@ const config: Config = {
           },
         ],
         'heading-m': [
-          '12px',
+          '15px',
           {
             lineHeight: '19px',
             fontWeight: 'bold',
