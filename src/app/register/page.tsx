@@ -1,7 +1,6 @@
 import React from 'react'
-import { LogoLight, VisibilityOff } from '../../../public/svgs'
-import { Form } from '../Components/form'
-import Button from '../Components/Button'
+import { LogoLight } from '../../../public/svgs'
+import RegisterForm from './RegisterForm'
 
 const page = () => {
   return (
@@ -18,27 +17,7 @@ const page = () => {
           </p>
         </div>
 
-        <form className="mt-16 flex flex-col gap-y-10">
-          <Form.Field>
-            <Form.Input type="text" placeholder="Username" />
-          </Form.Field>
-
-          <Form.Field>
-            <Form.Input type="text" placeholder="Email" />
-          </Form.Field>
-
-          <Form.Field className="relative">
-            <Form.Input type="password" placeholder="Password" />
-            <VisibilityOff className="absolute right-[18px] top-[18px] cursor-pointer" />
-          </Form.Field>
-
-          <Form.Field className="relative">
-            <Form.Input type="password" placeholder="Confirm Password" />
-            <VisibilityOff className="absolute right-[18px] top-[18px] cursor-pointer" />
-          </Form.Field>
-
-          <Button style={'form'}> Register </Button>
-        </form>
+        <RegisterForm />
 
         <p className="mt-10 text-center text-heading-m text-medium-gray">
           Already have an account?
