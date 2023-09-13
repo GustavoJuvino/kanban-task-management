@@ -26,9 +26,15 @@ input::-webkit-input-placeholder {
   color: #828FA3
 }
 
-
 input::-ms-input-placeholder,
 input:-ms-input-placeholder,
 input::-moz-placeholder {
   color: #828FA3
+}
+
+#visibility {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  cursor: pointer;
 }

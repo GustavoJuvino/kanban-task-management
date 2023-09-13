@@ -1,9 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Form } from '../Components/form'
 import Button from '../Components/Button'
-import { VisibilityOff } from '../../../public/svgs'
+import { VisibilityOff, VisibilityOn } from '../../../public/svgs'
 import { z } from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -17,16 +17,20 @@ const RegisterFormSchema = z.object({
   password: z
     .string()
     .nonempty('Password is required')
-    .min(8, 'Minimum eight characters,')
-    .regex(/.*[A-Z].*/, 'One uppercase character'),
+    .min(8, 'Minimum eight characters')
+    .regex(/.*[A-Z].*/, 'One uppercase character')
+    .regex(/.*[a-z].*/, 'One lowercase character')
+    .regex(/^(?=.*[@#$%^&+=-]).*$/, 'One special  character'),
+
   confirmPswrd: z.string().nonempty('Confirm password is required'),
 })
 
 type RegisterForm = z.infer<typeof RegisterFormSchema>
 
-// Heavy password regex: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$"
-
 const RegisterForm = () => {
+  const [visibility, setVisibility] = useState(false)
+  const [visibilityCheck, setVisibilityCheck] = useState(false)
+
   const createRegisterForm = useForm<RegisterForm>({
     resolver: zodResolver(RegisterFormSchema),
   })
@@ -36,8 +40,6 @@ const RegisterForm = () => {
     formState: { errors },
   } = createRegisterForm
 
-  if (errors) console.log(errors)
-
   return (
     <FormProvider {...createRegisterForm}>
       <form
@@ -45,25 +47,69 @@ const RegisterForm = () => {
         className="mt-16 flex flex-col gap-y-10"
       >
         <Form.Field>
-          <Form.Input name="username" type="text" placeholder="Username" />
+          <Form.Error>{errors.username?.message}</Form.Error>
+          <Form.Input
+            type="text"
+            name="username"
+            error={errors.username?.message}
+            placeholder="Username"
+          />
         </Form.Field>
 
         <Form.Field>
-          <Form.Input name="email" type="text" placeholder="Email" />
-        </Form.Field>
-
-        <Form.Field className="relative">
-          <Form.Input name="password" type="password" placeholder="Password" />
-          <VisibilityOff className="absolute right-[18px] top-[18px] cursor-pointer" />
-        </Form.Field>
-
-        <Form.Field className="relative">
+          <Form.Error>{errors.email?.message}</Form.Error>
           <Form.Input
-            name="confirmPswrd"
-            type="password"
-            placeholder="Confirm Password"
+            type="email"
+            name="email"
+            error={errors.email?.message}
+            placeholder="Email"
           />
-          <VisibilityOff className="absolute right-[18px] top-[18px] cursor-pointer" />
+        </Form.Field>
+
+        <Form.Field>
+          <Form.Error>{errors.password?.message}</Form.Error>
+          <div className="relative">
+            <Form.Input
+              type={visibility ? 'text' : 'password'}
+              name="password"
+              error={errors.password?.message}
+              placeholder="Password"
+            />
+            {visibility ? (
+              <VisibilityOn
+                id="visibility"
+                onClick={() => setVisibility(!visibility)}
+              />
+            ) : (
+              <VisibilityOff
+                id="visibility"
+                onClick={() => setVisibility(!visibility)}
+              />
+            )}
+          </div>
+        </Form.Field>
+
+        <Form.Field>
+          <Form.Error>{errors.confirmPswrd?.message}</Form.Error>
+          <div className="relative">
+            <Form.Input
+              type={visibilityCheck ? 'text' : 'password'}
+              name="confirmPswrd"
+              error={errors.confirmPswrd?.message}
+              placeholder="Confirm Password"
+            />
+            {visibilityCheck ? (
+              <VisibilityOn
+                id="visibility"
+                onClick={() => setVisibilityCheck(!visibilityCheck)}
+              />
+            ) : (
+              <VisibilityOff
+                id="visibility"
+                onClick={() => setVisibilityCheck(!visibilityCheck)}
+              />
+            )}
+          </div>
         </Form.Field>
 
         <Button style={'form'}> Register </Button>

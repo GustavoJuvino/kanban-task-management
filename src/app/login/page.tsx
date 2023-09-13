@@ -1,6 +1,6 @@
 import React from 'react'
-import { LogoLight, VisibilityOff } from '../../../public/svgs'
-import { Form } from '../Components/form'
+import { LogoLight } from '../../../public/svgs'
+import LoginForm from './LoginForm'
 
 const page = () => {
   return (
@@ -17,19 +17,7 @@ const page = () => {
           </p>
         </div>
 
-        <form className="mt-16 flex flex-col gap-y-10">
-          <Form.Field>
-            <Form.Input type="text" placeholder="Username or Email" />
-          </Form.Field>
-          <Form.Field className="relative">
-            <Form.Input type="password" placeholder="Password" />
-            <VisibilityOff className="absolute right-[18px] top-[18px] cursor-pointer" />
-          </Form.Field>
-
-          <button className="h-14 w-full rounded-lg bg-very-dark-gray text-heading-xl text-white">
-            Sign In
-          </button>
-        </form>
+        <LoginForm />
 
         <p className="mt-10 text-center text-heading-m text-medium-gray">
           Doesn’t have an account yet?

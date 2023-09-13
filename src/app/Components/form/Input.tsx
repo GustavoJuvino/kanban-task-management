@@ -31,6 +31,13 @@ export function Input({ name, error, className, ...props }: InputProps) {
   const { register } = useFormContext()
 
   return (
-    <input {...register(name)} {...props} className={input({ className })} />
+    <input
+      {...register(name)}
+      {...props}
+      className={`
+        ${input({ className })}
+        ${error ? 'border-red' : ''}
+      `}
+    />
   )
 }
