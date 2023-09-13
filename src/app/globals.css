@@ -21,3 +21,14 @@ ul, li{
   padding: 0px;
   margin: 0px;
 }
+
+input::-webkit-input-placeholder {
+  color: #828FA3
+}
+
+
+input::-ms-input-placeholder,
+input:-ms-input-placeholder,
+input::-moz-placeholder {
+  color: #828FA3
+}
