@@ -26,14 +26,14 @@ const RegisterFormSchema = z.object({
   confirmPswrd: z.string().nonempty('Confirm password is required'),
 })
 
-type RegisterForm = z.infer<typeof RegisterFormSchema>
+type RegisterFormProps = z.infer<typeof RegisterFormSchema>
 
 const RegisterForm = () => {
   const [visibility, setVisibility] = useState(false)
   const [visibilityCheck, setVisibilityCheck] = useState(false)
-  const [error, setError] = useState<string | null>()
+  const [error, setError] = useState<string | null>(null)
 
-  const createRegisterForm = useForm<RegisterForm>({
+  const createRegisterForm = useForm<RegisterFormProps>({
     resolver: zodResolver(RegisterFormSchema),
   })
 
@@ -42,7 +42,7 @@ const RegisterForm = () => {
     formState: { errors },
   } = createRegisterForm
 
-  const onSubmit: SubmitHandler<RegisterForm> = (data) => {
+  const onSubmit: SubmitHandler<RegisterFormProps> = (data) => {
     axios
       .post('/api/register', data)
       .then(() => setError(null))

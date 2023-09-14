@@ -1,22 +1,30 @@
 'use client'
+
 import React, { useState } from 'react'
 import { VisibilityOff, VisibilityOn } from '../../../public/svgs'
 import { Form } from '../Components/form'
 import { z } from 'zod'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const LoginFormSchema = z.object({
-  email: z.string().nonempty('Email is required'),
+  email: z
+    .string()
+    .nonempty('Email is required')
+    .email('Email format is invalid'),
   password: z.string().nonempty('Password is required'),
 })
 
-type LoginForm = z.infer<typeof LoginFormSchema>
+type LoginFormProps = z.infer<typeof LoginFormSchema>
 
 const LoginForm = () => {
   const [visibility, setVisibility] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
-  const createLoginForm = useForm<LoginForm>({
+  const createLoginForm = useForm<LoginFormProps>({
     resolver: zodResolver(LoginFormSchema),
   })
 
@@ -25,18 +33,32 @@ const LoginForm = () => {
     formState: { errors },
   } = createLoginForm
 
+  const onSubmit: SubmitHandler<LoginFormProps> = (data) => {
+    signIn('credentials', {
+      ...data,
+      redirect: false,
+    }).then((callback) => {
+      if (!callback?.error) {
+        router.push('/')
+      } else if (callback?.error) {
+        setError(callback.error)
+      }
+    })
+  }
+
   return (
     <FormProvider {...createLoginForm}>
       <form
-        onSubmit={handleSubmit((data) => console.log(data))}
+        onSubmit={handleSubmit(onSubmit)}
         className="mt-16 flex flex-col gap-y-10"
       >
         <Form.Field>
           <Form.Error>{errors.email?.message}</Form.Error>
+          {error && <Form.Error>{error}</Form.Error>}
           <Form.Input
             type="text"
             name="email"
-            error={errors.email?.message}
+            error={errors.email?.message || error || ''}
             placeholder="Email"
           />
         </Form.Field>
@@ -46,7 +68,7 @@ const LoginForm = () => {
             <Form.Input
               type={visibility ? 'text' : 'password'}
               name="password"
-              error={errors.password?.message}
+              error={errors.password?.message || error || ''}
               placeholder="Password"
             />
             {visibility ? (
