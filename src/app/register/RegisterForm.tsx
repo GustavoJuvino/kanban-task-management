@@ -5,8 +5,9 @@ import { Form } from '../Components/form'
 import Button from '../Components/Button'
 import { VisibilityOff, VisibilityOn } from '../../../public/svgs'
 import { z } from 'zod'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
 
 const RegisterFormSchema = z.object({
   username: z.string().nonempty('Username is required'),
@@ -30,6 +31,7 @@ type RegisterForm = z.infer<typeof RegisterFormSchema>
 const RegisterForm = () => {
   const [visibility, setVisibility] = useState(false)
   const [visibilityCheck, setVisibilityCheck] = useState(false)
+  const [error, setError] = useState<string | null>()
 
   const createRegisterForm = useForm<RegisterForm>({
     resolver: zodResolver(RegisterFormSchema),
@@ -40,10 +42,22 @@ const RegisterForm = () => {
     formState: { errors },
   } = createRegisterForm
 
+  const onSubmit: SubmitHandler<RegisterForm> = (data) => {
+    axios
+      .post('/api/register', data)
+      .then(() => setError(null))
+      .catch((error) => {
+        setError(error.response.data.message)
+      })
+      .finally(() => {
+        console.log('finished')
+      })
+  }
+
   return (
     <FormProvider {...createRegisterForm}>
       <form
-        onSubmit={handleSubmit((data) => console.log(data))}
+        onSubmit={handleSubmit(onSubmit)}
         className="mt-16 flex flex-col gap-y-10"
       >
         <Form.Field>
@@ -58,6 +72,7 @@ const RegisterForm = () => {
 
         <Form.Field>
           <Form.Error>{errors.email?.message}</Form.Error>
+          {error && <Form.Error>{error}</Form.Error>}
           <Form.Input
             type="email"
             name="email"
