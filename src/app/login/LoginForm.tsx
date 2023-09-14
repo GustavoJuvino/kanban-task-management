@@ -7,7 +7,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const LoginFormSchema = z.object({
-  username: z.string().nonempty('Username or email are required'),
+  email: z.string().nonempty('Email is required'),
   password: z.string().nonempty('Password is required'),
 })
 
@@ -32,12 +32,12 @@ const LoginForm = () => {
         className="mt-16 flex flex-col gap-y-10"
       >
         <Form.Field>
-          <Form.Error>{errors.username?.message}</Form.Error>
+          <Form.Error>{errors.email?.message}</Form.Error>
           <Form.Input
             type="text"
-            name="username"
-            error={errors.username?.message}
-            placeholder="Username or Email"
+            name="email"
+            error={errors.email?.message}
+            placeholder="Email"
           />
         </Form.Field>
         <Form.Field className="relative">
