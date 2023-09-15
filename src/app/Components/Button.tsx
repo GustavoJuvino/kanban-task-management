@@ -30,11 +30,13 @@ const button = tv({
             hover:bg-light-red
         `,
       form: `
-            h-14
+            sm:h-14
+            h-12
             w-full
             rounded-lg
             bg-dark-gray
-            text-[24px]
+            small-mobile:text-[20px]
+            text-[14px]
             font-bold
             text-medium-gray
             hover:bg-very-dark-gray

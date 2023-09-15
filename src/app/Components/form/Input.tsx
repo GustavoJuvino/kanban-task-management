@@ -4,14 +4,16 @@ import { useFormContext } from 'react-hook-form'
 
 const input = tv({
   base: `
-    h-14
+    h-12
     w-full
     rounded-lg
     border-[1px]
     border-medium-gray
     bg-transparent
     pl-4
-    text-[18px]
+    sm:text-[18px]
+    small-mobile:text-sm
+    text-[12px]
     font-bold
     text-white
     outline-none

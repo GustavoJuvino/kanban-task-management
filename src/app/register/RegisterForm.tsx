@@ -57,8 +57,9 @@ const RegisterForm = () => {
   return (
     <FormProvider {...createRegisterForm}>
       <form
+        id="form"
         onSubmit={handleSubmit(onSubmit)}
-        className="mt-16 flex flex-col gap-y-10"
+        className="mt-4 flex flex-col gap-y-5 sm:mt-8 sm:gap-y-8"
       >
         <Form.Field>
           <Form.Error>{errors.username?.message}</Form.Error>

@@ -2,18 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+
+* {
+  margin: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-*{
-  box-sizing: border-box;
-}
 
-body {
-  margin: 0px;
-  padding:0;
-  position: relative;
+html, body {
+  height: 100%;
 }
 
 ul, li{
@@ -34,7 +34,21 @@ input::-moz-placeholder {
 
 #visibility {
   position: absolute;
-  right: 18px;
-  top: 18px;
+  right: 15px;
+  top: 15px;
   cursor: pointer;
+}
+
+@media only screen and (max-height: 690px){
+  #form-page {
+    height: auto;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  #form {
+    display: flex;
+    gap: 10px;
+  }
+
 }

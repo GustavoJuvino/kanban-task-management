@@ -8,6 +8,7 @@ import { FormProvider, useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Button from '../Components/Button'
 
 const LoginFormSchema = z.object({
   email: z
@@ -50,7 +51,7 @@ const LoginForm = () => {
     <FormProvider {...createLoginForm}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mt-16 flex flex-col gap-y-10"
+        className="mt-8 flex flex-col gap-y-10 sm:mt-16"
       >
         <Form.Field>
           <Form.Error>{errors.email?.message}</Form.Error>
@@ -85,9 +86,9 @@ const LoginForm = () => {
           </div>
         </Form.Field>
 
-        <button className="h-14 w-full rounded-lg bg-very-dark-gray text-heading-xl text-white">
+        <Button style={'form'} className="max-sm:text-lg">
           Sign In
-        </button>
+        </Button>
       </form>
     </FormProvider>
   )
