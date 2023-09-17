@@ -1,15 +1,16 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { VisibilityOff } from '../../../../public/svgs'
+import { useHideSidebar } from '@/app/store/useHideSidebar'
 
-const Hide = () => {
+const HideMenu = () => {
   const [hover, setHover] = useState(false)
-  const hideRef = useRef(null)
+  const { hidden, setHidden } = useHideSidebar()
 
   return (
     <div
-      ref={hideRef}
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={() => setHidden(!hidden)}
       className="
             mt-[22px] 
             flex 
@@ -38,4 +39,4 @@ const Hide = () => {
   )
 }
 
-export default Hide
+export default HideMenu
