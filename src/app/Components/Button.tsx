@@ -3,21 +3,22 @@ import { VariantProps, tv } from 'tailwind-variants'
 
 const button = tv({
   base: `
-        h-12
-        w-[255px]
+        h-10
         rounded-3xl
-        text-[15px]
+        text-[13px]
         font-bold
         duration-300
     `,
   variants: {
     style: {
       default: `
+            w-full
             text-white
             bg-main-purple
             hover:bg-light-purple
         `,
       light: `
+            w-full
             h-10
             text-main-purple
             bg-white

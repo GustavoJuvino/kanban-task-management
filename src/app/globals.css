@@ -52,3 +52,14 @@ input::-moz-placeholder {
   }
 
 }
+
+#task_input::-webkit-input-placeholder {
+  color: white;
+  opacity: 25%;
+  
+}
+
+#task_input::placeholder {
+  color: white;
+  opacity: 25%;
+}

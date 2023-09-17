@@ -37,7 +37,7 @@ const config: Config = {
           '13px',
           {
             lineHeight: '23px',
-            fontWeight: 'medium',
+            fontWeight: 500,
           },
         ],
         'heading-s': [
