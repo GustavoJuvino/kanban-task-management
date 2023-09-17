@@ -70,6 +70,9 @@ const config: Config = {
           },
         ],
       },
+      dropShadow: {
+        custom: '0 10px 20px rgba(54, 78, 126, 0.25)',
+      },
     },
   },
   plugins: [],
