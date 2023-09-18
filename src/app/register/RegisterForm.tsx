@@ -49,9 +49,6 @@ const RegisterForm = () => {
       .catch((error) => {
         setError(error.response.data.message)
       })
-      .finally(() => {
-        console.log('finished')
-      })
   }
 
   return (

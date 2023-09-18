@@ -1,6 +1,7 @@
 import React from 'react'
 import { Close } from '../../../../public/modal'
 import Button from '../Button'
+import Subtasks from './Subtasks'
 
 const TaskModal = () => {
   return (
@@ -92,64 +93,7 @@ const TaskModal = () => {
             </label>
           </fieldset>
 
-          <section className="flex flex-col gap-y-3">
-            <h6 className="text-body-m text-white">Subtasks</h6>
-            <fieldset className="flex items-center gap-x-4">
-              <input
-                id="task_input"
-                name="titles"
-                type="text"
-                placeholder="e.g. Make coffee"
-                className="
-                  h-10
-                  w-full
-                  rounded-[4px]
-                  border-[1px]
-                  border-[#828FA3]
-                  border-opacity-25
-                  bg-transparent
-                  py-2
-                  pl-4
-                  text-body-l
-                  text-white
-                  outline-none
-                  duration-300
-                  focus:border-main-purple
-                "
-              />
-
-              <Close className="cursor-pointer fill-[#828FA3] duration-300 hover:fill-red" />
-            </fieldset>
-
-            <fieldset className="flex items-center gap-x-4">
-              <input
-                id="task_input"
-                name="titles"
-                type="text"
-                placeholder="e.g. Drink coffee & smile"
-                className="
-                  h-10
-                  w-full
-                  rounded-[4px]
-                  border-[1px]
-                  border-[#828FA3]
-                  border-opacity-25
-                  bg-transparent
-                  py-2
-                  pl-4
-                  text-body-l
-                  text-white
-                  outline-none
-                  duration-300
-                  focus:border-main-purple
-                "
-              />
-
-              <Close className="cursor-pointer fill-[#828FA3] duration-300 hover:fill-red" />
-            </fieldset>
-
-            <Button style={'light'}> + Add New Subtask</Button>
-          </section>
+          <Subtasks />
 
           <fieldset className="block">
             <label className="text-body-m text-white">

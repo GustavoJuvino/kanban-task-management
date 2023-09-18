@@ -63,3 +63,8 @@ input::-moz-placeholder {
   color: white;
   opacity: 25%;
 }
+
+#subtasks_list {
+  scrollbar-color: #20212C #828FA3;
+  scrollbar-width: thin;
+}
