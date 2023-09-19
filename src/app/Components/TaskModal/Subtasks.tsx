@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { Close } from '../../../../public/modal'
+import { Cross } from '../../../../public/modal'
 import Button from '../Button'
 import axios from 'axios'
 
@@ -82,7 +82,7 @@ const Subtasks = () => {
                 focus:border-main-purple
             "
             />
-            <Close
+            <Cross
               onClick={() => removeSubtask(index)}
               className="
                 cursor-pointer 

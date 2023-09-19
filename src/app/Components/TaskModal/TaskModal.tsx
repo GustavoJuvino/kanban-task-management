@@ -2,6 +2,7 @@ import React from 'react'
 import { Close } from '../../../../public/modal'
 import Button from '../Button'
 import Subtasks from './Subtasks'
+import StatusMenu from '../Modals/StatusMenu'
 
 const TaskModal = () => {
   return (
@@ -94,36 +95,7 @@ const TaskModal = () => {
           </fieldset>
 
           <Subtasks />
-
-          <fieldset className="block">
-            <label className="text-body-m text-white">
-              {' '}
-              Status
-              <input
-                id="task_input"
-                name="titles"
-                type="text"
-                placeholder="e.g. Take coffee break"
-                className="
-                mt-2
-                h-10
-                w-full
-                rounded-[4px]
-                border-[1px]
-                border-[#828FA3]
-                border-opacity-25
-                bg-transparent
-                py-2
-                pl-4
-                text-body-l
-                text-white
-                outline-none
-                duration-300
-                focus:border-main-purple
-              "
-              />
-            </label>
-          </fieldset>
+          <StatusMenu title="Current Statuts" name="current_status" />
 
           <Button> Create Task </Button>
         </form>
