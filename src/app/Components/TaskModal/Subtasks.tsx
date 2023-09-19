@@ -33,8 +33,11 @@ const Subtasks = () => {
 
   const removeSubtask = useCallback(
     (index: number) => {
+      const updateSubtasks = [...subtasks]
+
       if (index > -1) {
-        setSubtasks(subtasks.slice(0, index))
+        updateSubtasks.splice(index, 1)
+        setSubtasks(updateSubtasks)
       }
     },
     [subtasks],
