@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useHideSidebar } from '@/app/store/useHideSidebar'
+import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import { useWindowSize } from '@uidotdev/usehooks'
 import HideMenu from './HideMenu'
 import Theme from './Theme'

@@ -3,17 +3,17 @@ import Button from '../Button'
 import { EditMenuIcon, IconAdd, LogoMobile } from '../../../../public/svgs'
 import EditMenu from './EditMenu'
 import { Arrow } from '../../../../public/modal'
-import { useHideSidebar } from '@/app/store/useHideSidebar'
+import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import { NoSsr } from '@mui/material'
 import { useWindowSize } from '@uidotdev/usehooks'
 import TaskModal from '../Modals/TaskModal/TaskModal'
-import { useOpenTaskModal } from '@/app/store/useOpenTaskModal'
+import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
 
 const Header = () => {
   const size = useWindowSize()
   const { hidden, setHidden } = useHideSidebar()
   const [openMenu, setOpenMenu] = useState(false)
-  const { setOpenModal } = useOpenTaskModal()
+  const { openNewTask, onOpenNewTask } = useOpenTaskModal()
 
   return (
     <header
@@ -53,7 +53,7 @@ const Header = () => {
 
       <section className="flex items-center gap-x-6">
         <Button
-          onClick={() => setOpenModal(true)}
+          onClick={() => onOpenNewTask(true)}
           className="
             flex w-12 
             items-center 
@@ -77,7 +77,7 @@ const Header = () => {
         </div>
       </section>
 
-      <TaskModal modalType="add" />
+      {openNewTask && <TaskModal modalType="add" />}
     </header>
   )
 }

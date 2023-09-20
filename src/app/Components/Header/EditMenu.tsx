@@ -1,10 +1,10 @@
 import React from 'react'
-import TaskModal from '../Modals/TaskModal/TaskModal'
+import BoardModal from '../Modals/BoardModal/BoardModal'
 
 type EditMenuOpen = { open: boolean }
 
 const EditMenu = ({ open }: EditMenuOpen) => {
-  if (open)
+  if (!open)
     return (
       <section>
         <ul
@@ -29,7 +29,7 @@ const EditMenu = ({ open }: EditMenuOpen) => {
           </li>
         </ul>
 
-        {/* <TaskModal /> */}
+        <BoardModal />
       </section>
     )
 }
