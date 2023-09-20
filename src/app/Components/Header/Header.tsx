@@ -6,14 +6,17 @@ import { Arrow } from '../../../../public/modal'
 import { useHideSidebar } from '@/app/store/useHideSidebar'
 import { NoSsr } from '@mui/material'
 import { useWindowSize } from '@uidotdev/usehooks'
+import TaskModal from '../Modals/TaskModal/TaskModal'
+import { useOpenTaskModal } from '@/app/store/useOpenTaskModal'
 
 const Header = () => {
+  const size = useWindowSize()
   const { hidden, setHidden } = useHideSidebar()
   const [openMenu, setOpenMenu] = useState(false)
-  const size = useWindowSize()
+  const { setOpenModal } = useOpenTaskModal()
 
   return (
-    <section
+    <header
       className="
         flex 
         h-20
@@ -50,6 +53,7 @@ const Header = () => {
 
       <section className="flex items-center gap-x-6">
         <Button
+          onClick={() => setOpenModal(true)}
           className="
             flex w-12 
             items-center 
@@ -72,7 +76,9 @@ const Header = () => {
           <EditMenu open={openMenu} />
         </div>
       </section>
-    </section>
+
+      <TaskModal modalType="add" />
+    </header>
   )
 }
 

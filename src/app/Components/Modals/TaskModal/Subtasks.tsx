@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
-import { Cross } from '../../../../public/modal'
-import Button from '../Button'
+import { Cross } from '../../../../../public/modal'
+import Button from '../../Button'
 import axios from 'axios'
 
 const Subtasks = () => {
