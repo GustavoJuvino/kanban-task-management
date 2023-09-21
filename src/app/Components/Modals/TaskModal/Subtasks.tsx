@@ -51,15 +51,19 @@ const Subtasks = () => {
         id="subtasks_list"
         className={`
           flex 
-          max-h-[144px] 
+          max-h-16
           scroll-m-1 
           flex-col 
-          gap-y-2
+          gap-y-2 
           overflow-auto
+          sm:max-h-[144px]
         `}
       >
         {subtasks.map((task, index) => (
-          <fieldset key={task.id} className="flex items-center gap-x-4 pr-4">
+          <fieldset
+            key={task.id}
+            className="flex items-center gap-x-2 pr-4 sm:gap-x-4"
+          >
             <input
               id="task_input"
               name="titles"
@@ -87,7 +91,7 @@ const Subtasks = () => {
               className="
                 cursor-pointer 
                 fill-[#828FA3] 
-                duration-300 
+                duration-300
                 hover:fill-red
               "
             />

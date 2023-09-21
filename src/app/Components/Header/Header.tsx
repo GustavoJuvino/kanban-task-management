@@ -1,19 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Button from '../Button'
-import { EditMenuIcon, IconAdd, LogoMobile } from '../../../../public/svgs'
 import EditMenu from './EditMenu'
-import { Arrow } from '../../../../public/modal'
+import TaskModal from '../Modals/TaskModal/TaskModal'
+import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
+import useClickOutside from '@/app/hooks/useClickOutside'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import { NoSsr } from '@mui/material'
 import { useWindowSize } from '@uidotdev/usehooks'
-import TaskModal from '../Modals/TaskModal/TaskModal'
-import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
+import { Arrow } from '../../../../public/modal'
+import { EditMenuIcon, IconAdd, LogoMobile } from '../../../../public/svgs'
 
 const Header = () => {
   const size = useWindowSize()
   const { hidden, setHidden } = useHideSidebar()
   const [openMenu, setOpenMenu] = useState(false)
   const { openNewTask, onOpenNewTask } = useOpenTaskModal()
+
+  const { clickOutside } = useClickOutside()
+  const editMenuRef = useRef(null)
+
+  useEffect(() => {
+    if (editMenuRef) clickOutside(editMenuRef, setOpenMenu)
+  }, [clickOutside])
 
   return (
     <header
@@ -26,24 +34,25 @@ const Header = () => {
         border-b-[1px] 
         border-lines-dark 
         bg-dark-gray 
-        pl-6 
-        pr-8
+        max-mobile:p-4
+        mobile:pl-6
+        mobile:pr-8
         lg:h-24 
       "
     >
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-2 small-mobile:gap-x-4">
         <LogoMobile className="sm:hidden" />
-        <h1 className="text-xl font-bold text-white lg:text-heading-xl">
+        <h1 className="text-[14px] font-bold text-white mobile:text-heading-l sm:text-xl lg:text-heading-xl">
           Plataform Launch
         </h1>
         <NoSsr>
           <Arrow
             onClick={() => setHidden(false)}
             className={`
-              mt-2 
               cursor-pointer 
               stroke-main-purple 
-              duration-300
+              duration-300 
+              mobile:mt-2
               sm:hidden
               ${!hidden ? 'rotate-180' : 'rotate-0'}
             `}
@@ -51,7 +60,7 @@ const Header = () => {
         </NoSsr>
       </div>
 
-      <section className="flex items-center gap-x-6">
+      <section className="flex items-center gap-x-4 sm:gap-x-6">
         <Button
           onClick={() => onOpenNewTask(true)}
           className="
@@ -64,7 +73,7 @@ const Header = () => {
         >
           {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
         </Button>
-        <div>
+        <div ref={editMenuRef}>
           <EditMenuIcon
             onClick={() => setOpenMenu(!openMenu)}
             className="

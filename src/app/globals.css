@@ -51,6 +51,14 @@ input::-moz-placeholder {
     gap: 10px;
   }
 
+  #task_container {
+    padding: 12px;
+  }
+
+  #task_form {
+    gap: 12px
+  }
+
 }
 
 #task_input::-webkit-input-placeholder {
@@ -68,20 +76,3 @@ input::-moz-placeholder {
   scrollbar-color: #20212C #828FA3;
   scrollbar-width: thin;
 }
-
-select {
-  appearance: none;
-  /* safari */
-  -webkit-appearance: none;
-  /* other styles for aesthetics */
-  width: 100%;
-  font-size: 1.15rem;
-  padding: 0.675em 6em 0.675em 1em;
-  background-color: #fff;
-  border: 1px solid #caced1;
-  border-radius: 0.25rem;
-  color: #000;
-  cursor: pointer;
-}
-
-

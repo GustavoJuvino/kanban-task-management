@@ -29,18 +29,20 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
     >
       <ModalBackground />
       <div
+        id="task_container"
         className="
           absolute 
           z-50 
           h-auto
-          w-[480px] 
-          rounded-md
+          w-auto
+          rounded-md 
           bg-dark-gray
-          p-8 
+          p-8
+          sm:w-[480px]
         "
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-heading-l text-white">
+          <h2 className="text-heading-m text-white sm:text-heading-l">
             {modalType === 'add' ? 'Add New Task' : 'Edit Task'}
           </h2>
           <Close
@@ -56,7 +58,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
           />
         </div>
 
-        <form className="mt-6 flex flex-col gap-y-6">
+        <form id="task_form" className="mt-2 flex flex-col gap-y-6 sm:mt-6">
           <fieldset className="block">
             <label className="text-body-m text-white">
               {' '}

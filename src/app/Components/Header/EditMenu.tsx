@@ -10,7 +10,7 @@ const EditMenu = ({ open }: EditMenuOpen) => {
   const { openEditBoard, onOpenEditBoard } = useOpenBoardModal()
   const { openDeleteBoard, onOpenDeleteBoard } = useOpenDeleteModal()
 
-  if (!open)
+  if (open)
     return (
       <section>
         <ul
@@ -25,7 +25,6 @@ const EditMenu = ({ open }: EditMenuOpen) => {
             p-4
             text-body-l
             sm:w-48
-            ${openEditBoard && 'hidden'}
           `}
         >
           <li className="w-fit cursor-pointer text-medium-gray duration-300 hover:text-main-purple">
