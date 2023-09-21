@@ -41,36 +41,39 @@ const BoardColumns = () => {
         `}
       >
         {columns.map((column, index) => (
-          <fieldset key={column.id} className="flex items-center gap-x-4 pr-4">
+          <fieldset
+            key={column.id}
+            className="flex items-center gap-x-2 pr-4 sm:gap-x-4"
+          >
             <input
               id="task_input"
               name="titles"
               type="text"
               placeholder="e.g. Todo"
               className="
-              h-10
-              w-full
-              rounded-[4px]
-              border-[1px]
-              border-[#828FA3]
-              border-opacity-25
-              bg-transparent
-              py-2
-              pl-4
-              text-body-l
-              text-white
-              outline-none
-              duration-300
-              focus:border-main-purple
-          "
+                h-10
+                w-full
+                rounded-[4px]
+                border-[1px]
+                border-[#828FA3]
+                border-opacity-25
+                bg-transparent
+                py-2
+                pl-4
+                text-body-l
+                text-white
+                outline-none
+                duration-300
+                focus:border-main-purple
+              "
             />
             <Cross
               onClick={() => removeColumns(index)}
               className="
-                    cursor-pointer 
-                    fill-[#828FA3] 
-                    duration-300 
-                    hover:fill-red
+                  cursor-pointer 
+                  fill-[#828FA3] 
+                  duration-300 
+                  hover:fill-red
                 "
             />
           </fieldset>

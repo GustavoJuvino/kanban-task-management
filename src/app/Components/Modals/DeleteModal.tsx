@@ -24,10 +24,11 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         flex-col
         items-center
         justify-center
+        max-sm:p-4 
       "
     >
       <ModalBackground />
-      <section className="absolute z-50 flex h-[229px] w-[480px] flex-col gap-y-6 rounded-md bg-dark-gray p-8">
+      <section className="absolute z-50 flex h-auto w-auto flex-col gap-y-6 rounded-md bg-dark-gray p-8 sm:h-[229px] sm:w-[480px]">
         <h2 className="text-heading-l text-red">
           {`Delete this ${deleteType === 'board' ? 'board?' : 'task?'}`}
         </h2>
@@ -40,7 +41,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
               and its subtasks? This action cannot be reversed.`}
         </p>
 
-        <div className="flex justify-between">
+        <div className="flex items-center justify-between max-sm:flex-col max-sm:gap-y-4">
           <Button style={'destroyer'}> Delete </Button>
           <Button
             onClick={() => onOpenDeleteBoard(false)}

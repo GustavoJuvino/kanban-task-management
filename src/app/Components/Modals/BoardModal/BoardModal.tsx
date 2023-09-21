@@ -24,10 +24,11 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         flex-col
         items-center
         justify-center
+        max-sm:px-4
       "
     >
       <ModalBackground />
-      <div className="absolute z-50 h-[429px] w-[480px] rounded-md bg-dark-gray p-8">
+      <div className="absolute z-50 h-[429px] w-auto rounded-md bg-dark-gray p-8 sm:w-[480px]">
         <div className="flex items-center justify-between">
           <h2 className="text-heading-l text-white">
             {`${modalType === 'add' ? 'Add New' : 'Edit'} Board`}
