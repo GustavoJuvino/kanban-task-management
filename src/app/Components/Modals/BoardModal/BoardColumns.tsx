@@ -24,18 +24,6 @@ const BoardColumns = () => {
     [removeItem, columns],
   )
 
-  // const removeColumns = useCallback(
-  //   (index: number) => {
-  //     const updateColumns = [...columns]
-
-  //     if (index > -1) {
-  //       updateColumns.splice(index, 1)
-  //       setColumns(updateColumns)
-  //     }
-  //   },
-  //   [columns],
-  // )
-
   return (
     <section className="flex flex-col gap-y-3">
       {columns.length > 0 && (

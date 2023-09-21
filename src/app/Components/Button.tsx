@@ -25,6 +25,7 @@ const button = tv({
             hover:text-light-purple
         `,
       destroyer: `
+            w-[200px]
             h-10
             text-white
             bg-red

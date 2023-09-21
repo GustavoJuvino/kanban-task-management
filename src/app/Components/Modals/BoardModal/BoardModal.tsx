@@ -2,8 +2,16 @@ import React from 'react'
 import { Close } from '../../../../../public/modal'
 import Button from '../../Button'
 import BoardColumns from './BoardColumns'
+import ModalBackground from '../../ModalBackground'
+import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
 
-const BoardModal = () => {
+interface BoardModalProps {
+  modalType: ModalTypeProps
+}
+
+const BoardModal = ({ modalType }: BoardModalProps) => {
+  const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
+
   return (
     <section
       className="
@@ -18,10 +26,18 @@ const BoardModal = () => {
         justify-center
       "
     >
-      <div className="h-[429px] w-[480px] rounded-md bg-dark-gray p-8">
+      <ModalBackground />
+      <div className="absolute z-50 h-[429px] w-[480px] rounded-md bg-dark-gray p-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-heading-l text-white">Add New Board</h2>
+          <h2 className="text-heading-l text-white">
+            {`${modalType === 'add' ? 'Add New' : 'Edit'} Board`}
+          </h2>
           <Close
+            onClick={() =>
+              modalType === 'add'
+                ? onOpenNewBoard(false)
+                : onOpenEditBoard(false)
+            }
             className="
               cursor-pointer 
               fill-[#828FA3] 
@@ -61,7 +77,9 @@ const BoardModal = () => {
             </label>
           </fieldset>
           <BoardColumns />
-          <Button>Create New Board</Button>
+          <Button>
+            {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
+          </Button>
         </form>
       </div>
     </section>

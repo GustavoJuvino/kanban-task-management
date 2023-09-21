@@ -1,0 +1,1 @@
+type ModalTypeProps = 'add' | 'edit'

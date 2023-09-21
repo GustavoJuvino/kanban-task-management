@@ -6,8 +6,6 @@ import StatusMenu from '../StatusMenu'
 import ModalBackground from '../../ModalBackground'
 import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
 
-type ModalTypeProps = 'add' | 'edit'
-
 interface TaskModalProps {
   modalType: ModalTypeProps
 }
