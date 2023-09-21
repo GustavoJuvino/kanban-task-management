@@ -29,7 +29,7 @@ const EditMenu = ({ open }: EditMenuOpen) => {
           </li>
         </ul>
 
-        <BoardModal />
+        {/* <BoardModal /> */}
       </section>
     )
 }

@@ -1,33 +1,40 @@
 import React, { useCallback, useState } from 'react'
 import Button from '../../Button'
 import { Cross } from '../../../../../public/modal'
+import { useRemoveItems } from '@/app/hooks/useRemoveItems'
 
 const BoardColumns = () => {
   const [columns, setColumns] = useState([{ id: 1 }, { id: 2 }])
+  const { removeItem } = useRemoveItems(columns)
 
   const createNewColumns = useCallback(() => {
     const updateColumns = [...columns]
-
     const lastID =
       columns.length > 0 ? updateColumns[updateColumns.length - 1].id : 0
 
     updateColumns.push({ id: lastID + 1 })
-    console.log(updateColumns)
 
     setColumns(updateColumns)
   }, [columns])
 
   const removeColumns = useCallback(
     (index: number) => {
-      const updateColumns = [...columns]
-
-      if (index > -1) {
-        updateColumns.splice(index, 1)
-        setColumns(updateColumns)
-      }
+      setColumns(removeItem(index, columns))
     },
-    [columns],
+    [removeItem, columns],
   )
+
+  // const removeColumns = useCallback(
+  //   (index: number) => {
+  //     const updateColumns = [...columns]
+
+  //     if (index > -1) {
+  //       updateColumns.splice(index, 1)
+  //       setColumns(updateColumns)
+  //     }
+  //   },
+  //   [columns],
+  // )
 
   return (
     <section className="flex flex-col gap-y-3">

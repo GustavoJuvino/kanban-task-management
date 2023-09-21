@@ -2,15 +2,18 @@ import React, { useCallback, useState } from 'react'
 import { Cross } from '../../../../../public/modal'
 import Button from '../../Button'
 import axios from 'axios'
+import { useRemoveItems } from '@/app/hooks/useRemoveItems'
 
 const Subtasks = () => {
   const [subtasks, setSubtasks] = useState([
     { id: 1, desc: 'e.g. Make coffee' },
     { id: 2, desc: 'e.g. Drink coffee & smile' },
   ])
+
   const [placeholders, setPlaceholders] = useState<string>(
     'Take a coffee break',
   )
+  const { removeItem } = useRemoveItems(subtasks)
 
   const getPlaceholders = useCallback(() => {
     axios({
@@ -25,27 +28,24 @@ const Subtasks = () => {
   }, [])
 
   const createNewSubtask = useCallback(() => {
-    const lastID = subtasks[subtasks.length - 1]
+    const lastID = subtasks.length > 0 ? subtasks[subtasks.length - 1].id : 0
     getPlaceholders()
 
-    subtasks.push({ id: lastID.id + 1, desc: `e.g ${placeholders}` })
+    subtasks.push({ id: lastID + 1, desc: `e.g ${placeholders}` })
   }, [getPlaceholders, placeholders, subtasks])
 
   const removeSubtask = useCallback(
     (index: number) => {
-      const updateSubtasks = [...subtasks]
-
-      if (index > -1) {
-        updateSubtasks.splice(index, 1)
-        setSubtasks(updateSubtasks)
-      }
+      setSubtasks(removeItem(index, subtasks))
     },
-    [subtasks],
+    [removeItem, subtasks],
   )
 
   return (
     <section className="flex flex-col gap-y-3">
-      <h6 className="text-body-m text-white">Subtasks</h6>
+      {subtasks.length > 0 && (
+        <h6 className="text-body-m text-white">Subtasks</h6>
+      )}
 
       <div
         id="subtasks_list"
