@@ -10,7 +10,7 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ deleteType }: DeleteModalProps) => {
-  const { onOpenDeleteBoard } = useOpenDeleteModal()
+  const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
 
   return (
     <section
@@ -44,7 +44,11 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         <div className="flex items-center justify-between max-sm:flex-col max-sm:gap-y-4">
           <Button style={'destroyer'}> Delete </Button>
           <Button
-            onClick={() => onOpenDeleteBoard(false)}
+            onClick={() =>
+              deleteType === 'board'
+                ? onOpenDeleteBoard(false)
+                : onOpenDeleteTask(false)
+            }
             style={'light'}
             className="w-[200px]"
           >

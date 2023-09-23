@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Button from '../Button'
 import EditMenu from './EditMenu'
-import TaskModal from '../Modals/TaskModal/TaskModal'
 import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
@@ -9,6 +8,7 @@ import { NoSsr } from '@mui/material'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Arrow } from '../../../../public/modal'
 import { EditMenuIcon, IconAdd, LogoMobile } from '../../../../public/svgs'
+import NewTaskModal from '../Modals/TaskModal/NewTaskModal'
 
 const Header = () => {
   const size = useWindowSize()
@@ -29,7 +29,7 @@ const Header = () => {
         flex 
         h-20
         w-full
-        items-center 
+        items-center
         justify-between 
         border-b-[1px] 
         border-lines-dark 
@@ -82,11 +82,11 @@ const Header = () => {
               hover:fill-main-purple
             "
           />
-          <EditMenu open={openMenu} />
+          <EditMenu open={openMenu} menuType="board" />
         </div>
       </section>
 
-      {openNewTask && <TaskModal modalType="add" />}
+      {openNewTask && <NewTaskModal modalType="add" />}
     </header>
   )
 }

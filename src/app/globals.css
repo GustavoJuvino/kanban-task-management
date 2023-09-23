@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 * {
   margin: 0;
 }
@@ -31,6 +30,7 @@ input:-ms-input-placeholder,
 input::-moz-placeholder {
   color: #828FA3
 }
+
 
 #visibility {
   position: absolute;

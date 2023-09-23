@@ -24,7 +24,7 @@ const Sidebar = () => {
         {size.width && size.width <= 640 && <ModalBackground />}
         <section
           className="
-            z-50 
+            z-40
             flex
             h-auto
             w-[264px] 

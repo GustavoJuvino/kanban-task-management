@@ -1,132 +1,144 @@
-import React from 'react'
-import { Close } from '../../../../../public/modal'
-import Button from '../../Button'
-import Subtasks from './Subtasks'
+import React, { useEffect, useRef, useState } from 'react'
+import { EditMenuIcon } from '../../../../../public/svgs'
+import CheckIcon from '@mui/icons-material/Check'
 import StatusMenu from '../StatusMenu'
+import EditMenu from '../../Header/EditMenu'
+import useClickOutside from '@/app/hooks/useClickOutside'
 import ModalBackground from '../../ModalBackground'
-import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
 
-interface TaskModalProps {
-  modalType: ModalTypeProps
-}
+const TaskModal = () => {
+  const [check, setCheck] = useState(false)
+  const [openEditMenu, setOpenEditMenu] = useState(false)
+  const editMenuRef = useRef(null)
+  const { clickOutside } = useClickOutside()
 
-const TaskModal = ({ modalType }: TaskModalProps) => {
-  const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
+  useEffect(() => {
+    if (editMenuRef) clickOutside(editMenuRef, setOpenEditMenu)
+  }, [clickOutside])
 
   return (
     <section
       className="
-        absolute
-        left-0
-        top-0
-        flex
-        h-full
-        w-full
-        flex-col
-        items-center
-        justify-center
-      "
+            absolute
+            z-50
+            flex 
+            h-full 
+            w-full 
+            flex-col
+            items-center
+            justify-center
+        "
     >
       <ModalBackground />
-      <div
-        id="task_container"
+      <section
         className="
-          absolute 
-          z-50 
-          h-auto
-          w-auto
+          z-50
+          flex 
+          h-[523px] 
+          w-[480px] 
+          flex-col 
+          gap-y-6 
           rounded-md 
-          bg-dark-gray
+          bg-dark-gray 
           p-8
-          sm:w-[480px]
         "
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-heading-m text-white sm:text-heading-l">
-            {modalType === 'add' ? 'Add New Task' : 'Edit Task'}
+          <h2 className="w-[345px] text-heading-l text-white">
+            Research pricing points of various competitors and trial different
+            business models
           </h2>
-          <Close
-            onClick={() =>
-              modalType === 'add' ? onOpenNewTask(false) : onOpenEditTask(false)
-            }
-            className="
-              cursor-pointer 
-              fill-[#828FA3] 
-              duration-300 
-              hover:fill-red
-            "
-          />
+          <div ref={editMenuRef} className="relative">
+            <EditMenuIcon
+              onClick={() => setOpenEditMenu(!openEditMenu)}
+              className="
+                cursor-pointer 
+                fill-medium-gray 
+                duration-300 
+                hover:fill-main-purple
+              "
+            />
+            <EditMenu
+              className="right-[-6.2rem]"
+              open={openEditMenu}
+              menuType="task"
+            />
+          </div>
         </div>
 
-        <form id="task_form" className="mt-2 flex flex-col gap-y-6 sm:mt-6">
-          <fieldset className="block">
-            <label className="text-body-m text-white">
-              {' '}
-              Title
+        <p className="text-body-l text-medium-gray">
+          We know what we&apos;re planning to build for version one. Now we need
+          to finalise the first pricing model we&apos;ll use. Keep iterating the
+          subtasks until we have a coherent proposition.
+        </p>
+
+        <section>
+          <h6 className="text-body-m text-white">Subtasks {`(2 of 3)`}</h6>
+          <fieldset className="mt-4 flex flex-col gap-y-2">
+            <label
+              className={`
+                flex 
+                h-auto 
+                w-full 
+                cursor-pointer 
+                gap-x-4 
+                rounded-[4px] 
+                bg-very-dark-gray
+                py-3
+                pl-4
+                text-body-m 
+                text-white 
+                text-opacity-50 
+                duration-300 
+                hover:bg-main-purple
+                hover:bg-opacity-25
+                ${check && 'line-through'}
+              `}
+            >
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  onClick={() => setCheck(!check)}
+                  className={`
+                    h-4 
+                    w-4 
+                    appearance-none 
+                    rounded-sm 
+                    border-[1px] 
+                    border-[#828FA3] 
+                    border-opacity-25 
+                    bg-dark-gray
+                    ${check && `bg-main-purple`}
+                  `}
+                />
+                {check && (
+                  <CheckIcon
+                    className="absolute left-0"
+                    sx={{ fontSize: 16, color: 'white' }}
+                  />
+                )}
+              </div>
+              Research competitor pricing and business models
+            </label>
+
+            <label className="flex h-auto w-full gap-x-4 rounded-[4px] bg-very-dark-gray py-3 pl-4 text-body-m text-white text-opacity-50">
               <input
-                id="task_input"
-                name="titles"
-                type="text"
-                placeholder="e.g. Take coffee break"
-                className="
-                  mt-2
-                  h-10
-                  w-full
-                  rounded-[4px]
-                  border-[1px]
-                  border-[#828FA3]
-                  border-opacity-25
-                  bg-transparent
-                  py-2
-                  pl-4
-                  text-body-l
-                  text-white
-                  outline-none
-                  duration-300
-                  focus:border-main-purple
-                "
+                type="checkbox"
+                placeholder="Outline a business model that works for our solution"
               />
+              Research competitor pricing and business models
+            </label>
+
+            <label className="flex h-auto w-full gap-x-4 rounded-[4px] bg-very-dark-gray py-3 pl-4 text-body-m text-white">
+              <input type="checkbox" />
+              Talk to potential customers about our proposed solution and ask
+              for fair price expectancy
             </label>
           </fieldset>
+        </section>
 
-          <fieldset className="flex flex-col">
-            <label className="text-body-m text-white">
-              Description
-              <textarea
-                id="task_input"
-                name="description"
-                placeholder="e.g. It’s always good to take a break. This 15 minute
-                break will recharge the batteries a little."
-                className="                
-                  mt-2
-                  h-[112px]
-                  w-full
-                  resize-none
-                  rounded-[4px]
-                  border-[1px]
-                  border-[#828FA3]
-                  border-opacity-25
-                  bg-transparent
-                  py-2
-                  pl-4
-                  text-body-l
-                  text-white
-                  outline-none
-                  duration-300
-                  focus:border-main-purple
-                "
-              />
-            </label>
-          </fieldset>
-
-          <Subtasks />
-          <StatusMenu title="Current Statuts" name="current_status" />
-
-          <Button>
-            {modalType === 'add' ? 'Create Task' : 'Save Changes'}
-          </Button>
-        </form>
-      </div>
+        <StatusMenu title="Current Status" name="status_task" />
+      </section>
     </section>
   )
 }
