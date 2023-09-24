@@ -114,7 +114,7 @@ const Sidebar = () => {
   else
     return (
       <NoSsr>
-        <section className="max-sm:hidden">
+        <section className="z-20 max-sm:hidden">
           <div className="flex h-20 w-[210px] items-center justify-center border-b-[1px] border-r-[1px] border-lines-dark bg-dark-gray lg:h-24">
             <LogoLight className="max-sm:hidden" />
           </div>

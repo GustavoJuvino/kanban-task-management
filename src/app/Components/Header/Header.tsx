@@ -64,7 +64,8 @@ const Header = () => {
         <Button
           onClick={() => onOpenNewTask(true)}
           className="
-            flex w-12 
+            flex 
+            w-12 
             items-center 
             justify-center 
             max-sm:h-8 

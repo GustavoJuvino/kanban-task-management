@@ -1,15 +1,16 @@
 'use client'
 
 // import { signOut } from 'next-auth/react'
-import Sidebar from './Sidebar/Sidebar'
-import Header from './Header/Header'
-import TaskModal from './Modals/TaskModal/TaskModal'
-import NewTaskModal from './Modals/TaskModal/NewTaskModal'
-import useOpenTaskModal from '../hooks/useOpenTaskModal'
-import useOpenBoardModal from '../hooks/useOpenBoardModal'
-import useOpenDeleteModal from '../hooks/useOpenDeleteModal'
-import BoardModal from './Modals/BoardModal/BoardModal'
-import DeleteModal from './Modals/DeleteModal'
+import Sidebar from '../Sidebar/Sidebar'
+import Header from '../Header/Header'
+// import TaskModal from '../Modals/TaskModal/TaskModal'
+import NewTaskModal from '../Modals/TaskModal/NewTaskModal'
+import useOpenTaskModal from '../../hooks/useOpenTaskModal'
+import useOpenBoardModal from '../../hooks/useOpenBoardModal'
+import useOpenDeleteModal from '../../hooks/useOpenDeleteModal'
+import BoardModal from '../Modals/BoardModal/BoardModal'
+import DeleteModal from '../Modals/DeleteModal'
+import BoardContent from './BoardContent'
 
 export default function Board() {
   const { openEditTask } = useOpenTaskModal()
@@ -29,11 +30,9 @@ export default function Board() {
       {openDeleteBoard && <DeleteModal deleteType="board" />}
       {openDeleteTask && <DeleteModal deleteType="task" />}
 
-      <section className="flex w-full flex-col flex-wrap">
+      <section className="flex w-full flex-col">
         <Header />
-        <section className="absolute left-0 top-[6rem] z-10 h-auto w-full">
-          <h1>Tasks</h1>
-        </section>
+        <BoardContent />
       </section>
     </main>
   )
