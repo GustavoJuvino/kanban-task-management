@@ -18,7 +18,7 @@ export default function Board() {
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
 
   return (
-    <main className="flex h-full w-full bg-very-dark-gray max-sm:flex-col">
+    <main className="flex h-full w-full overflow-hidden bg-very-dark-gray max-sm:flex-col">
       <section className="flex h-auto w-auto max-sm:justify-center">
         <Sidebar />
       </section>

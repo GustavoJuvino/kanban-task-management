@@ -81,7 +81,7 @@ const BoardColumns = () => {
       </div>
 
       <Button type="button" style={'light'} onClick={() => createNewColumns()}>
-        + Add New Subtask
+        + Add New Column
       </Button>
     </section>
   )

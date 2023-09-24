@@ -26,18 +26,19 @@ const Header = () => {
   return (
     <header
       className="
-        flex 
+        z-20 
+        flex
         h-20
         w-full
-        items-center
+        items-center 
         justify-between 
         border-b-[1px] 
         border-lines-dark 
-        bg-dark-gray 
+        bg-dark-gray
         max-mobile:p-4
         mobile:pl-6
-        mobile:pr-8
-        lg:h-24 
+        mobile:pr-8 
+        lg:h-24
       "
     >
       <div className="flex items-center gap-x-2 small-mobile:gap-x-4">
