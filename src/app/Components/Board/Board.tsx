@@ -18,7 +18,7 @@ export default function Board() {
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
 
   return (
-    <main className="flex h-full w-full overflow-hidden bg-very-dark-gray max-sm:flex-col">
+    <main className="flex h-full w-full bg-very-dark-gray max-sm:flex-col">
       <section className="flex h-auto w-auto max-sm:justify-center">
         <Sidebar />
       </section>
@@ -30,7 +30,7 @@ export default function Board() {
       {openDeleteBoard && <DeleteModal deleteType="board" />}
       {openDeleteTask && <DeleteModal deleteType="task" />}
 
-      <section className="flex w-full flex-col">
+      <section className="flex h-full w-full flex-col overflow-x-hidden">
         <Header />
         <BoardContent />
       </section>
