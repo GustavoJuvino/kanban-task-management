@@ -21,17 +21,6 @@ ul, li{
   margin: 0px;
 }
 
-input::-webkit-input-placeholder {
-  color: #828FA3
-}
-
-input::-ms-input-placeholder,
-input:-ms-input-placeholder,
-input::-moz-placeholder {
-  color: #828FA3
-}
-
-
 #visibility {
   position: absolute;
   right: 15px;
@@ -75,4 +64,45 @@ input::-moz-placeholder {
 #subtasks_list {
   scrollbar-color: #20212C #828FA3;
   scrollbar-width: thin;
+}
+
+#snaps-inline {
+  scroll-snap-type: inline mandatory;
+}
+
+#snaps-inline > * {
+  scroll-snap-align: start;
+}
+
+input::-webkit-input-placeholder {
+  color: #828FA3
+}
+
+input::-ms-input-placeholder,
+input:-ms-input-placeholder,
+input::-moz-placeholder {
+  color: #828FA3
+}
+
+#snaps-inline::-webkit-scrollbar {
+  width: 2px;
+  height: 12px;
+}
+
+#snaps-inline::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#snaps-inline::-webkit-scrollbar-thumb {
+  background-color: #3E3F4E;    
+  border-radius: 12px;       
+}
+
+#snaps-inline::-webkit-scrollbar-thumb:hover {
+  background-color: #828FA3;
+}
+
+#snaps-inline {
+  scrollbar-color: #3E3F4E transparent;
+  scrollbar-width: auto;
 }

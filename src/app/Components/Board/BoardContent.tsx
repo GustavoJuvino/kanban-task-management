@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Button from '../Button'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
@@ -40,6 +40,7 @@ const BoardContent = () => {
       */}
 
       <section
+        id="snaps-inline"
         className="
           ml-6
           mt-6 
@@ -48,6 +49,7 @@ const BoardContent = () => {
           w-full 
           gap-x-6 
           overflow-x-auto
+          overscroll-x-contain
           pb-[50px]
         "
       >
