@@ -3,10 +3,16 @@ import Button from '../Button'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
 import { NoSsr } from '@mui/material'
+import ScrollContainer from 'react-indiana-drag-scroll'
 
 const BoardContent = () => {
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
+
+  const slideLeft = () => {
+    const slider = document.getElementById('snaps-inline')
+    if (slider) slider.scrollLeft = slider.scrollLeft + 100
+  }
 
   return (
     <NoSsr>
@@ -38,20 +44,22 @@ const BoardContent = () => {
         </div>
       </section>
       */}
-
-      <section
-        id="snaps-inline"
+      <ScrollContainer
         className="
           ml-6
-          mt-6 
-          flex 
-          h-full 
+          mt-6
+          flex
+          h-full
           w-full 
-          gap-x-6 
-          overflow-x-auto
-          overscroll-x-contain
+          cursor-move 
+          select-none 
+          snap-x 
+          gap-x-6
+          scroll-smooth
           pb-[50px]
         "
+        hideScrollbars={false}
+        vertical={false}
       >
         <ul className="flex flex-col gap-y-6">
           <div className="flex gap-x-3">
@@ -110,41 +118,41 @@ const BoardContent = () => {
         <section className="relative mt-10 h-auto w-[280px]">
           <div
             className="
-              h-full
-              w-[280px]
-              rounded-md
-              bg-gradient-to-b
-              from-dark-gray
-              to-[#2b2c3750]
-              opacity-25
-            "
+                h-full
+                w-[280px]
+                rounded-md
+                bg-gradient-to-b
+                from-dark-gray
+                to-[#2b2c3750]
+                opacity-25
+              "
           />
           <div
             className="
-              absolute 
-              top-0 
-              flex 
-              h-full 
-              w-full
-              flex-col 
-              items-center 
-              justify-center
-            "
+                absolute 
+                top-0 
+                flex 
+                h-full 
+                w-full
+                flex-col 
+                items-center 
+                justify-center
+              "
           >
             <h1
               className="
-                cursor-pointer 
-                text-heading-xl 
-                text-medium-gray 
-                duration-300 
-                hover:text-main-purple
-              "
+                  cursor-pointer 
+                  text-heading-xl 
+                  text-medium-gray 
+                  duration-300 
+                  hover:text-main-purple
+                "
             >
               + New Column
             </h1>
           </div>
         </section>
-      </section>
+      </ScrollContainer>
     </NoSsr>
   )
 }

@@ -66,14 +66,6 @@ ul, li{
   scrollbar-width: thin;
 }
 
-#snaps-inline {
-  scroll-snap-type: inline mandatory;
-}
-
-#snaps-inline > * {
-  scroll-snap-align: start;
-}
-
 input::-webkit-input-placeholder {
   color: #828FA3
 }
