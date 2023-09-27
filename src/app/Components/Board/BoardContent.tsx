@@ -2,10 +2,10 @@
 
 import React from 'react'
 import Button from '../Button'
-import { useHideSidebar } from '@/app/hooks/useHideSidebar'
-import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
 import { NoSsr } from '@mui/material'
 import ScrollContainer from 'react-indiana-drag-scroll'
+import { useHideSidebar } from '@/app/hooks/useHideSidebar'
+import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
 
 const BoardContent = () => {
   const { hidden } = useHideSidebar()
@@ -39,8 +39,8 @@ const BoardContent = () => {
             + Add new Column
           </Button>
         </div>
-      </section>
-      */}
+      </section> */}
+
       <ScrollContainer
         className="
           ml-6

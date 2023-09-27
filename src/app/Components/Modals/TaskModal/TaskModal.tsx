@@ -3,8 +3,8 @@ import { EditMenuIcon } from '../../../../../public/svgs'
 import CheckIcon from '@mui/icons-material/Check'
 import StatusMenu from '../StatusMenu'
 import EditMenu from '../../Header/EditMenu'
-import useClickOutside from '@/app/hooks/useClickOutside'
 import ModalBackground from '../../ModalBackground'
+import useClickOutside from '@/app/hooks/useClickOutside'
 
 const TaskModal = () => {
   const [check, setCheck] = useState(false)
@@ -19,15 +19,15 @@ const TaskModal = () => {
   return (
     <section
       className="
-            absolute
-            z-50
-            flex 
-            h-full 
-            w-full 
-            flex-col
-            items-center
-            justify-center
-        "
+        absolute
+        z-50
+        flex 
+        h-full 
+        w-full 
+        flex-col
+        items-center
+        justify-center
+      "
     >
       <ModalBackground />
       <section

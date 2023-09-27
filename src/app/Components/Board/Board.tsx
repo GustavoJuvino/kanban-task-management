@@ -1,16 +1,16 @@
 'use client'
 
 // import { signOut } from 'next-auth/react'
-import Sidebar from '../Sidebar/Sidebar'
-import Header from '../Header/Header'
 // import TaskModal from '../Modals/TaskModal/TaskModal'
+import Header from '../Header/Header'
+import Sidebar from '../Sidebar/Sidebar'
+import BoardContent from './BoardContent'
+import DeleteModal from '../Modals/DeleteModal'
+import BoardModal from '../Modals/BoardModal/BoardModal'
 import NewTaskModal from '../Modals/TaskModal/NewTaskModal'
 import useOpenTaskModal from '../../hooks/useOpenTaskModal'
 import useOpenBoardModal from '../../hooks/useOpenBoardModal'
 import useOpenDeleteModal from '../../hooks/useOpenDeleteModal'
-import BoardModal from '../Modals/BoardModal/BoardModal'
-import DeleteModal from '../Modals/DeleteModal'
-import BoardContent from './BoardContent'
 
 export default function Board() {
   const { openEditTask } = useOpenTaskModal()

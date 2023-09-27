@@ -30,16 +30,7 @@ const BoardColumns = () => {
         <h6 className="text-body-m text-white">Board Columns</h6>
       )}
 
-      <div
-        className={`
-            flex 
-            max-h-[92px]
-            scroll-m-1 
-            flex-col 
-            gap-y-2
-            overflow-auto
-        `}
-      >
+      <div className="flex max-h-[92px] scroll-m-1 flex-col gap-y-2 overflow-auto">
         {columns.map((column, index) => (
           <fieldset
             key={column.id}

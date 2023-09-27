@@ -1,11 +1,11 @@
 'use client'
 
-import BoardContent from '../Components/Board/BoardContent'
 import Header from '../Components/Header/Header'
+import Sidebar from '../Components/Sidebar/Sidebar'
+import BoardContent from '../Components/Board/BoardContent'
 import BoardModal from '../Components/Modals/BoardModal/BoardModal'
 import DeleteModal from '../Components/Modals/DeleteModal'
 import NewTaskModal from '../Components/Modals/TaskModal/NewTaskModal'
-import Sidebar from '../Components/Sidebar/Sidebar'
 import useOpenBoardModal from '../hooks/useOpenBoardModal'
 import useOpenDeleteModal from '../hooks/useOpenDeleteModal'
 import useOpenTaskModal from '../hooks/useOpenTaskModal'

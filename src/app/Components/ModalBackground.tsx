@@ -10,7 +10,7 @@ const ModalBackground = () => {
         w-full
         bg-[#000000]
         opacity-50
-    "
+      "
     />
   )
 }

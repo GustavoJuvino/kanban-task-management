@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
-import { useHideSidebar } from '@/app/hooks/useHideSidebar'
-import { useWindowSize } from '@uidotdev/usehooks'
-import HideMenu from './HideMenu'
-import Theme from './Theme'
 import ShowMenu from './ShowMenu'
-import ModalBackground from '../ModalBackground'
-import { LogoLight } from '../../../../public/svgs'
-import { Cross } from '../../../../public/modal'
+import HideMenu from './HideMenu'
 import { NoSsr } from '@mui/material'
+import Theme from './Theme'
+import ModalBackground from '../ModalBackground'
 import CreateNewBoard from '../Board/CreateNewBoard'
+import { Cross } from '../../../../public/modal'
+import { LogoLight } from '../../../../public/svgs'
+import { useWindowSize } from '@uidotdev/usehooks'
+import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 
 const Sidebar = () => {
   const size = useWindowSize()
@@ -48,7 +48,6 @@ const Sidebar = () => {
             <div className="mt-4 sm:mt-[54px]">
               <div className="flex items-center justify-between max-sm:pr-6">
                 <span className="ml-6 text-heading-s uppercase text-medium-gray lg:ml-8">
-                  {' '}
                   all boards {'(8)'}
                 </span>
 

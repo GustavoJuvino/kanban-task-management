@@ -1,8 +1,8 @@
 import React, { ComponentProps } from 'react'
 import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
 import useOpenDeleteModal from '@/app/hooks/useOpenDeleteModal'
-import { VariantProps, tv } from 'tailwind-variants'
 import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
+import { VariantProps, tv } from 'tailwind-variants'
 
 const menu = tv({
   base: `
@@ -38,7 +38,15 @@ const EditMenu = ({ open, menuType, className }: EditMenuProps) => {
     return (
       <section>
         <ul className={menu({ className })}>
-          <li className="w-fit cursor-pointer text-medium-gray duration-300 hover:text-main-purple">
+          <li
+            className="
+                w-fit 
+                cursor-pointer 
+                text-medium-gray 
+                duration-300 
+                hover:text-main-purple  
+              "
+          >
             <span
               onClick={() => {
                 menuType === 'board'

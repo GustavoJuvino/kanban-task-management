@@ -8,21 +8,21 @@ const CreateNewBoard = () => {
     <div
       onClick={() => onOpenNewBoard(true)}
       className="
-            ml-8 
-            flex 
-            w-fit 
-            cursor-pointer 
-            items-center 
-            gap-x-4 
-            rounded-r-full 
-            fill-main-purple 
-            py-[15px] 
-            text-heading-m
-            text-main-purple
-            duration-300
-            hover:fill-indigo-400 
-            hover:text-indigo-400
-        "
+        ml-8 
+        flex 
+        w-fit 
+        cursor-pointer 
+        items-center 
+        gap-x-4 
+        rounded-r-full 
+        fill-main-purple 
+        py-[15px] 
+        text-heading-m
+        text-main-purple
+        duration-300
+        hover:fill-indigo-400 
+        hover:text-indigo-400
+      "
     >
       <IconBoard />
       <h3>+ Create New Board</h3>
