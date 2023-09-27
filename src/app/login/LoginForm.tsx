@@ -56,7 +56,7 @@ const LoginForm = () => {
         <Form.Field>
           <Form.Error>{errors.email?.message}</Form.Error>
           {error && <Form.Error>{error}</Form.Error>}
-          <Form.Input
+          <Form.InputLogin
             type="text"
             name="email"
             error={errors.email?.message || error || ''}
@@ -66,7 +66,7 @@ const LoginForm = () => {
         <Form.Field className="relative">
           <Form.Error>{errors.password?.message}</Form.Error>
           <div className="relative">
-            <Form.Input
+            <Form.InputLogin
               type={visibility ? 'text' : 'password'}
               name="password"
               error={errors.password?.message || error || ''}

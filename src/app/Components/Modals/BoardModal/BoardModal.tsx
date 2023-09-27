@@ -4,6 +4,8 @@ import Button from '../../Button'
 import BoardColumns from './BoardColumns'
 import ModalBackground from '../../ModalBackground'
 import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
+import { Form } from '../../form'
+import { FormProvider, useForm } from 'react-hook-form'
 
 interface BoardModalProps {
   modalType: ModalTypeProps
@@ -11,6 +13,14 @@ interface BoardModalProps {
 
 const BoardModal = ({ modalType }: BoardModalProps) => {
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
+
+  const createBoardForm = useForm<BoardFormInputs>()
+
+  const {
+    handleSubmit,
+    unregister,
+    formState: { errors },
+  } = createBoardForm
 
   return (
     <section
@@ -28,7 +38,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       "
     >
       <ModalBackground />
-      <div className="absolute z-50 h-[429px] w-auto rounded-md bg-dark-gray p-8 sm:w-[480px]">
+      <div className="absolute z-50 h-[429px] w-[80%] rounded-md bg-dark-gray p-8 sm:w-[480px]">
         <div className="flex items-center justify-between">
           <h2 className="text-heading-l text-white">
             {`${modalType === 'add' ? 'Add New' : 'Edit'} Board`}
@@ -48,40 +58,31 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
           />
         </div>
 
-        <form className="mt-6 flex flex-col gap-y-6">
-          <fieldset className="block">
-            <label className="text-body-m text-white">
-              Board Name
-              <input
+        <FormProvider {...createBoardForm}>
+          <form
+            onSubmit={handleSubmit((data) => console.log(data))}
+            className="mt-6 flex flex-col gap-y-6"
+          >
+            <Form.Field className="flex flex-col gap-y-2">
+              <Form.Label htmlFor="task_input">Board Name</Form.Label>
+              <Form.Input
                 id="task_input"
-                name="titles"
+                name="boardName"
                 type="text"
                 placeholder="e.g. Web Design"
-                className="
-                mt-2
-                h-10
-                w-full
-                rounded-[4px]
-                border-[1px]
-                border-[#828FA3]
-                border-opacity-25
-                bg-transparent
-                py-2
-                pl-4
-                text-body-l
-                text-white
-                outline-none
-                duration-300
-                focus:border-main-purple
-                "
+                error={errors.boardName}
               />
-            </label>
-          </fieldset>
-          <BoardColumns />
-          <Button>
-            {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
-          </Button>
-        </form>
+            </Form.Field>
+
+            <BoardColumns
+              unregister={unregister}
+              inputError={errors.boardColumn}
+            />
+            <Button>
+              {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
+            </Button>
+          </form>
+        </FormProvider>
       </div>
     </section>
   )

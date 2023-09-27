@@ -2,9 +2,19 @@ import React, { useCallback, useState } from 'react'
 import Button from '../../Button'
 import { Cross } from '../../../../../public/modal'
 import { useRemoveItems } from '@/app/hooks/useRemoveItems'
+import { Form } from '../../form'
+import { FieldError, UseFormUnregister } from 'react-hook-form'
 
-const BoardColumns = () => {
-  const [columns, setColumns] = useState([{ id: 1 }, { id: 2 }])
+interface BoardColumnsProps {
+  inputError?: FieldError
+  unregister?: UseFormUnregister<BoardFormInputs>
+}
+
+const BoardColumns = ({ inputError, unregister }: BoardColumnsProps) => {
+  const [columns, setColumns] = useState([
+    { id: 1, placeholder: 'Doing' },
+    { id: 2, placeholder: 'Done' },
+  ])
   const { removeItem } = useRemoveItems(columns)
 
   const createNewColumns = useCallback(() => {
@@ -12,7 +22,7 @@ const BoardColumns = () => {
     const lastID =
       columns.length > 0 ? updateColumns[updateColumns.length - 1].id : 0
 
-    updateColumns.push({ id: lastID + 1 })
+    updateColumns.push({ id: lastID + 1, placeholder: 'Todo' })
 
     setColumns(updateColumns)
   }, [columns])
@@ -32,42 +42,35 @@ const BoardColumns = () => {
 
       <div className="flex max-h-[92px] scroll-m-1 flex-col gap-y-2 overflow-auto">
         {columns.map((column, index) => (
-          <fieldset
+          <Form.Field
             key={column.id}
             className="flex items-center gap-x-2 pr-4 sm:gap-x-4"
           >
-            <input
+            <Form.Input
               id="task_input"
-              name="titles"
+              name="boardColumn"
+              error={inputError}
+              defaultValue={''}
               type="text"
-              placeholder="e.g. Todo"
-              className="
-                h-10
-                w-full
-                rounded-[4px]
-                border-[1px]
-                border-[#828FA3]
-                border-opacity-25
-                bg-transparent
-                py-2
-                pl-4
-                text-body-l
-                text-white
-                outline-none
-                duration-300
-                focus:border-main-purple
-              "
+              placeholder={`e.g ${column.placeholder}`}
             />
+
             <Cross
-              onClick={() => removeColumns(index)}
-              className="
-                  cursor-pointer 
-                  fill-[#828FA3] 
-                  duration-300 
-                  hover:fill-red
-                "
+              onClick={() => {
+                removeColumns(index)
+                if (unregister && index < 1) {
+                  unregister('boardColumn')
+                }
+              }}
+              className={`
+                cursor-pointer
+                fill-[#828FA3]
+                duration-300
+                hover:fill-red
+                ${inputError && 'fill-red'}
+              `}
             />
-          </fieldset>
+          </Form.Field>
         ))}
       </div>
 
