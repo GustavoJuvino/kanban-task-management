@@ -6,9 +6,9 @@ import Theme from './Theme'
 import ShowMenu from './ShowMenu'
 import ModalBackground from '../ModalBackground'
 import { LogoLight } from '../../../../public/svgs'
-import { IconBoard } from '../../../../public/sidebar'
 import { Cross } from '../../../../public/modal'
 import { NoSsr } from '@mui/material'
+import CreateNewBoard from '../Board/CreateNewBoard'
 
 const Sidebar = () => {
   const size = useWindowSize()
@@ -63,7 +63,7 @@ const Sidebar = () => {
                 "
                 />
               </div>
-              <ul className="mt-5">
+              {/* <ul className="mt-5">
                 <li className="flex w-[240px] items-center gap-x-3 rounded-r-full bg-main-purple py-[15px] pl-6 lg:w-[276px] lg:gap-x-4 lg:pl-8">
                   <IconBoard className="fill-white" />
                   <h3 className="text-heading-m text-white">
@@ -93,14 +93,9 @@ const Sidebar = () => {
                   <IconBoard className="fill-medium-gray" />
                   <h3> Marketing Plan</h3>
                 </li>
-              </ul>
+              </ul> */}
 
-              <div className="ml-8 flex w-[276px] items-center gap-x-4 rounded-r-full py-[15px]">
-                <IconBoard className="fill-main-purple" />
-                <h3 className="cursor-pointer text-heading-m text-main-purple">
-                  + Create New Board
-                </h3>
-              </div>
+              <CreateNewBoard />
             </div>
           </section>
 

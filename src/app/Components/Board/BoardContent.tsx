@@ -1,4 +1,6 @@
-import React, { useRef } from 'react'
+'use client'
+
+import React from 'react'
 import Button from '../Button'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
@@ -8,11 +10,6 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 const BoardContent = () => {
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
-
-  const slideLeft = () => {
-    const slider = document.getElementById('snaps-inline')
-    if (slider) slider.scrollLeft = slider.scrollLeft + 100
-  }
 
   return (
     <NoSsr>
