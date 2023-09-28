@@ -5,22 +5,48 @@ import BoardColumns from './BoardColumns'
 import ModalBackground from '../../ModalBackground'
 import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
 import { Form } from '../../form'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import axios from 'axios'
 
 interface BoardModalProps {
   modalType: ModalTypeProps
 }
 
+interface BoardFormInputs {
+  boardName: string
+  boardColumns: {
+    columName: string
+  }[]
+}
+
 const BoardModal = ({ modalType }: BoardModalProps) => {
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
 
-  const createBoardForm = useForm<BoardFormInputs>()
+  const createBoardForm = useForm<BoardFormInputs>({
+    defaultValues: {
+      boardName: '',
+      boardColumns: [{ columName: '' }],
+    },
+  })
 
   const {
     handleSubmit,
-    unregister,
     formState: { errors },
   } = createBoardForm
+
+  // const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
+  //   axios
+  //     .post('/api/board', data)
+  //     .then(() => {
+  //       console.log('success', data)
+  //     })
+  //     .catch((error: any) => {
+  //       console.log(error)
+  //     })
+  //     .finally(() => {
+  //       console.log('finished')
+  //     })
+  // }
 
   return (
     <section
@@ -70,13 +96,15 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
                 name="boardName"
                 type="text"
                 placeholder="e.g. Web Design"
-                error={errors.boardName}
+                error={errors.boardName?.message}
               />
             </Form.Field>
 
             <BoardColumns
-              unregister={unregister}
-              inputError={errors.boardColumn}
+              inputError={
+                errors.boardColumns?.length &&
+                errors.boardColumns[0]?.columName?.message
+              }
             />
             <Button>
               {modalType === 'add' ? 'Create New Board' : 'Save Changes'}

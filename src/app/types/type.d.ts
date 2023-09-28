@@ -1,6 +1,8 @@
 type ModalTypeProps = 'add' | 'edit'
 
-type BoardFormInputs = {
-  boardName: 'string'
-  boardColumn: 'string'
+interface BoardFormInputs {
+  boardName: string
+  boardColumns: {
+    columName: string
+  }[]
 }

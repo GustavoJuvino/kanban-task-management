@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react'
 import { VariantProps, tv } from 'tailwind-variants'
-import { FieldError, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { useWindowSize } from '@uidotdev/usehooks'
 
 const input = tv({
@@ -28,7 +28,7 @@ type InputStyleProps = ComponentProps<'input'> & VariantProps<typeof input>
 
 interface InputProps extends InputStyleProps {
   name: string
-  error?: FieldError
+  error?: string | 0 | undefined
 }
 
 export function Input({ name, error, className, ...props }: InputProps) {
@@ -49,9 +49,9 @@ export function Input({ name, error, className, ...props }: InputProps) {
           }
         `}
       />
-      {error?.message && (
+      {error && (
         <div className="absolute right-4 flex h-full items-center text-[12px] text-red sm:text-body-l">
-          {size.width && size.width >= 365 && <span>{error?.message}</span>}
+          {size.width && size.width >= 365 && <span>{error}</span>}
         </div>
       )}
     </div>

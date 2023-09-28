@@ -1,6 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// npx prisma db push
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,3 +18,10 @@ model User {
   email String? @unique
   hashedPassword String?
 }
+
+model Board {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  boardName String?
+  boardColumns String[]
+}
+
