@@ -17,11 +17,22 @@ model User {
   username String?
   email String? @unique
   hashedPassword String?
+  boards Board[]
 }
 
 model Board {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  userID String @db.ObjectId
   boardName String?
-  boardColumns String[]
+
+  user User @relation(fields: [userID], references: [id], onDelete: Cascade)
+  columns Column[]
 }
 
+model Column {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  boardID String @db.ObjectId
+  columnName String
+
+  board Board @relation(fields: [boardID], references: [id], onDelete: Cascade)
+}

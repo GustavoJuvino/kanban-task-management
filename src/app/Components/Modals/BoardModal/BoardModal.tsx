@@ -12,20 +12,13 @@ interface BoardModalProps {
   modalType: ModalTypeProps
 }
 
-interface BoardFormInputs {
-  boardName: string
-  boardColumns: {
-    columName: string
-  }[]
-}
-
 const BoardModal = ({ modalType }: BoardModalProps) => {
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
 
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
       boardName: '',
-      boardColumns: [{ columName: '' }],
+      boardColumns: [{ columnName: '' }],
     },
   })
 
@@ -34,19 +27,20 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     formState: { errors },
   } = createBoardForm
 
-  // const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-  //   axios
-  //     .post('/api/board', data)
-  //     .then(() => {
-  //       console.log('success', data)
-  //     })
-  //     .catch((error: any) => {
-  //       console.log(error)
-  //     })
-  //     .finally(() => {
-  //       console.log('finished')
-  //     })
-  // }
+  const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
+    console.log(data)
+    axios
+      .post('/api/board', data)
+      .then(() => {
+        console.log('success', data)
+      })
+      .catch((error: any) => {
+        console.log(error.message)
+      })
+      .finally(() => {
+        console.log('finished')
+      })
+  }
 
   return (
     <section
@@ -86,7 +80,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
 
         <FormProvider {...createBoardForm}>
           <form
-            onSubmit={handleSubmit((data) => console.log(data))}
+            onSubmit={handleSubmit((data) => onSubmit(data))}
             className="mt-6 flex flex-col gap-y-6"
           >
             <Form.Field className="flex flex-col gap-y-2">
@@ -103,10 +97,10 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
             <BoardColumns
               inputError={
                 errors.boardColumns?.length &&
-                errors.boardColumns[0]?.columName?.message
+                errors.boardColumns[0]?.columnName?.message
               }
             />
-            <Button>
+            <Button type="submit">
               {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
             </Button>
           </form>

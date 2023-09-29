@@ -10,15 +10,27 @@ export async function POST(request: Request) {
     return NextResponse.error()
   }
 
-  const body = await request.json()
+  const body: BoardFormInputs = await request.json()
   const { boardName, boardColumns } = body
 
-  const board = await prisma.board.create({
-    data: {
-      boardName,
-      boardColumns,
-    },
-  })
+  const board = [
+    await prisma.board.create({
+      data: {
+        boardName,
+        userID: currentUser.id,
+      },
+    }),
+    await Promise.all(
+      boardColumns.map(async (column) => {
+        await prisma.column.create({
+          data: {
+            columnName: column.columnName,
+            boardID: currentUser.id,
+          },
+        })
+      }),
+    ),
+  ]
 
   return NextResponse.json(board)
 }

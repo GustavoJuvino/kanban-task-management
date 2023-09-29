@@ -6,6 +6,8 @@ import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import { Arrow } from '../../../../public/modal'
 import { LogoLight, LogoMobile } from '../../../../public/svgs'
+import { signOut } from 'next-auth/react'
+import Button from '../Button'
 
 const Header = () => {
   const { hidden, setHidden } = useHideSidebar()
@@ -23,6 +25,7 @@ const Header = () => {
         lg:h-24
       "
     >
+      <Button onClick={() => signOut()}>Sign Out</Button>
       {hidden && (
         <NoSsr>
           <div

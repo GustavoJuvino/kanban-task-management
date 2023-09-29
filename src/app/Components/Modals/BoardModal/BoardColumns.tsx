@@ -9,7 +9,7 @@ interface BoardColumnsProps {
 }
 
 const BoardColumns = ({ inputError }: BoardColumnsProps) => {
-  const { fields, prepend, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     name: 'boardColumns',
   })
 
@@ -31,10 +31,10 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
   // )
 
   useMemo(() => {
-    prepend({
-      columName: '',
+    append({
+      columnName: '',
     })
-  }, [prepend])
+  }, [append])
 
   return (
     <section className="flex flex-col gap-y-3">
@@ -48,7 +48,7 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
           >
             <Form.Input
               id="task_input"
-              name={`boardColumns.${index}.columName`}
+              name={`boardColumns.${index}.columnName`}
               defaultValue={''}
               error={inputError}
               type="text"
@@ -77,8 +77,8 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
         type="button"
         style={'light'}
         onClick={() =>
-          prepend({
-            columName: '',
+          append({
+            columnName: '',
           })
         }
       >
