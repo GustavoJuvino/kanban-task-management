@@ -5,7 +5,7 @@ import Header from './Header/Header'
 import Button from './Button'
 import Sidebar from './Sidebar/Sidebar'
 import BoardModal from './Modals/BoardModal/BoardModal'
-import useOpenBoardModal from '../hooks/useOpenBoardModal'
+import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 
 const HomePage = () => {
   const { openNewBoard, onOpenNewBoard } = useOpenBoardModal()

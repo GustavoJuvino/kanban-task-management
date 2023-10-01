@@ -3,7 +3,7 @@ import Button from '../Button'
 import EditMenu from './EditMenu'
 import { usePathname } from 'next/navigation'
 import { useWindowSize } from '@uidotdev/usehooks'
-import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
+import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import { EditMenuIcon, IconAdd } from '../../../../public/svgs'
 

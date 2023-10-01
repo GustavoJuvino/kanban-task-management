@@ -13,23 +13,6 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
     name: 'boardColumns',
   })
 
-  // const createNewColumns = useCallback(() => {
-  //   const updateColumns = [...columns]
-  //   const lastID =
-  //     columns.length > 0 ? updateColumns[updateColumns.length - 1].id : 0
-
-  //   updateColumns.push({ id: lastID + 1, placeholder: 'Todo' })
-
-  //   setColumns(updateColumns)
-  // }, [columns])
-
-  // const removeColumns = useCallback(
-  //   (index: number) => {
-  //     setColumns(removeItem(index, columns))
-  //   },
-  //   [removeItem, columns],
-  // )
-
   useMemo(() => {
     append({
       columnName: '',
@@ -56,12 +39,7 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
             />
 
             <Cross
-              onClick={() => {
-                remove(index)
-                // if (unregister && index < 1) {
-                //   unregister('boardColumns')
-                // }
-              }}
+              onClick={() => remove(index)}
               className={`
                   cursor-pointer
                   fill-[#828FA3]

@@ -4,7 +4,7 @@ import Button from '../../Button'
 import Subtasks from './Subtasks'
 import StatusMenu from '../StatusMenu'
 import ModalBackground from '../../ModalBackground'
-import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
+import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 
 interface NewTaskModalProps {
   modalType: ModalTypeProps

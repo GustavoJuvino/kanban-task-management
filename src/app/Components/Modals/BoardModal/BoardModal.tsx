@@ -3,7 +3,7 @@ import { Close } from '../../../../../public/modal'
 import Button from '../../Button'
 import BoardColumns from './BoardColumns'
 import ModalBackground from '../../ModalBackground'
-import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
+import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
 import { Form } from '../../form'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import axios from 'axios'
@@ -34,7 +34,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       .then(() => {
         console.log('success', data)
       })
-      .catch((error: any) => {
+      .catch((error) => {
         console.log(error.message)
       })
       .finally(() => {

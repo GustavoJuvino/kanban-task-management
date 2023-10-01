@@ -1,7 +1,7 @@
 import React from 'react'
 import ModalBackground from '../ModalBackground'
 import Button from '../Button'
-import useOpenDeleteModal from '@/app/hooks/useOpenDeleteModal'
+import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 
 type DelteTypeProps = 'board' | 'task'
 

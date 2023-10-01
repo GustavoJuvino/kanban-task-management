@@ -5,7 +5,7 @@ import Button from '../Button'
 import { NoSsr } from '@mui/material'
 import ScrollContainer from 'react-indiana-drag-scroll'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
-import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
+import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
 
 const BoardContent = () => {
   const { hidden } = useHideSidebar()

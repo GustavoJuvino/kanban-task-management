@@ -1,7 +1,7 @@
 import React, { ComponentProps } from 'react'
-import useOpenBoardModal from '@/app/hooks/useOpenBoardModal'
-import useOpenDeleteModal from '@/app/hooks/useOpenDeleteModal'
-import useOpenTaskModal from '@/app/hooks/useOpenTaskModal'
+import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
+import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
+import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 import { VariantProps, tv } from 'tailwind-variants'
 
 const menu = tv({
