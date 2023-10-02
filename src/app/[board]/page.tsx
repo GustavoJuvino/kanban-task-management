@@ -5,17 +5,23 @@ import Main from './Main'
 // import TaskModal from '../Modals/TaskModal/TaskModal'
 
 export default async function Page({ params }: { params: { board: string } }) {
-  // const { openEditTask } = useOpenTaskModal()
-  // const { openEditBoard } = useOpenBoardModal()
-  // const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
+  const { board } = params
 
   const boards = await getBoard()
 
-  console.log(boards.map((board) => board.boardName))
+  const currentBoards = ['WebDesign', 'Webdesign2'] as const
+  type Board = (typeof currentBoards)[number]
 
-  return (
-    <Main
-      boards={boards.map((board) => (board.boardName ? board.boardName : ''))}
-    />
-  )
+  // // user-defined guard
+  const isBoard = (value: any): value is Board => currentBoards.includes(value)
+
+  if (isBoard(board))
+    return (
+      <Main
+        currentBoards={boards.map((board) =>
+          board.boardName ? board.boardName : '',
+        )}
+      />
+    )
+  else return <h1>Page not Founded</h1>
 }

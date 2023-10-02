@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import Sidebar from '../Components/Sidebar/Sidebar'
 import Header from '../Components/Header/Header'
 import BoardContent from '../Components/Board/BoardContent'
@@ -11,23 +11,22 @@ import DeleteModal from '../Components/Modals/DeleteModal'
 import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
 import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
-import useGetAllBoards from '../hooks/useGetAllBoards'
+import { useGlobalContext } from '../context/store'
+// import useGetAllBoards from '../hooks/useGetAllBoards'
 
 interface MainProps {
-  boards: string[]
+  currentBoards: string[]
 }
 
-const Main = ({ boards }: MainProps) => {
+const Main = ({ currentBoards }: MainProps) => {
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
   const { openEditTask } = useOpenTaskModal()
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
-
-  const { currentBoards, setBoards } = useGetAllBoards()
+  const { setBoards } = useGlobalContext()
 
   useEffect(() => {
-    const udpateBoards = [...boards]
-    setBoards(['1', '2'])
-  }, [boards, currentBoards, setBoards])
+    setBoards(currentBoards)
+  }, [currentBoards, setBoards])
 
   return (
     <>

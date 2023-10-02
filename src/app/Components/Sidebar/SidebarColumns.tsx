@@ -1,17 +1,17 @@
 import React from 'react'
 import { IconBoard } from '../../../../public/sidebar'
-import useGetAllBoards from '@/app/hooks/useGetAllBoards'
 import { useRouter } from 'next/navigation'
+import { useGlobalContext } from '@/app/context/store'
 
 const SidebarColumns = () => {
-  const { currentBoards } = useGetAllBoards()
+  const { boards } = useGlobalContext()
   const router = useRouter()
 
   return (
     <ul className="mt-5">
-      {currentBoards.map((board) => (
+      {boards.map((board) => (
         <li
-          onClick={() => router.push(`/${board}`)}
+          onClick={() => router.push(`/${board.replace(/\s/g, '')}`)}
           key={board}
           className="
             flex

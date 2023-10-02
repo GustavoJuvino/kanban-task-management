@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 // eslint-disable-next-line camelcase
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import { GlobalContextProvider } from './context/store'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'] })
 
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={jakarta.className}>
-        <main className="flex h-full w-full bg-very-dark-gray max-sm:flex-col">
-          {children}
-        </main>
+        <GlobalContextProvider>
+          <main className="flex h-full w-full bg-very-dark-gray max-sm:flex-col">
+            {children}
+          </main>
+        </GlobalContextProvider>
       </body>
     </html>
   )
