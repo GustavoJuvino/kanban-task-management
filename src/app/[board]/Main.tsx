@@ -16,17 +16,25 @@ import { useGlobalContext } from '../context/store'
 
 interface MainProps {
   currentBoards: string[]
+  boardURL: string
 }
 
-const Main = ({ currentBoards }: MainProps) => {
+const Main = ({ currentBoards, boardURL }: MainProps) => {
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
   const { openEditTask } = useOpenTaskModal()
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
-  const { setBoards } = useGlobalContext()
+  const { boards, setBoards } = useGlobalContext()
 
   useEffect(() => {
     setBoards(currentBoards)
   }, [currentBoards, setBoards])
+
+  const currentBoardsURL = boards.map((board) => board.replace(/\s/g, ''))
+  type Board = (typeof currentBoards)[number]
+
+  // // user-defined guard
+  const isBoard = (value: any): value is Board =>
+    currentBoardsURL.includes(value)
 
   return (
     <>
@@ -44,7 +52,7 @@ const Main = ({ currentBoards }: MainProps) => {
 
       <section className="flex h-full w-full flex-col overflow-x-hidden">
         <Header />
-        <BoardContent />
+        {isBoard(boardURL) ? <BoardContent /> : <h1>Board not founded</h1>}
       </section>
     </>
   )

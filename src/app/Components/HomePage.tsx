@@ -1,14 +1,25 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from './Header/Header'
 import Button from './Button'
 import Sidebar from './Sidebar/Sidebar'
 import BoardModal from './Modals/BoardModal/BoardModal'
 import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
+import { useGlobalContext } from '../context/store'
 
-const HomePage = () => {
+interface HomePageProps {
+  currentBoards: string[]
+}
+
+const HomePage = ({ currentBoards }: HomePageProps) => {
   const { openNewBoard, onOpenNewBoard } = useOpenBoardModal()
+  const { setBoards } = useGlobalContext()
+
+  useEffect(() => {
+    setBoards(currentBoards)
+  }, [currentBoards, setBoards])
+
   return (
     <>
       <section className="flex h-auto w-auto max-sm:justify-center">

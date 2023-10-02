@@ -9,7 +9,7 @@ import { Cross } from '../../../../public/modal'
 import { LogoLight } from '../../../../public/svgs'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
-import Boards from './SidebarColumns'
+import SidebarColumns from './SidebarColumns'
 
 const Sidebar = () => {
   const size = useWindowSize()
@@ -64,7 +64,7 @@ const Sidebar = () => {
                 />
               </div>
 
-              <Boards />
+              <SidebarColumns />
               <CreateNewBoard />
             </div>
           </section>
