@@ -14,8 +14,9 @@ const Header = () => {
   const { openNewTask } = useOpenTaskModal()
 
   return (
-    <header
-      className="
+    <>
+      <header
+        className="
         flex 
         h-auto 
         w-full 
@@ -24,12 +25,12 @@ const Header = () => {
         sm:h-20 
         lg:h-24
       "
-    >
-      <Button onClick={() => signOut()}>Sign Out</Button>
-      {hidden && (
-        <NoSsr>
-          <div
-            className="
+      >
+        <Button onClick={() => signOut()}>Sign Out</Button>
+        {hidden && (
+          <NoSsr>
+            <div
+              className="
             flex 
             h-full 
             w-auto
@@ -41,14 +42,14 @@ const Header = () => {
             px-6
             max-sm:hidden
           "
-          >
-            <LogoLight />
-          </div>
-        </NoSsr>
-      )}
+            >
+              <LogoLight />
+            </div>
+          </NoSsr>
+        )}
 
-      <section
-        className="
+        <section
+          className="
           flex 
           h-full 
           w-full 
@@ -60,11 +61,11 @@ const Header = () => {
           sm:px-6
           lg:px-8
         "
-      >
-        <section className="flex items-center gap-x-2 small-mobile:gap-x-4">
-          <LogoMobile className="sm:hidden" />
-          <h1
-            className="
+        >
+          <section className="flex items-center gap-x-2 small-mobile:gap-x-4">
+            <LogoMobile className="sm:hidden" />
+            <h1
+              className="
               text-[14px] 
               font-bold 
               text-white 
@@ -72,13 +73,13 @@ const Header = () => {
               sm:text-xl 
               lg:text-heading-xl
             "
-          >
-            Plataform Launch
-          </h1>
-          <NoSsr>
-            <Arrow
-              onClick={() => setHidden(false)}
-              className={`
+            >
+              Plataform Launch
+            </h1>
+            <NoSsr>
+              <Arrow
+                onClick={() => setHidden(false)}
+                className={`
                 cursor-pointer
                 stroke-main-purple
                 duration-300
@@ -86,14 +87,15 @@ const Header = () => {
                 sm:hidden
                 ${!hidden ? 'rotate-180' : 'rotate-0'}
               `}
-            />
-          </NoSsr>
+              />
+            </NoSsr>
+          </section>
+          <HeaderOptions />
         </section>
-        <HeaderOptions />
-      </section>
 
-      {openNewTask && <NewTaskModal modalType="add" />}
-    </header>
+        {openNewTask && <NewTaskModal modalType="add" />}
+      </header>
+    </>
   )
 }
 

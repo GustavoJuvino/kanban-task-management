@@ -12,6 +12,7 @@ import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
 import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
 import { useGlobalContext } from '../context/store'
+import useGetCurrentURL from '../hooks/useGetCurrentURL'
 // import useGetAllBoards from '../hooks/useGetAllBoards'
 
 interface MainProps {
@@ -22,12 +23,15 @@ interface MainProps {
 const Main = ({ currentBoards, boardURL }: MainProps) => {
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
   const { openEditTask } = useOpenTaskModal()
+
+  const { setURL } = useGetCurrentURL()
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
   const { boards, setBoards } = useGlobalContext()
 
   useEffect(() => {
     setBoards(currentBoards)
-  }, [currentBoards, setBoards])
+    setURL(boardURL)
+  }, [currentBoards, setBoards, setURL, boardURL])
 
   const currentBoardsURL = boards.map((board) => board.replace(/\s/g, ''))
   type Board = (typeof currentBoards)[number]

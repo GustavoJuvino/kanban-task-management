@@ -10,10 +10,12 @@ import { LogoLight } from '../../../../public/svgs'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import SidebarColumns from './SidebarColumns'
+import { useGlobalContext } from '@/app/context/store'
 
 const Sidebar = () => {
   const size = useWindowSize()
   const { hidden, setHidden } = useHideSidebar()
+  const { boards } = useGlobalContext()
 
   useEffect(() => {
     if (size.width && size.width <= 640) setHidden(true)
@@ -48,9 +50,11 @@ const Sidebar = () => {
 
             <div className="mt-4 sm:mt-[54px]">
               <div className="flex items-center justify-between max-sm:pr-6">
-                <span className="ml-6 text-heading-s uppercase text-medium-gray lg:ml-8">
-                  all boards {'(8)'}
-                </span>
+                {boards.length > 0 && (
+                  <span className="ml-6 text-heading-s uppercase text-medium-gray lg:ml-8">
+                    all boards {`(${boards.length})`}
+                  </span>
+                )}
 
                 <Cross
                   onClick={() => setHidden(true)}
