@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       boardColumns.map(async (column) => {
         await prisma.column.create({
           data: {
+            fromBoard: boardName.replace(/\s/g, ''),
             columnName: column.columnName,
             boardID: currentUser.id,
           },

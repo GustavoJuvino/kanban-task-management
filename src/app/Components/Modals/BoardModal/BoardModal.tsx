@@ -23,7 +23,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
       boardName: '',
-      boardColumns: [{ columnName: '' }],
+      boardColumns: [{ columnName: '', id: 0 }],
     },
   })
 
@@ -38,20 +38,21 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   }, [errors])
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    setLoading(true)
-    axios
-      .post('/api/board', data)
-      .then(() => {
-        toast.success('Board created successfully!')
-        reset()
-        router.refresh()
-      })
-      .catch(() => {
-        toast.error('Something went wrong :(')
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    console.log(data)
+    // setLoading(true)
+    // axios
+    //   .post('/api/board', data)
+    //   .then(() => {
+    //     toast.success('Board created successfully!')
+    //     reset()
+    //     router.refresh()
+    //   })
+    //   .catch(() => {
+    //     toast.error('Something went wrong :(')
+    //   })
+    //   .finally(() => {
+    //     setLoading(false)
+    //   })
   }
 
   return (

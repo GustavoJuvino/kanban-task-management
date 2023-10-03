@@ -2,20 +2,22 @@ import prisma from '@/app/libs/prismadb'
 
 import getCurrentUser from './getCurrentUser'
 
-export default async function getBoard() {
+export default async function getColumns(currentBoard: string) {
   try {
     const currentUser = await getCurrentUser()
 
     if (!currentUser) return []
 
-    const boards = await prisma.board.findMany({
+    const columns = await prisma.column.findMany({
       where: {
-        userID: currentUser.id,
+        fromBoard: currentBoard,
       },
     })
 
-    return boards
+    return columns
   } catch (error: any) {
     throw new Error(error)
+  } finally {
+    console.log('finished columns')
   }
 }

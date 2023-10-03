@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import Button from '../../Button'
 import { Cross } from '../../../../../public/modal'
 import { Form } from '../../form'
@@ -9,6 +9,7 @@ interface BoardColumnsProps {
 }
 
 const BoardColumns = ({ inputError }: BoardColumnsProps) => {
+  const [arrayID, setArrayID] = useState(1)
   const { fields, append, remove } = useFieldArray({
     name: 'boardColumns',
   })
@@ -16,6 +17,7 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
   useMemo(() => {
     append({
       columnName: '',
+      id: arrayID,
     })
   }, [append])
 
@@ -32,7 +34,6 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
             <Form.Input
               id="task_input"
               name={`boardColumns.${index}.columnName`}
-              defaultValue={''}
               error={inputError}
               type="text"
               placeholder="e.g Todo"
@@ -54,11 +55,13 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
       <Button
         type="button"
         style={'light'}
-        onClick={() =>
+        onClick={() => {
+          setArrayID(arrayID + 1)
           append({
             columnName: '',
+            id: arrayID,
           })
-        }
+        }}
       >
         + Add New Column
       </Button>

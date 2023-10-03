@@ -1,4 +1,5 @@
 import getBoard from '../actions/getBoard'
+import getColumns from '../actions/getColumns'
 import Main from './Main'
 
 // import { signOut } from 'next-auth/react'
@@ -7,6 +8,7 @@ import Main from './Main'
 export default async function Page({ params }: { params: { board: string } }) {
   const { board } = params
   const boards = await getBoard()
+  const columns = await getColumns('WebDesign')
 
   return (
     <Main
@@ -14,6 +16,9 @@ export default async function Page({ params }: { params: { board: string } }) {
         board.boardName ? board.boardName : '',
       )}
       boardURL={board}
+      currentColumns={columns.map((column) =>
+        column.columnName ? column.columnName : '',
+      )}
     />
   )
 }

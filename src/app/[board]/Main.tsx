@@ -18,20 +18,22 @@ import useGetCurrentURL from '../hooks/useGetCurrentURL'
 interface MainProps {
   currentBoards: string[]
   boardURL: string
+  currentColumns: string[]
 }
 
-const Main = ({ currentBoards, boardURL }: MainProps) => {
+const Main = ({ currentBoards, boardURL, currentColumns }: MainProps) => {
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
   const { openEditTask } = useOpenTaskModal()
 
   const { setURL } = useGetCurrentURL()
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
-  const { boards, setBoards } = useGlobalContext()
+  const { boards, setBoards, setColumns } = useGlobalContext()
 
   useEffect(() => {
     setBoards(currentBoards)
     setURL(boardURL)
-  }, [currentBoards, setBoards, setURL, boardURL])
+    setColumns(currentColumns)
+  }, [currentBoards, setBoards, setURL, boardURL, setColumns, currentColumns])
 
   const currentBoardsURL = boards.map((board) => board.replace(/\s/g, ''))
   type Board = (typeof currentBoards)[number]
