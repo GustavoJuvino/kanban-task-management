@@ -16,7 +16,7 @@ const BoardContent = () => {
 
   useEffect(() => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
-  }, [])
+  }, [columns])
 
   return (
     <NoSsr>

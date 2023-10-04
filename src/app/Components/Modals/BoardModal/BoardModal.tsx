@@ -46,8 +46,10 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         reset()
         router.refresh()
       })
-      .catch(() => {
-        toast.error('Something went wrong :(')
+      .catch((error) => {
+        if (error.request.status === 409)
+          toast.error(error.response.data.message)
+        else toast.error('Something went wrong :(')
       })
       .finally(() => {
         setLoading(false)

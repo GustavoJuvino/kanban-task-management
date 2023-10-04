@@ -13,6 +13,20 @@ export async function POST(request: Request) {
   const body: BoardFormInputs = await request.json()
   const { boardName, boardColumns } = body
 
+  const existingBoard = await prisma.board.findUnique({
+    // eslint-disable-next-line object-shorthand
+    where: { boardName: boardName },
+  })
+
+  if (existingBoard) {
+    return NextResponse.json(
+      { message: 'Board already exists' },
+      {
+        status: 409,
+      },
+    )
+  }
+
   const board = [
     await prisma.board.create({
       data: {

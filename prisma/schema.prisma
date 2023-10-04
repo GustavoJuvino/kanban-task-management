@@ -14,16 +14,16 @@ datasource db {
 
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  username String?
-  email String? @unique
-  hashedPassword String?
+  username String
+  email String @unique
+  hashedPassword String
   boards Board[]
 }
 
 model Board {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   userID String @db.ObjectId
-  boardName String
+  boardName String @unique
 
   user User @relation(fields: [userID], references: [id], onDelete: Cascade)
   columns Column[]
