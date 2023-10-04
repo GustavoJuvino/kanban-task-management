@@ -1,15 +1,17 @@
 import React, { useMemo, useState } from 'react'
-import { Close } from '../../../../../public/modal'
 import Button from '../../Button'
 import BoardColumns from './BoardColumns'
+import { Close } from '../../../../../public/modal'
 import ModalBackground from '../../ModalBackground'
+import { useRouter } from 'next/navigation'
 import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
+import { useGetRandomColor } from '@/app/hooks/useGetRandomColor'
+
+import axios from 'axios'
 import { Form } from '../../form'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useRouter } from 'next/navigation'
 
 interface BoardModalProps {
   modalType: ModalTypeProps
@@ -17,13 +19,14 @@ interface BoardModalProps {
 
 const BoardModal = ({ modalType }: BoardModalProps) => {
   const router = useRouter()
+  const { randomColor } = useGetRandomColor()
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
   const [loading, setLoading] = useState(false)
 
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
       boardName: '',
-      boardColumns: [{ columnName: '', id: 0 }],
+      boardColumns: [{ columnName: '', id: 0, color: randomColor }],
     },
   })
 

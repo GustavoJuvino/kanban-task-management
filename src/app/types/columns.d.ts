@@ -3,5 +3,6 @@ interface ColumnsProps {
   boardID: string
   columnName: string
   itemID: string
+  color: string
   fromBoard: string
 }

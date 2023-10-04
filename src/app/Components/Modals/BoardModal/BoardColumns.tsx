@@ -3,6 +3,7 @@ import Button from '../../Button'
 import { Cross } from '../../../../../public/modal'
 import { Form } from '../../form'
 import { useFieldArray } from 'react-hook-form'
+import { useGetRandomColor } from '@/app/hooks/useGetRandomColor'
 
 interface BoardColumnsProps {
   inputError?: string | 0 | undefined
@@ -10,6 +11,7 @@ interface BoardColumnsProps {
 
 const BoardColumns = ({ inputError }: BoardColumnsProps) => {
   const [itemID, setItemID] = useState(1)
+  const { randomColor } = useGetRandomColor()
   const { fields, append, remove } = useFieldArray({
     name: 'boardColumns',
   })
@@ -18,6 +20,7 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
     append({
       columnName: '',
       id: itemID,
+      color: randomColor,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [append])
@@ -61,6 +64,7 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
           append({
             columnName: '',
             id: itemID + 1,
+            color: randomColor,
           })
         }}
       >

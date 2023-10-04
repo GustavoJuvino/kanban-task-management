@@ -68,7 +68,10 @@ const BoardContent = () => {
         {formatedArr?.map((col) => (
           <ul key={col.itemID} className="flex flex-col gap-y-6">
             <div className="flex gap-x-3">
-              <i className="h-[15px] w-[15px] rounded-full bg-[#49C4E5]" />
+              <i
+                style={{ backgroundColor: col.color }}
+                className="h-[15px] w-[15px] rounded-full"
+              />
               <h4 className="text-heading-s uppercase text-medium-gray">
                 {`${col.columnName}`}
               </h4>

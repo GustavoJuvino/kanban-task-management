@@ -17,7 +17,5 @@ export default async function getColumns(currentBoard: string) {
     return columns
   } catch (error: any) {
     throw new Error(error)
-  } finally {
-    console.log('finished columns')
   }
 }

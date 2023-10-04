@@ -41,6 +41,7 @@ export async function POST(request: Request) {
             fromBoard: boardName.replace(/\s/g, ''),
             columnName: column.columnName,
             itemID: String(column.id),
+            color: column.color,
             boardID: currentUser.id,
           },
         })

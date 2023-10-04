@@ -34,6 +34,7 @@ model Column {
   boardID String @db.ObjectId
   columnName String
   itemID String
+  color String
   fromBoard String
   
 
