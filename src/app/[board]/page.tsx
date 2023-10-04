@@ -8,7 +8,7 @@ import Main from './Main'
 export default async function Page({ params }: { params: { board: string } }) {
   const { board } = params
   const boards = await getBoard()
-  const columns = await getColumns('WebDesign')
+  const columns = await getColumns(board)
 
   return (
     <Main
@@ -16,9 +16,7 @@ export default async function Page({ params }: { params: { board: string } }) {
         board.boardName ? board.boardName : '',
       )}
       boardURL={board}
-      currentColumns={columns.map((column) =>
-        column.columnName ? column.columnName : '',
-      )}
+      currentColumns={columns}
     />
   )
 }

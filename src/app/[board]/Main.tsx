@@ -18,7 +18,7 @@ import useGetCurrentURL from '../hooks/useGetCurrentURL'
 interface MainProps {
   currentBoards: string[]
   boardURL: string
-  currentColumns: string[]
+  currentColumns: ColumnsProps[]
 }
 
 const Main = ({ currentBoards, boardURL, currentColumns }: MainProps) => {

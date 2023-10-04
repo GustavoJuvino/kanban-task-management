@@ -9,7 +9,7 @@ interface BoardColumnsProps {
 }
 
 const BoardColumns = ({ inputError }: BoardColumnsProps) => {
-  const [arrayID, setArrayID] = useState(1)
+  const [itemID, setItemID] = useState(1)
   const { fields, append, remove } = useFieldArray({
     name: 'boardColumns',
   })
@@ -17,8 +17,9 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
   useMemo(() => {
     append({
       columnName: '',
-      id: arrayID,
+      id: itemID,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [append])
 
   return (
@@ -56,10 +57,10 @@ const BoardColumns = ({ inputError }: BoardColumnsProps) => {
         type="button"
         style={'light'}
         onClick={() => {
-          setArrayID(arrayID + 1)
+          setItemID(itemID + 1)
           append({
             columnName: '',
-            id: arrayID,
+            id: itemID + 1,
           })
         }}
       >

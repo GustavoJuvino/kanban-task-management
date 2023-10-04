@@ -33,6 +33,7 @@ model Column {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   boardID String @db.ObjectId
   columnName String
+  itemID String
   fromBoard String
   
 

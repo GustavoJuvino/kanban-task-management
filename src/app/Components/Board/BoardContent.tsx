@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../Button'
 import { NoSsr } from '@mui/material'
 import ScrollContainer from 'react-indiana-drag-scroll'
@@ -9,11 +9,14 @@ import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
 import { useGlobalContext } from '@/app/context/store'
 
 const BoardContent = () => {
+  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
   const { columns } = useGlobalContext()
 
-  // console.log(columns)
+  useEffect(() => {
+    setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
+  }, [])
 
   return (
     <NoSsr>
@@ -62,59 +65,25 @@ const BoardContent = () => {
         hideScrollbars={false}
         vertical={false}
       >
-        <ul className="flex flex-col gap-y-6">
-          <div className="flex gap-x-3">
-            <i className="h-[15px] w-[15px] rounded-full bg-[#49C4E5]" />
-            <h4 className="text-heading-s uppercase text-medium-gray">
-              todo (4)
-            </h4>
-          </div>
+        {formatedArr?.map((col) => (
+          <ul key={col.itemID} className="flex flex-col gap-y-6">
+            <div className="flex gap-x-3">
+              <i className="h-[15px] w-[15px] rounded-full bg-[#49C4E5]" />
+              <h4 className="text-heading-s uppercase text-medium-gray">
+                {`${col.columnName}`}
+              </h4>
+            </div>
 
-          <li className="h-[88px] w-[280px] cursor-pointer rounded-lg bg-dark-gray px-4 py-[23px]">
-            <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
-              Build UI for onboarding flow
-            </h3>
-            <span className="text-body-m text-medium-gray">
-              0 of 3 substasks
-            </span>
-          </li>
-        </ul>
-
-        <ul className="flex flex-col gap-y-6">
-          <div className="flex gap-x-3">
-            <i className="h-[15px] w-[15px] rounded-full bg-[#49C4E5]" />
-            <h4 className="text-heading-s uppercase text-medium-gray">
-              todo (4)
-            </h4>
-          </div>
-
-          <li className="h-[88px] w-[280px] cursor-pointer rounded-lg bg-dark-gray px-4 py-[23px]">
-            <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
-              Build UI for onboarding flow
-            </h3>
-            <span className="text-body-m text-medium-gray">
-              0 of 3 substasks
-            </span>
-          </li>
-        </ul>
-
-        <ul className="flex flex-col gap-y-6">
-          <div className="flex gap-x-3">
-            <i className="h-[15px] w-[15px] rounded-full bg-[#49C4E5]" />
-            <h4 className="text-heading-s uppercase text-medium-gray">
-              todo (4)
-            </h4>
-          </div>
-
-          <li className="h-[88px] w-[280px] cursor-pointer rounded-lg bg-dark-gray px-4 py-[23px]">
-            <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
-              Build UI for onboarding flow
-            </h3>
-            <span className="text-body-m text-medium-gray">
-              0 of 3 substasks
-            </span>
-          </li>
-        </ul>
+            <li className="h-[88px] w-[280px] cursor-pointer rounded-lg bg-dark-gray px-4 py-[23px]">
+              <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
+                Build UI for onboarding flow
+              </h3>
+              <span className="text-body-m text-medium-gray">
+                0 of 3 substasks
+              </span>
+            </li>
+          </ul>
+        ))}
 
         <section className="relative mt-10 h-auto w-[280px]">
           <div

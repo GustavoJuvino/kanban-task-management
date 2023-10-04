@@ -38,21 +38,20 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   }, [errors])
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    console.log(data)
-    // setLoading(true)
-    // axios
-    //   .post('/api/board', data)
-    //   .then(() => {
-    //     toast.success('Board created successfully!')
-    //     reset()
-    //     router.refresh()
-    //   })
-    //   .catch(() => {
-    //     toast.error('Something went wrong :(')
-    //   })
-    //   .finally(() => {
-    //     setLoading(false)
-    //   })
+    setLoading(true)
+    axios
+      .post('/api/board', data)
+      .then(() => {
+        toast.success('Board created successfully!')
+        reset()
+        router.refresh()
+      })
+      .catch(() => {
+        toast.error('Something went wrong :(')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   return (
