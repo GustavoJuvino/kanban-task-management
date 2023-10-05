@@ -50,15 +50,20 @@ ul, li{
 
 }
 
-#task_input::-webkit-input-placeholder {
+#form_input::-webkit-input-placeholder {
   color: white;
   opacity: 25%;
   
 }
 
-#task_input::placeholder {
+#form_input::placeholder {
   color: white;
   opacity: 25%;
+}
+
+#edit_board::placeholder {
+  color: white;
+  opacity: 100%;
 }
 
 #subtasks_list {

@@ -13,7 +13,6 @@ import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
 import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
 import { useGlobalContext } from '../context/store'
 import useGetCurrentURL from '../hooks/useGetCurrentURL'
-// import useGetAllBoards from '../hooks/useGetAllBoards'
 
 interface MainProps {
   currentBoards: string[]

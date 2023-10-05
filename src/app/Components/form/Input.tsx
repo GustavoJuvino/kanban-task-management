@@ -28,7 +28,7 @@ type InputStyleProps = ComponentProps<'input'> & VariantProps<typeof input>
 
 interface InputProps extends InputStyleProps {
   name: string
-  error?: string | 0 | undefined
+  error?: string | 0 | undefined | false
 }
 
 export function Input({ name, error, className, ...props }: InputProps) {

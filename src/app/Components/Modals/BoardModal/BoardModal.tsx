@@ -1,11 +1,14 @@
 import React, { useMemo, useState } from 'react'
 import Button from '../../Button'
 import BoardColumns from './BoardColumns'
-import { Close } from '../../../../../public/modal'
 import ModalBackground from '../../ModalBackground'
+import { Close } from '../../../../../public/modal'
+
 import { useRouter } from 'next/navigation'
-import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
+import { useGlobalContext } from '@/app/context/store'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import { useGetRandomColor } from '@/app/hooks/useGetRandomColor'
+import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
 
 import axios from 'axios'
 import { Form } from '../../form'
@@ -20,8 +23,11 @@ interface BoardModalProps {
 const BoardModal = ({ modalType }: BoardModalProps) => {
   const router = useRouter()
   const { randomColor } = useGetRandomColor()
-  const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
   const [loading, setLoading] = useState(false)
+  const { URL } = useGetCurrentURL()
+  const { boards } = useGlobalContext()
+  const [inputValue, setInputValue] = useState('')
+  const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
 
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
@@ -33,6 +39,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   const {
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = createBoardForm
 
@@ -40,23 +47,36 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     if (Object.keys(errors).length > 0) toast.error('Something went wrong :(')
   }, [errors])
 
+  useMemo(() => {
+    if (modalType === 'edit') {
+      boards.map((board) => {
+        const formatBoard = board.replace(/\s/g, '')
+        return (
+          formatBoard === URL &&
+          setValue('boardName', board, { shouldValidate: true })
+        )
+      })
+    }
+  }, [modalType, boards, URL, setValue])
+
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    setLoading(true)
-    axios
-      .post('/api/board', data)
-      .then(() => {
-        toast.success('Board created successfully!')
-        reset()
-        router.refresh()
-      })
-      .catch((error) => {
-        if (error.request.status === 409)
-          toast.error(error.response.data.message)
-        else toast.error('Something went wrong :(')
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    console.log(data)
+    // setLoading(true)
+    // axios
+    //   .post('/api/board', data)
+    //   .then(() => {
+    //     toast.success('Board created successfully!')
+    //     reset()
+    //     router.refresh()
+    //   })
+    //   .catch((error) => {
+    //     if (error.request.status === 409)
+    //       toast.error(error.response.data.message)
+    //     else toast.error('Something went wrong :(')
+    //   })
+    //   .finally(() => {
+    //     setLoading(false)
+    //   })
   }
 
   return (
@@ -102,21 +122,29 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
             className="mt-6 flex flex-col gap-y-6"
           >
             <Form.Field className="flex flex-col gap-y-2">
-              <Form.Label htmlFor="task_input">Board Name</Form.Label>
-              <Form.Input
-                id="task_input"
-                name="boardName"
-                type="text"
-                placeholder="e.g. Web Design"
-                error={errors.boardName?.message}
-              />
+              <Form.Label htmlFor="form_input">Board Name</Form.Label>
+              {modalType === 'edit' ? (
+                <Form.Input
+                  id="form_input"
+                  name="boardName"
+                  type="text"
+                  placeholder="e.g Web Design"
+                  error={errors.boardName?.message}
+                />
+              ) : (
+                <Form.Input
+                  id="form_input"
+                  name="boardName"
+                  type="text"
+                  placeholder="e.g Web Design"
+                  error={errors.boardName?.message}
+                />
+              )}
             </Form.Field>
 
             <BoardColumns
-              inputError={
-                errors.boardColumns?.length &&
-                errors.boardColumns[0]?.columnName?.message
-              }
+              modalType={modalType === 'add' ? 'add' : 'edit'}
+              inputErrors={errors.boardColumns}
             />
             <Button
               type="submit"
