@@ -31,7 +31,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
 
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
-      boardName: '',
+      board: { name: '', currentBoard: '' },
       boardColumns: [{ columnName: '', id: 0, color: randomColor }],
     },
   })
@@ -51,32 +51,54 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     if (modalType === 'edit') {
       boards.map((board) => {
         const formatBoard = board.replace(/\s/g, '')
-        return (
-          formatBoard === URL &&
-          setValue('boardName', board, { shouldValidate: true })
-        )
+        if (formatBoard === URL) {
+          setValue('board.name', board, { shouldValidate: true })
+          setValue('board.currentBoard', board, {
+            shouldValidate: true,
+          })
+        }
+        return board
       })
     }
   }, [modalType, boards, URL, setValue])
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
     console.log(data)
-    // setLoading(true)
-    // axios
-    //   .post('/api/board', data)
-    //   .then(() => {
-    //     toast.success('Board created successfully!')
-    //     reset()
-    //     router.refresh()
-    //   })
-    //   .catch((error) => {
-    //     if (error.request.status === 409)
-    //       toast.error(error.response.data.message)
-    //     else toast.error('Something went wrong :(')
-    //   })
-    //   .finally(() => {
-    //     setLoading(false)
-    //   })
+    setLoading(true)
+
+    if (modalType === 'add') {
+      axios
+        .post('/api/board', data)
+        .then(() => {
+          toast.success('Board created successfully!')
+          reset()
+          router.refresh()
+        })
+        .catch((error) => {
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+          else toast.error('Something went wrong :(')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
+
+    if (modalType === 'edit') {
+      axios
+        .post('/api/board/update', data)
+        .then(() => {
+          toast.success('Board updated successfully!')
+          reset()
+          router.refresh()
+        })
+        .catch(() => {
+          toast.error('Something went wrong :(')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
   }
 
   return (
@@ -123,23 +145,13 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
           >
             <Form.Field className="flex flex-col gap-y-2">
               <Form.Label htmlFor="form_input">Board Name</Form.Label>
-              {modalType === 'edit' ? (
-                <Form.Input
-                  id="form_input"
-                  name="boardName"
-                  type="text"
-                  placeholder="e.g Web Design"
-                  error={errors.boardName?.message}
-                />
-              ) : (
-                <Form.Input
-                  id="form_input"
-                  name="boardName"
-                  type="text"
-                  placeholder="e.g Web Design"
-                  error={errors.boardName?.message}
-                />
-              )}
+              <Form.Input
+                id="form_input"
+                name="board.name"
+                type="text"
+                placeholder="e.g Web Design"
+                error={errors.board?.name?.message}
+              />
             </Form.Field>
 
             <BoardColumns

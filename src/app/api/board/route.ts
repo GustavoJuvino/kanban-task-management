@@ -11,11 +11,11 @@ export async function POST(request: Request) {
   }
 
   const body: BoardFormInputs = await request.json()
-  const { boardName, boardColumns } = body
+  const { board, boardColumns } = body
 
   const existingBoard = await prisma.board.findUnique({
     // eslint-disable-next-line object-shorthand
-    where: { boardName: boardName },
+    where: { boardName: board.name },
   })
 
   if (existingBoard) {
@@ -27,10 +27,11 @@ export async function POST(request: Request) {
     )
   }
 
-  const board = [
+  const createBoard = [
     await prisma.board.create({
       data: {
-        boardName,
+        boardName: board.name,
+        currentBoard: board.name.replace(/\s/g, ''),
         userID: currentUser.id,
       },
     }),
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
       boardColumns.map(async (column) => {
         await prisma.column.create({
           data: {
-            fromBoard: boardName.replace(/\s/g, ''),
+            fromBoard: board.name.replace(/\s/g, ''),
             columnName: column.columnName,
             itemID: String(column.id),
             color: column.color,
@@ -49,5 +50,5 @@ export async function POST(request: Request) {
     ),
   ]
 
-  return NextResponse.json(board)
+  return NextResponse.json(createBoard)
 }
