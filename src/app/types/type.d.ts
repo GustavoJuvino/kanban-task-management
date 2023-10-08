@@ -3,8 +3,10 @@ type ModalTypeProps = 'add' | 'edit'
 interface BoardFormInputs {
   board: { name: string; currentBoard: string }
   boardColumns: {
+    id: string
+    boardID: string
     columnName: string
-    id: number
+    itemID: number
     color: string
   }[]
 }

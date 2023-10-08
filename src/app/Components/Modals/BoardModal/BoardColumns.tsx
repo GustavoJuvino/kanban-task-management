@@ -4,6 +4,7 @@ import { Cross } from '../../../../../public/modal'
 import { Form } from '../../form'
 import { InputErrorProps } from '@/app/types/errors'
 
+import ObjectID from 'bson-objectid'
 import { useGlobalContext } from '@/app/context/store'
 import { useFieldArray } from 'react-hook-form'
 import { useGetRandomColor } from '@/app/hooks/useGetRandomColor'
@@ -19,6 +20,9 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
 
   const { columns } = useGlobalContext()
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
+
+  let objectID = ''
+  const generateObjectID = () => (objectID = ObjectID().toHexString())
 
   const { fields, insert, append, remove } = useFieldArray({
     name: 'boardColumns',
@@ -44,11 +48,14 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
       remove(0)
 
       if (formatedArr.length > 0) {
+        setItemID(Number(formatedArr[formatedArr.length - 1].itemID))
         insert(
           1,
           formatedArr.map((col) => ({
+            id: col.id,
+            boardID: col.boardID,
             columnName: col.columnName,
-            id: col.itemID,
+            itemID: col.itemID,
             color: col.color,
           })),
         )
@@ -103,7 +110,7 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
             setItemID(itemID + 1)
             append({
               columnName: '',
-              id: itemID + 1,
+              itemID: itemID + 1,
               color: randomColor,
             })
           }}
@@ -131,6 +138,7 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
                 }
                 type="text"
                 name={`boardColumns.${index}.columnName` as const}
+                placeholder="e.g New Column"
               />
 
               <Cross
@@ -154,10 +162,12 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
           type="button"
           style={'light'}
           onClick={() => {
+            generateObjectID()
             setItemID(itemID + 1)
             append({
+              id: objectID,
               columnName: '',
-              id: itemID + 1,
+              itemID: itemID + 1,
               color: randomColor,
             })
           }}

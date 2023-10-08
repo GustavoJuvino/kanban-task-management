@@ -14,47 +14,50 @@ export async function POST(request: Request) {
   const { board, boardColumns } = body
 
   const currentBoard = [
-    // await prisma.board.update({
-    //   where: {
-    //     // eslint-disable-next-line object-shorthand
-    //     boardName: board.currentBoard,
-    //   },
-    //   data: {
-    //     boardName: board.name,
-    //     currentBoard: board.name.replace(/\s/g, ''),
-    //   },
-    // }),
-
-    await prisma.column.update({
+    await prisma.board.update({
       where: {
         // eslint-disable-next-line object-shorthand
-        fromBoard: 'Board',
-        id: '6521695a2916a46f690a7838',
-        boardID: '6503513e3ad7c5d4849bbfcd',
-        columnName: 'Todo',
+        boardName: board.currentBoard,
       },
       data: {
-        columnName: 'Todo Updated',
+        boardName: board.name,
+        currentBoard: board.name.replace(/\s/g, ''),
       },
     }),
 
+    await Promise.all(
+      boardColumns.map(async (column) => {
+        await prisma.column.upsert({
+          where: {
+            id: column.id,
+            boardID: currentUser.id,
+          },
+          update: {
+            columnName: column.columnName,
+            fromBoard: board.currentBoard.replace(/\s/g, ''),
+          },
+          create: {
+            fromBoard: board.currentBoard.replace(/\s/g, ''),
+            columnName: column.columnName,
+            itemID: String(column.itemID),
+            color: column.color,
+            boardID: currentUser.id,
+          },
+        })
+      }),
+    ),
+
     // await Promise.all(
     //   boardColumns.map(async (column) => {
-    //     await prisma.column.upsert({
+    //     await prisma.column.update({
     //       where: {
-    //         id: currentUser.id,
-    //         itemID: String(column.id),
-    //         fromBoard: board.currentBoard,
+    //         id: column.id,
+    //         boardID: column.boardID,
+    //         fromBoard: board.currentBoard.replace(/\s/g, ''),
     //       },
-    //       update: {
+    //       data: {
+    //         fromBoard: board.name.replace(/\s/g, ''),
     //         columnName: column.columnName,
-    //       },
-    //       create: {
-    //         fromBoard: board.currentBoard,
-    //         columnName: column.columnName,
-    //         itemID: String(column.id),
-    //         color: column.color,
-    //         boardID: currentUser.id,
     //       },
     //     })
     //   }),

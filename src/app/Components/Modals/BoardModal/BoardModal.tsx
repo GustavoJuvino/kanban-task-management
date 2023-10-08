@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../../Button'
 import BoardColumns from './BoardColumns'
 import ModalBackground from '../../ModalBackground'
@@ -12,8 +12,8 @@ import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
 
 import axios from 'axios'
 import { Form } from '../../form'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
 
 interface BoardModalProps {
@@ -32,7 +32,9 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
       board: { name: '', currentBoard: '' },
-      boardColumns: [{ columnName: '', id: 0, color: randomColor }],
+      boardColumns: [
+        { id: '', boardID: '', columnName: '', itemID: 0, color: randomColor },
+      ],
     },
   })
 
@@ -47,7 +49,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     if (Object.keys(errors).length > 0) toast.error('Something went wrong :(')
   }, [errors])
 
-  useMemo(() => {
+  useEffect(() => {
     if (modalType === 'edit') {
       boards.map((board) => {
         const formatBoard = board.replace(/\s/g, '')
