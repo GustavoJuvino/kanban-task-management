@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Button from '../../Button'
 import { Cross } from '../../../../../public/modal'
 import { Form } from '../../form'
@@ -8,14 +8,22 @@ import ObjectID from 'bson-objectid'
 import { useGlobalContext } from '@/app/context/store'
 import { useFieldArray } from 'react-hook-form'
 import { useGetRandomColor } from '@/app/hooks/useGetRandomColor'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 interface BoardColumnsProps {
-  inputErrors: InputErrorProps
+  isSubmiting: boolean
   modalType: ModalTypeProps
+  inputErrors: InputErrorProps
 }
 
-const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
+const BoardColumns = ({
+  isSubmiting,
+  inputErrors,
+  modalType,
+}: BoardColumnsProps) => {
   const [itemID, setItemID] = useState(1)
+  const [excludeCols, setExcludeCols] = useState<ColumnsProps[]>([])
   const { randomColor } = useGetRandomColor()
 
   const { columns } = useGlobalContext()
@@ -24,7 +32,7 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
   let objectID = ''
   const generateObjectID = () => (objectID = ObjectID().toHexString())
 
-  const { fields, insert, append, remove } = useFieldArray({
+  const { fields, update, insert, append, remove } = useFieldArray({
     name: 'boardColumns',
   })
 
@@ -62,7 +70,20 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [remove, insert, formatedArr])
+  }, [insert, formatedArr])
+
+  useEffect(() => {
+    if (isSubmiting && excludeCols.length > 0) {
+      axios
+        .delete(`/api/board/${'6503513e3ad7c5d4849bbfcd'}`)
+        .then(() => {
+          toast.success('Board created successfully!')
+        })
+        .catch(() => {
+          toast.error('Something went wrong')
+        })
+    }
+  }, [isSubmiting, excludeCols])
 
   if (modalType === 'add') {
     return (
@@ -140,9 +161,13 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
                 name={`boardColumns.${index}.columnName` as const}
                 placeholder="e.g New Column"
               />
-
               <Cross
-                onClick={() => remove(index)}
+                onClick={() => {
+                  remove(index)
+                  const updateArr = [...excludeCols]
+                  updateArr.push(columns[index])
+                  setExcludeCols(updateArr)
+                }}
                 className={`
                   cursor-pointer
                   fill-[#828FA3]
@@ -153,7 +178,7 @@ const BoardColumns = ({ inputErrors, modalType }: BoardColumnsProps) => {
                     inputErrors[index]?.columnName?.message &&
                     'fill-red'
                   }
-                  `}
+                `}
               />
             </Form.Field>
           ))}

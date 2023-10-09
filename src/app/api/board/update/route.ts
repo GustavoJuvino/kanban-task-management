@@ -46,22 +46,6 @@ export async function POST(request: Request) {
         })
       }),
     ),
-
-    // await Promise.all(
-    //   boardColumns.map(async (column) => {
-    //     await prisma.column.update({
-    //       where: {
-    //         id: column.id,
-    //         boardID: column.boardID,
-    //         fromBoard: board.currentBoard.replace(/\s/g, ''),
-    //       },
-    //       data: {
-    //         fromBoard: board.name.replace(/\s/g, ''),
-    //         columnName: column.columnName,
-    //       },
-    //     })
-    //   }),
-    // ),
   ]
 
   return NextResponse.json(currentBoard)

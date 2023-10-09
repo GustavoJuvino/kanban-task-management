@@ -33,7 +33,13 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     defaultValues: {
       board: { name: '', currentBoard: '' },
       boardColumns: [
-        { id: '', boardID: '', columnName: '', itemID: 0, color: randomColor },
+        {
+          id: '',
+          boardID: '',
+          columnName: '',
+          itemID: 0,
+          color: randomColor,
+        },
       ],
     },
   })
@@ -42,7 +48,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = createBoardForm
 
   useMemo(() => {
@@ -66,41 +72,41 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
     console.log(data)
-    setLoading(true)
+    // setLoading(true)
 
-    if (modalType === 'add') {
-      axios
-        .post('/api/board', data)
-        .then(() => {
-          toast.success('Board created successfully!')
-          reset()
-          router.refresh()
-        })
-        .catch((error) => {
-          if (error.request.status === 409)
-            toast.error(error.response.data.message)
-          else toast.error('Something went wrong :(')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
+    // if (modalType === 'add') {
+    //   axios
+    //     .post('/api/board', data)
+    // .then(() => {
+    //   toast.success('Board created successfully!')
+    //   reset()
+    //   router.refresh()
+    // })
+    //     .catch((error) => {
+    //       if (error.request.status === 409)
+    //         toast.error(error.response.data.message)
+    //       else toast.error('Something went wrong :(')
+    //     })
+    //     .finally(() => {
+    //       setLoading(false)
+    //     })
+    // }
 
-    if (modalType === 'edit') {
-      axios
-        .post('/api/board/update', data)
-        .then(() => {
-          toast.success('Board updated successfully!')
-          reset()
-          router.refresh()
-        })
-        .catch(() => {
-          toast.error('Something went wrong :(')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
+    // if (modalType === 'edit') {
+    //   axios
+    //     .post('/api/board/update', data)
+    //     .then(() => {
+    //       toast.success('Board updated successfully!')
+    //       reset()
+    //       router.refresh()
+    //     })
+    //     .catch(() => {
+    //       toast.error('Something went wrong :(')
+    //     })
+    //     .finally(() => {
+    //       setLoading(false)
+    //     })
+    // }
   }
 
   return (
@@ -157,8 +163,9 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
             </Form.Field>
 
             <BoardColumns
-              modalType={modalType === 'add' ? 'add' : 'edit'}
               inputErrors={errors.boardColumns}
+              isSubmiting={isSubmitting}
+              modalType={modalType === 'add' ? 'add' : 'edit'}
             />
             <Button
               type="submit"

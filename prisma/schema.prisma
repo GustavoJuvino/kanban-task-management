@@ -36,8 +36,7 @@ model Column {
   columnName String
   itemID String
   color String
-  fromBoard String
-  
+  fromBoard String  
 
   board Board @relation(fields: [boardID], references: [id], onDelete: Cascade)
 }
