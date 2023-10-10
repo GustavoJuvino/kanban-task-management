@@ -26,7 +26,6 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   const [loading, setLoading] = useState(false)
   const { URL } = useGetCurrentURL()
   const { boards } = useGlobalContext()
-  const [inputValue, setInputValue] = useState('')
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
 
   const createBoardForm = useForm<BoardFormInputs>({
@@ -46,7 +45,6 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
 
   const {
     handleSubmit,
-    reset,
     setValue,
     formState: { errors, isSubmitting },
   } = createBoardForm
@@ -58,10 +56,10 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   useEffect(() => {
     if (modalType === 'edit') {
       boards.map((board) => {
-        const formatBoard = board.replace(/\s/g, '')
+        const formatBoard = board.boardName.replace(/\s/g, '')
         if (formatBoard === URL) {
-          setValue('board.name', board, { shouldValidate: true })
-          setValue('board.currentBoard', board, {
+          setValue('board.name', board.boardName, { shouldValidate: true })
+          setValue('board.currentBoard', board.boardName, {
             shouldValidate: true,
           })
         }
@@ -71,42 +69,39 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   }, [modalType, boards, URL, setValue])
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    console.log(data)
-    // setLoading(true)
-
-    // if (modalType === 'add') {
-    //   axios
-    //     .post('/api/board', data)
-    //     .then(() => {
-    //       toast.success('Board created successfully!')
-    //       reset()
-    //       router.refresh()
-    //     })
-    //     .catch((error) => {
-    //       if (error.request.status === 409)
-    //         toast.error(error.response.data.message)
-    //       else toast.error('Something went wrong :(')
-    //     })
-    //     .finally(() => {
-    //       setLoading(false)
-    //     })
-    // }
-
-    // if (modalType === 'edit') {
-    //   axios
-    //     .post('/api/board/update', data)
-    //     .then(() => {
-    //       toast.success('Board updated successfully!')
-    //       reset()
-    //       router.refresh()
-    //     })
-    //     .catch(() => {
-    //       toast.error('Something went wrong :(')
-    //     })
-    //     .finally(() => {
-    //       setLoading(false)
-    //     })
-    // }
+    setLoading(true)
+    if (modalType === 'add') {
+      axios
+        .post('/api/board', data)
+        .then(() => {
+          toast.success('Board created successfully!')
+          router.push(`${data.board.name.replace(/\s/g, '')}`)
+          onOpenNewBoard(false)
+        })
+        .catch((error) => {
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+          else toast.error('Something went wrong :(')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
+    if (modalType === 'edit') {
+      axios
+        .post('/api/board/update', data)
+        .then(() => {
+          toast.success('Board updated successfully!')
+          router.refresh()
+          onOpenEditBoard(false)
+        })
+        .catch(() => {
+          toast.error('Something went wrong :(')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
   }
 
   return (

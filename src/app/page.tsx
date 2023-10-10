@@ -10,9 +10,10 @@ export default async function Home() {
   if (currentUser)
     return (
       <HomePage
-        currentBoards={boards.map((board) =>
-          board.boardName ? board.boardName : '',
-        )}
+        // currentBoards={boards.map((board) =>
+        //   board.boardName ? board.boardName : '',
+        // )}
+        currentBoards={boards}
       />
     )
   else redirect('/login')

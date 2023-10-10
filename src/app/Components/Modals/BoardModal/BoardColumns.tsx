@@ -1,14 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../../Button'
 import { Cross } from '../../../../../public/modal'
 import { Form } from '../../form'
 import { InputErrorProps } from '@/app/types/errors'
 
-import ObjectID from 'bson-objectid'
-import { useGlobalContext } from '@/app/context/store'
+import { useRouter } from 'next/navigation'
 import { useFieldArray } from 'react-hook-form'
+import { useGlobalContext } from '@/app/context/store'
 import { useGetRandomColor } from '@/app/hooks/useGetRandomColor'
+
 import axios from 'axios'
+import ObjectID from 'bson-objectid'
 import { toast } from 'react-toastify'
 
 interface BoardColumnsProps {
@@ -22,11 +24,12 @@ const BoardColumns = ({
   inputErrors,
   modalType,
 }: BoardColumnsProps) => {
+  const router = useRouter()
   const [itemID, setItemID] = useState(1)
-  const [excludeCols, setExcludeCols] = useState<ColumnsProps[]>([])
   const { randomColor } = useGetRandomColor()
 
   const { columns } = useGlobalContext()
+  const [excludeCols, setExcludeCols] = useState<ColumnsProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
   let objectID = ''
@@ -40,7 +43,7 @@ const BoardColumns = ({
     if (modalType === 'add') {
       append({
         columnName: '',
-        id: itemID,
+        itemID,
         color: randomColor,
       })
     }
@@ -81,17 +84,18 @@ const BoardColumns = ({
   }, [insert, formatedArr])
 
   useEffect(() => {
-    if (isSubmiting && columns.length > 0) {
+    if (isSubmiting && excludeCols.length > 0) {
       axios
         .delete(`/api/columns`, { data: { columns: excludeCols } })
         .then(() => {
           toast.success('Board excluded successfully!')
+          router.refresh()
         })
         .catch(() => {
           toast.error('Something went wrong')
         })
     }
-  }, [isSubmiting, excludeCols, columns])
+  }, [isSubmiting, excludeCols, columns, router])
 
   if (modalType === 'add') {
     return (
@@ -173,7 +177,7 @@ const BoardColumns = ({
                 onClick={() => {
                   remove(index)
                   const updateArr = [...excludeCols]
-                  updateArr.push(columns[index])
+                  columns[index] !== undefined && updateArr.push(columns[index])
                   setExcludeCols(updateArr)
                 }}
                 className={`
@@ -197,7 +201,6 @@ const BoardColumns = ({
           onClick={() => {
             generateObjectID()
             setItemID(itemID + 1)
-
             append({
               id: objectID,
               columnName: '',

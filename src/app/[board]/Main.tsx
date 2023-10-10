@@ -8,14 +8,14 @@ import NewTaskModal from '../Components/Modals/TaskModal/NewTaskModal'
 import BoardModal from '../Components/Modals/BoardModal/BoardModal'
 import DeleteModal from '../Components/Modals/DeleteModal'
 
-import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
-import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
-import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
 import { useGlobalContext } from '../context/store'
 import useGetCurrentURL from '../hooks/useGetCurrentURL'
+import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
+import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
+import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
 
 interface MainProps {
-  currentBoards: string[]
+  currentBoards: BoardProps[]
   boardURL: string
   currentColumns: ColumnsProps[]
 }
@@ -29,12 +29,14 @@ const Main = ({ currentBoards, boardURL, currentColumns }: MainProps) => {
   const { boards, setBoards, setColumns } = useGlobalContext()
 
   useEffect(() => {
-    setBoards(currentBoards)
     setURL(boardURL)
+    setBoards(currentBoards)
     setColumns(currentColumns)
   }, [currentBoards, setBoards, setURL, boardURL, setColumns, currentColumns])
 
-  const currentBoardsURL = boards.map((board) => board.replace(/\s/g, ''))
+  const currentBoardsURL = boards.map((board) =>
+    board.boardName.replace(/\s/g, ''),
+  )
   type Board = (typeof currentBoards)[number]
 
   // // user-defined guard

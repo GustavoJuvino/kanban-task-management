@@ -12,9 +12,10 @@ export default async function Page({ params }: { params: { board: string } }) {
 
   return (
     <Main
-      currentBoards={boards.map((board) =>
-        board.boardName ? board.boardName : '',
-      )}
+      // currentBoards={boards.map((board) =>
+      //   board.boardName ? board.boardName : '',
+      // )}
+      currentBoards={boards}
       boardURL={board}
       currentColumns={columns}
     />

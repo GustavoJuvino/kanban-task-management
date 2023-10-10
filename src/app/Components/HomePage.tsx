@@ -9,7 +9,7 @@ import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 import { useGlobalContext } from '../context/store'
 
 interface HomePageProps {
-  currentBoards: string[]
+  currentBoards: BoardProps[]
 }
 
 const HomePage = ({ currentBoards }: HomePageProps) => {

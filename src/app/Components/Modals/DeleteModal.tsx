@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ModalBackground from '../ModalBackground'
 import Button from '../Button'
+
+import { useRouter } from 'next/navigation'
+import { useGlobalContext } from '@/app/context/store'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
+
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 type DelteTypeProps = 'board' | 'task'
 
@@ -10,7 +18,34 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ deleteType }: DeleteModalProps) => {
+  const router = useRouter()
+  const [currentBoard, setCurrentBoard] = useState<BoardProps>()
+  const { URL } = useGetCurrentURL()
+  const { boards } = useGlobalContext()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
+
+  useEffect(() => {
+    boards.map((board) => {
+      const formatBoard = board.boardName.replace(/\s/g, '')
+      if (formatBoard === URL) setCurrentBoard(board)
+      return board
+    })
+  }, [URL, boards])
+
+  const destroyBoard = useCallback(() => {
+    axios
+      .delete(`/api/board/delete`, { data: { board: currentBoard } })
+      .then(() => {
+        toast.success('Board excluded successfully!')
+        router.refresh()
+        deleteType === 'board'
+          ? onOpenDeleteBoard(false)
+          : onOpenDeleteTask(false)
+      })
+      .catch(() => {
+        toast.error('Something went wrong')
+      })
+  }, [currentBoard, router, deleteType, onOpenDeleteBoard, onOpenDeleteTask])
 
   return (
     <section
@@ -27,6 +62,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         max-sm:p-4 
       "
     >
+      <ToastContainer position="top-center" autoClose={3000} theme="dark" />
       <ModalBackground />
       <section className="absolute z-50 flex h-auto w-auto flex-col gap-y-6 rounded-md bg-dark-gray p-8 sm:h-[229px] sm:w-[480px]">
         <h2 className="text-heading-l text-red">
@@ -42,7 +78,9 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         </p>
 
         <div className="flex items-center justify-between max-sm:flex-col max-sm:gap-y-4">
-          <Button style={'destroyer'}> Delete </Button>
+          <Button onClick={destroyBoard} style={'destroyer'}>
+            Delete
+          </Button>
           <Button
             onClick={() =>
               deleteType === 'board'

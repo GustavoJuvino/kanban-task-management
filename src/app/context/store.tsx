@@ -9,8 +9,8 @@ import {
 } from 'react'
 
 interface ContextProps {
-  boards: string[]
-  setBoards: Dispatch<SetStateAction<string[]>>
+  boards: BoardProps[]
+  setBoards: Dispatch<SetStateAction<BoardProps[]>>
 
   columns: ColumnsProps[]
   setColumns: Dispatch<SetStateAction<ColumnsProps[]>>
@@ -18,7 +18,7 @@ interface ContextProps {
 
 const GlobalContext = createContext<ContextProps>({
   boards: [],
-  setBoards: (): string[] => [],
+  setBoards: (): BoardProps[] => [],
 
   columns: [],
   setColumns: (): ColumnsProps[] => [],
@@ -29,7 +29,7 @@ export const GlobalContextProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [boards, setBoards] = useState<string[]>([])
+  const [boards, setBoards] = useState<BoardProps[]>([])
   const [columns, setColumns] = useState<ColumnsProps[]>([])
 
   return (
