@@ -77,11 +77,11 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     // if (modalType === 'add') {
     //   axios
     //     .post('/api/board', data)
-    // .then(() => {
-    //   toast.success('Board created successfully!')
-    //   reset()
-    //   router.refresh()
-    // })
+    //     .then(() => {
+    //       toast.success('Board created successfully!')
+    //       reset()
+    //       router.refresh()
+    //     })
     //     .catch((error) => {
     //       if (error.request.status === 409)
     //         toast.error(error.response.data.message)

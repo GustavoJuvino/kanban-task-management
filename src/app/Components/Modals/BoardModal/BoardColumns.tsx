@@ -67,23 +67,31 @@ const BoardColumns = ({
             color: col.color,
           })),
         )
+      } else {
+        generateObjectID()
+        update(0, {
+          id: objectID,
+          columnName: '1',
+          itemID,
+          color: randomColor,
+        })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [insert, formatedArr])
 
   useEffect(() => {
-    if (isSubmiting && excludeCols.length > 0) {
+    if (isSubmiting && columns.length > 0) {
       axios
-        .delete(`/api/board/${'6503513e3ad7c5d4849bbfcd'}`)
+        .delete(`/api/columns`, { data: { columns: excludeCols } })
         .then(() => {
-          toast.success('Board created successfully!')
+          toast.success('Board excluded successfully!')
         })
         .catch(() => {
           toast.error('Something went wrong')
         })
     }
-  }, [isSubmiting, excludeCols])
+  }, [isSubmiting, excludeCols, columns])
 
   if (modalType === 'add') {
     return (
@@ -189,6 +197,7 @@ const BoardColumns = ({
           onClick={() => {
             generateObjectID()
             setItemID(itemID + 1)
+
             append({
               id: objectID,
               columnName: '',

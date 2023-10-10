@@ -8,5 +8,6 @@ interface BoardFormInputs {
     columnName: string
     itemID: number
     color: string
+    fromBoard: string
   }[]
 }
