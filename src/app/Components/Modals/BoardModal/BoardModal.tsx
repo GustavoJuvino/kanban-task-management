@@ -12,7 +12,7 @@ import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
 
 import axios from 'axios'
 import { Form } from '../../form'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -22,10 +22,10 @@ interface BoardModalProps {
 
 const BoardModal = ({ modalType }: BoardModalProps) => {
   const router = useRouter()
-  const { randomColor } = useGetRandomColor()
-  const [loading, setLoading] = useState(false)
   const { URL } = useGetCurrentURL()
   const { boards } = useGlobalContext()
+  const { randomColor } = useGetRandomColor()
+  const [loading, setLoading] = useState(false)
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
 
   const createBoardForm = useForm<BoardFormInputs>({
@@ -50,7 +50,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   } = createBoardForm
 
   useMemo(() => {
-    if (Object.keys(errors).length > 0) toast.error('Something went wrong :(')
+    if (Object.keys(errors).length > 0) toast.error('Something went wrong')
   }, [errors])
 
   useEffect(() => {
@@ -74,9 +74,11 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       axios
         .post('/api/board', data)
         .then(() => {
-          toast.success('Board created successfully!')
-          router.push(`${data.board.name.replace(/\s/g, '')}`)
           onOpenNewBoard(false)
+          router.push(`${data.board.name.replace(/\s/g, '')}`)
+          setTimeout(() => {
+            toast.success('Board created successfully!')
+          }, 2000)
         })
         .catch((error) => {
           if (error.request.status === 409)
@@ -91,9 +93,12 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       axios
         .post('/api/board/update', data)
         .then(() => {
-          toast.success('Board updated successfully!')
-          router.refresh()
           onOpenEditBoard(false)
+          router.refresh()
+          router.push(`${data.board.name.replace(/\s/g, '')}`)
+          setTimeout(() => {
+            toast.success('Board updated successfully!')
+          }, 2000)
         })
         .catch(() => {
           toast.error('Something went wrong :(')
@@ -119,7 +124,6 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         max-sm:px-4
       "
     >
-      <ToastContainer position="top-center" autoClose={3000} theme="dark" />
       <ModalBackground />
       <div className="absolute z-50 h-[429px] w-[80%] rounded-md bg-dark-gray p-8 sm:w-[480px]">
         <div className="flex items-center justify-between">

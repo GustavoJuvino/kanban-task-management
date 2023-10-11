@@ -34,7 +34,7 @@ export async function POST(request: Request) {
           },
           update: {
             columnName: column.columnName,
-            fromBoard: board.currentBoard.replace(/\s/g, ''),
+            fromBoard: board.name.replace(/\s/g, ''),
           },
           create: {
             fromBoard: board.currentBoard.replace(/\s/g, ''),

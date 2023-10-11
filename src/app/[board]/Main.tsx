@@ -8,6 +8,9 @@ import NewTaskModal from '../Components/Modals/TaskModal/NewTaskModal'
 import BoardModal from '../Components/Modals/BoardModal/BoardModal'
 import DeleteModal from '../Components/Modals/DeleteModal'
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import { useGlobalContext } from '../context/store'
 import useGetCurrentURL from '../hooks/useGetCurrentURL'
 import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
@@ -25,8 +28,8 @@ const Main = ({ currentBoards, boardURL, currentColumns }: MainProps) => {
   const { openEditTask } = useOpenTaskModal()
 
   const { setURL } = useGetCurrentURL()
-  const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
   const { boards, setBoards, setColumns } = useGlobalContext()
+  const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
 
   useEffect(() => {
     setURL(boardURL)
@@ -39,7 +42,7 @@ const Main = ({ currentBoards, boardURL, currentColumns }: MainProps) => {
   )
   type Board = (typeof currentBoards)[number]
 
-  // // user-defined guard
+  // user-defined guard
   const isBoard = (value: any): value is Board =>
     currentBoardsURL.includes(value)
 
@@ -50,6 +53,7 @@ const Main = ({ currentBoards, boardURL, currentColumns }: MainProps) => {
       </section>
 
       {/* <TaskModal /> */}
+      <ToastContainer position="top-center" autoClose={1400} theme="dark" />
 
       {openEditTask && <NewTaskModal modalType="edit" />}
       {openEditBoard && <BoardModal modalType="edit" />}
