@@ -37,7 +37,7 @@ export async function POST(request: Request) {
             fromBoard: board.name.replace(/\s/g, ''),
           },
           create: {
-            fromBoard: board.currentBoard.replace(/\s/g, ''),
+            fromBoard: board.name.replace(/\s/g, ''),
             columnName: column.columnName,
             itemID: String(column.itemID),
             color: column.color,

@@ -36,11 +36,13 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
     axios
       .delete(`/api/board/delete`, { data: { board: currentBoard } })
       .then(() => {
-        toast.success('Board excluded successfully!')
-        router.refresh()
+        router.push('/')
         deleteType === 'board'
           ? onOpenDeleteBoard(false)
           : onOpenDeleteTask(false)
+        setTimeout(() => {
+          toast.success('Board deleted successfully!')
+        }, 2000)
       })
       .catch(() => {
         toast.error('Something went wrong')

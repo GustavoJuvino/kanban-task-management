@@ -75,6 +75,7 @@ const BoardContent = () => {
               "
             />
             <div
+              onClick={() => onOpenEditBoard(true)}
               className="
                 absolute 
                 top-0 

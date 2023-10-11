@@ -88,9 +88,9 @@ const BoardColumns = ({
       axios
         .delete(`/api/columns`, { data: { columns: excludeCols } })
         .then(() => {
-          router.push('/')
+          router.refresh()
           setTimeout(() => {
-            toast.success('Board deleted successfully!')
+            toast.success('Column deleted successfully!')
           }, 2000)
         })
         .catch(() => {
