@@ -1,89 +1,90 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Arrow } from '../../../../public/modal'
+import { Form } from '../form'
+import useClickOutside from '@/app/hooks/useClickOutside'
+import { useGlobalContext } from '@/app/context/store'
 
-interface StatusMenuProps {
-  title: string
-  name: string
-}
+// interface StatusMenuProps {
+//   title: string
+// }
 
-const statusItem = ['Todo', 'Doing', 'Done']
-
-const StatusMenu = ({ title, name }: StatusMenuProps) => {
-  const [openMenu, setOpenMenu] = useState(false)
+const StatusMenu = () => {
+  const { columns } = useGlobalContext()
   const [value, setValue] = useState('Doing')
+  const [openMenu, setOpenMenu] = useState(false)
+
+  const statusRef = useRef(null)
+  const { clickOutside } = useClickOutside()
+
+  useEffect(() => {
+    if (statusRef) clickOutside(statusRef, setOpenMenu)
+  }, [clickOutside])
 
   return (
-    <fieldset className="block">
-      <label className="flex flex-col text-body-m text-white"> {title}</label>
+    <Form.Field className="block">
+      <Form.Label className="flex flex-col text-body-m text-white">
+        Current Status
+      </Form.Label>
       <div
+        ref={statusRef}
         onClick={() => setOpenMenu(!openMenu)}
-        className="relative flex select-none"
+        className="relative flex select-none flex-col"
       >
-        <input
-          name={name}
+        <Form.Input
+          name="task.status"
           type="text"
           value={value}
           readOnly
           className="
-              mt-2
-              h-10
-              w-full
-              cursor-pointer
-              select-none
-              rounded-[4px]
-              border-[1px]
-              border-[#828FA3]
-              border-opacity-25
-              bg-transparent
-              py-2
-              pl-4
-              text-body-l
-              text-white
-              outline-none
-              duration-300
-            focus:border-main-purple
+            mt-2
+            cursor-pointer
+            select-none
+            duration-300
+          focus:border-main-purple
           "
         />
         <Arrow
-          className="
-              absolute 
-              right-4 
-              top-6 
-              stroke-[#828FA3] 
-              duration-300 
-              hover:stroke-main-purple
-            "
+          className={`
+            absolute 
+            right-4 
+            top-6 
+            stroke-[#828FA3] 
+            duration-300 
+            hover:stroke-main-purple
+            ${openMenu ? 'rotate-180' : 'rotate-0'}
+          `}
         />
+
+        {openMenu && (
+          <ul
+            className="
+              mt-[5px] 
+              flex 
+              h-auto 
+              w-full 
+              flex-col 
+              rounded-lg 
+              bg-very-dark-gray 
+              p-2 
+              text-body-l 
+              text-medium-gray
+              mobile:gap-y-2
+              mobile:p-4
+            "
+          >
+            {columns.map((col) => (
+              <li
+                key={col.id}
+                onClick={() => setValue(col.columnName)}
+                className="w-fit cursor-pointer duration-300 hover:text-white"
+              >
+                {col.columnName}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      {openMenu && (
-        <ul
-          className="
-            mt-[5px] 
-            flex 
-            h-auto 
-            w-full 
-            flex-col 
-            rounded-lg 
-            bg-very-dark-gray 
-            p-2 
-            text-body-l 
-            text-medium-gray
-            mobile:gap-y-2
-            mobile:p-4
-          "
-        >
-          {statusItem.map((item) => (
-            <li
-              key={item}
-              onClick={() => setValue(item)}
-              className="w-fit cursor-pointer duration-300 hover:text-white"
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
-    </fieldset>
+    </Form.Field>
   )
 }
 

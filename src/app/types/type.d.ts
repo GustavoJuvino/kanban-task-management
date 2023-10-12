@@ -11,3 +11,8 @@ interface BoardFormInputs {
     fromBoard: string
   }[]
 }
+
+interface TaskFormInputs {
+  task: { title: string; description: string; status: string }
+  subtasks: { name: string; subtaskID: number }[]
+}

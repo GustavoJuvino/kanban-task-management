@@ -1,19 +1,19 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Cross } from '../../../../../public/modal'
 import Button from '../../Button'
 import axios from 'axios'
-import { useRemoveItems } from '@/app/hooks/useRemoveItems'
+
+import { Form } from '../../form'
+import { useFieldArray } from 'react-hook-form'
 
 const Subtasks = () => {
-  const [subtasks, setSubtasks] = useState([
-    { id: 1, desc: 'e.g. Make coffee' },
-    { id: 2, desc: 'e.g. Drink coffee & smile' },
+  const [itemID, setItemID] = useState(0)
+  const { fields, append, remove } = useFieldArray({
+    name: 'subtasks',
+  })
+  const [placeholders, setPlaceholders] = useState<string[]>([
+    'e.g Make coffee',
   ])
-
-  const [placeholders, setPlaceholders] = useState<string>(
-    'Take a coffee break',
-  )
-  const { removeItem } = useRemoveItems(subtasks)
 
   const getPlaceholders = useCallback(() => {
     axios({
@@ -23,71 +23,48 @@ const Subtasks = () => {
         'X-Api-Key': process.env.NEXT_PUBLIC_API_KEY,
       },
     }).then((response) => {
-      setPlaceholders(response.data.item)
+      const newArr = [...placeholders]
+      newArr.push(response.data.item)
+      setPlaceholders(newArr)
     })
-  }, [])
+  }, [placeholders])
 
-  const createNewSubtask = useCallback(() => {
-    const lastID = subtasks.length > 0 ? subtasks[subtasks.length - 1].id : 0
+  useEffect(() => {
     getPlaceholders()
-
-    subtasks.push({ id: lastID + 1, desc: `e.g ${placeholders}` })
-  }, [getPlaceholders, placeholders, subtasks])
-
-  const removeSubtask = useCallback(
-    (index: number) => {
-      setSubtasks(removeItem(index, subtasks))
-    },
-    [removeItem, subtasks],
-  )
+    setItemID(itemID + 1)
+    append({
+      name: '',
+      subtaskID: itemID + 1,
+    })
+  }, [append])
 
   return (
     <section className="flex flex-col gap-y-3">
-      {subtasks.length > 0 && (
-        <h6 className="text-body-m text-white">Subtasks</h6>
-      )}
+      <h6 className="text-body-m text-white">Subtasks</h6>
 
       <div
-        id="subtasks_list"
         className={`
           flex 
-          max-h-16
+          max-h-12
           scroll-m-1 
           flex-col 
           gap-y-2 
           overflow-auto
-          sm:max-h-[144px]
+          sm:max-h-[90px]
         `}
       >
-        {subtasks.map((task, index) => (
-          <fieldset
-            key={task.id}
+        {fields.map((field, index) => (
+          <Form.Field
+            key={field.id}
             className="flex items-center gap-x-2 pr-4 sm:gap-x-4"
           >
-            <input
-              id="task_input"
-              name="titles"
+            <Form.Input
               type="text"
-              placeholder={task.desc}
-              className="
-                h-10
-                w-full
-                rounded-[4px]
-                border-[1px]
-                border-[#828FA3]
-                border-opacity-25
-                bg-transparent
-                py-2
-                pl-4
-                text-body-l
-                text-white
-                outline-none
-                duration-300
-                focus:border-main-purple
-            "
+              placeholder={placeholders[index]}
+              name={`subtasks.${index}.name` as const}
             />
             <Cross
-              onClick={() => removeSubtask(index)}
+              onClick={() => remove(index)}
               className="
                 cursor-pointer 
                 fill-[#828FA3] 
@@ -95,12 +72,22 @@ const Subtasks = () => {
                 hover:fill-red
               "
             />
-          </fieldset>
+          </Form.Field>
         ))}
       </div>
 
-      <Button type="button" onClick={() => createNewSubtask()} style={'light'}>
-        {' '}
+      <Button
+        onClick={() => {
+          getPlaceholders()
+          setItemID(itemID + 1)
+          append({
+            name: '',
+            subtaskID: itemID + 1,
+          })
+        }}
+        type="button"
+        style={'light'}
+      >
         + Add New Subtask
       </Button>
     </section>
