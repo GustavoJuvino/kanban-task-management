@@ -16,26 +16,43 @@ import useGetCurrentURL from '../hooks/useGetCurrentURL'
 import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
 import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
+import TaskModal from '../Components/Modals/TaskModal/TaskModal'
 
 interface MainProps {
-  currentBoards: BoardProps[]
   boardURL: string
+  currentBoards: BoardProps[]
+  currentTasks: TaskProps[]
   currentColumns: ColumnsProps[]
 }
 
-const Main = ({ currentBoards, boardURL, currentColumns }: MainProps) => {
-  const { openNewBoard, openEditBoard } = useOpenBoardModal()
+const Main = ({
+  boardURL,
+  currentBoards,
+  currentColumns,
+  currentTasks,
+}: MainProps) => {
   const { openEditTask } = useOpenTaskModal()
+  const { openNewBoard, openEditBoard } = useOpenBoardModal()
 
   const { setURL } = useGetCurrentURL()
-  const { boards, setBoards, setColumns } = useGlobalContext()
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
+  const { boards, setBoards, setColumns, setTasks } = useGlobalContext()
 
   useEffect(() => {
     setURL(boardURL)
     setBoards(currentBoards)
     setColumns(currentColumns)
-  }, [currentBoards, setBoards, setURL, boardURL, setColumns, currentColumns])
+    setTasks(currentTasks)
+  }, [
+    boardURL,
+    setURL,
+    currentBoards,
+    setBoards,
+    currentColumns,
+    setColumns,
+    currentTasks,
+    setTasks,
+  ])
 
   const currentBoardsURL = boards.map((board) =>
     board.boardName.replace(/\s/g, ''),

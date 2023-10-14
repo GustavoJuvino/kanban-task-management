@@ -23,9 +23,9 @@ interface BoardModalProps {
 const BoardModal = ({ modalType }: BoardModalProps) => {
   const router = useRouter()
   const { URL } = useGetCurrentURL()
-  const { boards } = useGlobalContext()
   const { randomColor } = useGetRandomColor()
   const [loading, setLoading] = useState(false)
+  const { boards, columns, tasks } = useGlobalContext()
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
 
   const createBoardForm = useForm<BoardFormInputs>({
@@ -34,12 +34,14 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       boardColumns: [
         {
           id: '',
-          boardID: '',
-          columnName: '',
           itemID: 0,
+          boardID: '',
+          oldName: '',
+          columnName: '',
           color: randomColor,
         },
       ],
+      tasks: [{ id: '', status: '', title: '', itemID: '' }],
     },
   })
 
@@ -68,7 +70,20 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     }
   }, [modalType, boards, URL, setValue])
 
+  useEffect(() => {
+    if (modalType === 'edit') {
+      tasks.map((task, index) => {
+        setValue(`tasks.${index}.id`, task.id)
+        setValue(`tasks.${index}.title`, task.title)
+        setValue(`tasks.${index}.status`, task.status)
+        setValue(`tasks.${index}.itemID`, task.itemID)
+        return task
+      })
+    }
+  }, [modalType, setValue, tasks, columns])
+
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
+    console.log(data)
     setLoading(true)
     if (modalType === 'add') {
       axios

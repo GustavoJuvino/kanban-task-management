@@ -38,8 +38,8 @@ export function Input({ name, error, className, ...props }: InputProps) {
   return (
     <div className="relative flex w-full">
       <input
-        {...register(name, { required: "Can't be empty" })}
         {...props}
+        {...register(name, { required: "Can't be empty" })}
         className={`
           ${input({ className })}
           ${

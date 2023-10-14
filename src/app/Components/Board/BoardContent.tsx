@@ -7,12 +7,15 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 import { useGlobalContext } from '@/app/context/store'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
+import Task from './Task'
 
 const BoardContent = () => {
-  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
-  const { columns } = useGlobalContext()
+  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
+  const { tasks, columns } = useGlobalContext()
+
+  // tasks.map((task) => console.log(task.status))
 
   useEffect(() => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
@@ -51,14 +54,10 @@ const BoardContent = () => {
                 </h4>
               </div>
 
-              <li className="h-[88px] w-[280px] cursor-pointer rounded-lg bg-dark-gray px-4 py-[23px]">
-                <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
-                  Build UI for onboarding flow
-                </h3>
-                <span className="text-body-m text-medium-gray">
-                  0 of 3 substasks
-                </span>
-              </li>
+              {/* {tasks.map((task) => task.status === col.columnName && (
+                
+              ))} */}
+              <Task />
             </ul>
           ))}
 

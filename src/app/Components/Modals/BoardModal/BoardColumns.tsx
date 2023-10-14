@@ -64,10 +64,11 @@ const BoardColumns = ({
           1,
           formatedArr.map((col) => ({
             id: col.id,
-            boardID: col.boardID,
-            columnName: col.columnName,
-            itemID: col.itemID,
             color: col.color,
+            itemID: col.itemID,
+            boardID: col.boardID,
+            oldName: col.columnName,
+            columnName: col.columnName,
           })),
         )
       } else {

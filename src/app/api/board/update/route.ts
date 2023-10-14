@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   }
 
   const body: BoardFormInputs = await request.json()
-  const { board, boardColumns } = body
+  const { board, boardColumns, tasks } = body
 
   const currentBoard = [
     await prisma.board.update({
@@ -42,6 +42,21 @@ export async function POST(request: Request) {
             itemID: String(column.itemID),
             color: column.color,
             boardID: currentUser.id,
+          },
+        })
+      }),
+    ),
+
+    await Promise.all(
+      tasks.map(async (task) => {
+        await prisma.task.update({
+          where: {
+            id: task.id,
+            title: task.title,
+            columnID: currentUser.id,
+          },
+          data: {
+            status: boardColumns[Number(task.itemID)].columnName,
           },
         })
       }),

@@ -1,17 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../../Button'
 import Subtasks from './Subtasks'
 import StatusMenu from '../StatusMenu'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
 
+import useSaveStatus from '@/app/hooks/useSaveStatus'
 import { useGlobalContext } from '@/app/context/store'
 import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 
-import { Form } from '../../form'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import axios from 'axios'
+import { Form } from '../../form'
 import { toast } from 'react-toastify'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 interface NewTaskModalProps {
   modalType: ModalTypeProps
@@ -20,22 +21,41 @@ interface NewTaskModalProps {
 const NewTaskModal = ({ modalType }: NewTaskModalProps) => {
   const { columns } = useGlobalContext()
   const [loading, setLoading] = useState(false)
+  const { status, setStatus } = useSaveStatus()
   const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
 
   const createTaskForm = useForm<TaskFormInputs>({
     defaultValues: {
-      task: { title: '', description: '', status: columns[0].columnName },
-      subtasks: [{ subtaskID: 0, name: '' }],
+      columns: [{ itemID: '', columnName: '' }],
+      task: { title: '', description: '', status: '' },
+      subtasks: [{ subtaskID: 0, name: '', complete: false }],
     },
   })
 
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = createTaskForm
 
+  useMemo(() => {
+    setStatus(columns[0].columnName)
+  }, [])
+
+  useEffect(() => {
+    setValue('task.status', status)
+
+    columns.map((col, index) => {
+      setValue(`columns.${index}.itemID`, col.itemID)
+      setValue(`columns.${index}.columnName`, col.columnName)
+
+      return col
+    })
+  }, [status, setValue, columns])
+
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
+    console.log(data)
     setLoading(true)
     axios
       .post('/api/tasks', data)
@@ -55,16 +75,16 @@ const NewTaskModal = ({ modalType }: NewTaskModalProps) => {
   return (
     <section
       className="
-          absolute
-          left-0
-          top-0
-          flex
-          h-full
-          w-full
-          flex-col
-          items-center
-          justify-center
-        "
+        absolute
+        left-0
+        top-0
+        flex
+        h-full
+        w-full
+        flex-col
+        items-center
+        justify-center
+      "
     >
       <ModalBackground />
       <div
@@ -151,7 +171,7 @@ const NewTaskModal = ({ modalType }: NewTaskModalProps) => {
             <Subtasks />
             <StatusMenu />
 
-            <Button className={`${loading ? 'cursor-wait' : 'cursor-default'}`}>
+            <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
               {modalType === 'add' ? 'Create Task' : 'Save Changes'}
             </Button>
           </form>

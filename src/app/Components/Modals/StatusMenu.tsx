@@ -3,14 +3,11 @@ import { Arrow } from '../../../../public/modal'
 import { Form } from '../form'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import { useGlobalContext } from '@/app/context/store'
-
-// interface StatusMenuProps {
-//   title: string
-// }
+import useSaveStatus from '@/app/hooks/useSaveStatus'
 
 const StatusMenu = () => {
   const { columns } = useGlobalContext()
-  const [value, setValue] = useState('Doing')
+  const { status, setStatus } = useSaveStatus()
   const [openMenu, setOpenMenu] = useState(false)
 
   const statusRef = useRef(null)
@@ -31,10 +28,10 @@ const StatusMenu = () => {
         className="relative flex select-none flex-col"
       >
         <Form.Input
-          name="task.status"
-          type="text"
-          value={value}
           readOnly
+          type="text"
+          value={status}
+          name="task.status"
           className="
             mt-2
             cursor-pointer
@@ -75,7 +72,9 @@ const StatusMenu = () => {
             {columns.map((col) => (
               <li
                 key={col.id}
-                onClick={() => setValue(col.columnName)}
+                onClick={() => {
+                  setStatus(col.columnName)
+                }}
                 className="w-fit cursor-pointer duration-300 hover:text-white"
               >
                 {col.columnName}
