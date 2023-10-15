@@ -1,142 +1,182 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { EditMenuIcon } from '../../../../../public/svgs'
-import CheckIcon from '@mui/icons-material/Check'
+import React, { useEffect, useMemo, useState } from 'react'
+import Button from '../../Button'
+import Subtasks from './Subtasks'
 import StatusMenu from '../StatusMenu'
-import EditMenu from '../../Header/EditMenu'
 import ModalBackground from '../../ModalBackground'
-import useClickOutside from '@/app/hooks/useClickOutside'
-import { FormProvider, useForm } from 'react-hook-form'
-import { Form } from '../../form'
+import { Close } from '../../../../../public/modal'
+
+import useSaveStatus from '@/app/hooks/useSaveStatus'
 import { useGlobalContext } from '@/app/context/store'
+import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 
-const TaskModal = () => {
-  const [check, setCheck] = useState(false)
-  const [columnName, setColumnName] = useState([''])
+import axios from 'axios'
+import { Form } from '../../form'
+import { toast } from 'react-toastify'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
-  const editMenuRef = useRef(null)
-  const { clickOutside } = useClickOutside()
-  const { tasks, columns } = useGlobalContext()
-  const [openEditMenu, setOpenEditMenu] = useState(false)
+interface TaskModalProps {
+  modalType: ModalTypeProps
+}
 
-  const createEditTaskForm = useForm<TaskFormInputs>({
+const TaskModal = ({ modalType }: TaskModalProps) => {
+  const { columns } = useGlobalContext()
+  const [loading, setLoading] = useState(false)
+  const { status, setStatus } = useSaveStatus()
+  const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
+
+  const createTaskForm = useForm<TaskFormInputs>({
     defaultValues: {
-      task: { status: 'Doing' },
-      subtasks: [{ name: '', complete: false }],
+      columns: [{ itemID: '', columnName: '' }],
+      task: { title: '', description: '', status: '' },
+      subtasks: [{ subtaskID: 0, name: '', complete: false }],
     },
   })
 
-  // console.log(tasks)
-
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = createEditTaskForm
-
-  useEffect(() => {
-    if (editMenuRef) clickOutside(editMenuRef, setOpenEditMenu)
-  }, [clickOutside])
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = createTaskForm
 
   useMemo(() => {
-    const newArr = columns.map((col) => col.columnName)
-    setColumnName(newArr)
-  }, [columns])
+    setStatus(columns[0].columnName)
+  }, [])
+
+  useEffect(() => {
+    setValue('task.status', status)
+
+    columns.map((col, index) => {
+      setValue(`columns.${index}.itemID`, col.itemID)
+      setValue(`columns.${index}.columnName`, col.columnName)
+
+      return col
+    })
+  }, [status, setValue, columns])
+
+  const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
+    setLoading(true)
+    axios
+      .post('/api/tasks', data)
+      .then(() => {
+        toast.success('Task created successfully!')
+      })
+      .catch((error) => {
+        if (error.request.status === 409)
+          toast.error(error.response.data.message)
+        else toast.error('Something went wrong')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
 
   return (
-    <>
-      {tasks.map(
-        (task) =>
-          columnName.includes(task.status) && (
-            <section
-              key={task.id}
-              className="
+    <section
+      className="
         absolute
-        z-50
-        flex 
-        h-full 
-        w-full 
+        left-0
+        top-0
+        flex
+        h-full
+        w-full
         flex-col
         items-center
         justify-center
       "
-            >
-              <ModalBackground />
-              <section
-                className="
-          z-50
-          flex 
-          h-[523px] 
-          w-[480px] 
-          flex-col 
-          gap-y-6 
+    >
+      <ModalBackground />
+      <div
+        id="task_container"
+        className="
+          absolute 
+          z-50 
+          h-auto
+          w-auto
           rounded-md 
-          bg-dark-gray 
+          bg-dark-gray
           p-8
+          sm:w-[480px]
         "
-              >
-                <div className="flex items-center justify-between">
-                  <h2 className="w-[345px] text-heading-l text-white">
-                    {task.title}
-                  </h2>
-                  <div ref={editMenuRef} className="relative">
-                    <EditMenuIcon
-                      onClick={() => setOpenEditMenu(!openEditMenu)}
-                      className="
-                cursor-pointer 
-                fill-medium-gray 
-                duration-300 
-                hover:fill-main-purple
-              "
-                    />
-                    <EditMenu
-                      className="right-[-6.2rem]"
-                      open={openEditMenu}
-                      menuType="task"
-                    />
-                  </div>
-                </div>
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="text-heading-m text-white sm:text-heading-l">
+            {modalType === 'add' ? 'Add New Task' : 'Edit Task'}
+          </h2>
+          <Close
+            onClick={() =>
+              modalType === 'add' ? onOpenNewTask(false) : onOpenEditTask(false)
+            }
+            className="
+              cursor-pointer 
+              fill-[#828FA3] 
+              duration-300 
+              hover:fill-red
+            "
+          />
+        </div>
 
-                <p className="text-body-l text-medium-gray">
-                  We know what we&apos;re planning to build for version one. Now
-                  we need to finalise the first pricing model we&apos;ll use.
-                  Keep iterating the subtasks until we have a coherent
-                  proposition.
-                </p>
+        <FormProvider {...createTaskForm}>
+          <form
+            id="task_form"
+            className="mt-2 flex flex-col gap-y-6 sm:mt-6"
+            onSubmit={handleSubmit((data) => onSubmit(data))}
+          >
+            <Form.Field className="block">
+              <Form.Label className="text-body-m text-white">
+                Title
+                <Form.Input
+                  type="text"
+                  name="task.title"
+                  id="task_input"
+                  className="mt-2"
+                  placeholder="e.g Take coffee break"
+                />
+              </Form.Label>
+            </Form.Field>
 
-                <FormProvider {...createEditTaskForm}>
-                  <form>
-                    <h6 className="text-body-m text-white">
-                      Subtasks {`(2 of 3)`}
-                    </h6>
-                    <Form.Field className="mt-4 flex flex-col gap-y-2">
-                      <Form.LabelCheck
-                        className={` ${check && 'line-through'}`}
-                      >
-                        <div className="relative">
-                          <Form.InputCheck
-                            type="checkbox"
-                            name="teste"
-                            onClick={() => setCheck(!check)}
-                            className={`${check && `bg-main-purple`}`}
-                          />
-                          {check && (
-                            <CheckIcon
-                              className="absolute left-0 top-0"
-                              sx={{ fontSize: 16, color: 'white' }}
-                            />
-                          )}
-                        </div>
-                        Research competitor pricing and business models
-                      </Form.LabelCheck>
-                    </Form.Field>
-                  </form>
-                  <StatusMenu />
-                </FormProvider>
-              </section>
-            </section>
-          ),
-      )}
-    </>
+            <Form.Field className="flex flex-col">
+              <Form.Label className="text-body-m text-white">
+                Description
+                <textarea
+                  id="task_input"
+                  {...register('task.description', {
+                    required: "Can't be empty",
+                  })}
+                  placeholder="e.g. It’s always good to take a break. This 15 minute
+                    break will recharge the batteries a little."
+                  className="                
+                    mt-2
+                    h-[112px]
+                    w-full
+                    resize-none
+                    rounded-[4px]
+                    border-[1px]
+                    border-[#828FA3]
+                    border-opacity-25
+                    bg-transparent
+                    py-2
+                    pl-4
+                    text-body-l
+                    text-white
+                    outline-none
+                    duration-300
+                    focus:border-main-purple
+                  "
+                />
+              </Form.Label>
+            </Form.Field>
+
+            <Subtasks />
+            <StatusMenu />
+
+            <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
+              {modalType === 'add' ? 'Create Task' : 'Save Changes'}
+            </Button>
+          </form>
+        </FormProvider>
+      </div>
+    </section>
   )
 }
 

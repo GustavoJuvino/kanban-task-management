@@ -83,7 +83,6 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   }, [modalType, setValue, tasks, columns])
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    console.log(data)
     setLoading(true)
     if (modalType === 'add') {
       axios

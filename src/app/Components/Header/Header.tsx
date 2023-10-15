@@ -1,13 +1,13 @@
 import React from 'react'
 import { NoSsr } from '@mui/material'
 import HeaderOptions from './HeaderOptions'
-import NewTaskModal from '../Modals/TaskModal/NewTaskModal'
 import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import { Arrow } from '../../../../public/modal'
 import { LogoLight, LogoMobile } from '../../../../public/svgs'
 import { signOut } from 'next-auth/react'
 import Button from '../Button'
+import TaskModal from '../Modals/TaskModal/TaskModal'
 
 const Header = () => {
   const { hidden, setHidden } = useHideSidebar()
@@ -93,7 +93,7 @@ const Header = () => {
           <HeaderOptions />
         </section>
 
-        {openNewTask && <NewTaskModal modalType="add" />}
+        {openNewTask && <TaskModal modalType="add" />}
       </header>
     </>
   )

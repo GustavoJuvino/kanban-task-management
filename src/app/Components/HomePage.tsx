@@ -7,7 +7,7 @@ import Sidebar from './Sidebar/Sidebar'
 import BoardModal from './Modals/BoardModal/BoardModal'
 import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 import { useGlobalContext } from '../context/store'
-import TaskModal from './Modals/TaskModal/TaskModal'
+import TaskModal from './Task'
 
 interface HomePageProps {
   currentBoards: BoardProps[]

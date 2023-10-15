@@ -5,6 +5,8 @@ const ModalBackground = () => {
     <div
       className="
         absolute
+        left-0
+        top-0
         z-40
         h-full
         w-full

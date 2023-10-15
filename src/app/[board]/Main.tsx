@@ -4,9 +4,9 @@ import React, { useEffect } from 'react'
 import Sidebar from '../Components/Sidebar/Sidebar'
 import Header from '../Components/Header/Header'
 import BoardContent from '../Components/Board/BoardContent'
-import NewTaskModal from '../Components/Modals/TaskModal/NewTaskModal'
-import BoardModal from '../Components/Modals/BoardModal/BoardModal'
 import DeleteModal from '../Components/Modals/DeleteModal'
+import TaskModal from '../Components/Modals/TaskModal/TaskModal'
+import BoardModal from '../Components/Modals/BoardModal/BoardModal'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -16,7 +16,8 @@ import useGetCurrentURL from '../hooks/useGetCurrentURL'
 import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
 import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
-import TaskModal from '../Components/Modals/TaskModal/TaskModal'
+import Task from '../Components/Task'
+import useOpenTask from '../hooks/useOpenTask'
 
 interface MainProps {
   boardURL: string
@@ -31,11 +32,12 @@ const Main = ({
   currentColumns,
   currentTasks,
 }: MainProps) => {
+  const { openTask } = useOpenTask()
   const { openEditTask } = useOpenTaskModal()
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
+  const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
 
   const { setURL } = useGetCurrentURL()
-  const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
   const { boards, setBoards, setColumns, setTasks } = useGlobalContext()
 
   useEffect(() => {
@@ -69,12 +71,12 @@ const Main = ({
         <Sidebar />
       </section>
 
-      {/* <TaskModal /> */}
       <ToastContainer position="top-center" autoClose={1400} theme="dark" />
+      {openEditTask && <TaskModal modalType="edit" />}
 
-      {openEditTask && <NewTaskModal modalType="edit" />}
       {openEditBoard && <BoardModal modalType="edit" />}
       {openNewBoard && <BoardModal modalType="add" />}
+
       {openDeleteBoard && <DeleteModal deleteType="board" />}
       {openDeleteTask && <DeleteModal deleteType="task" />}
 

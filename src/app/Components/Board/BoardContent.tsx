@@ -7,15 +7,13 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 import { useGlobalContext } from '@/app/context/store'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
-import Task from './Task'
+import PreviewTask from './PreviewTask'
 
 const BoardContent = () => {
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
   const { tasks, columns } = useGlobalContext()
-
-  // tasks.map((task) => console.log(task.status))
 
   useEffect(() => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
@@ -54,10 +52,16 @@ const BoardContent = () => {
                 </h4>
               </div>
 
-              {/* {tasks.map((task) => task.status === col.columnName && (
-                
-              ))} */}
-              <Task />
+              {tasks.map(
+                (task) =>
+                  task.status === col.columnName && (
+                    <PreviewTask
+                      key={task.id}
+                      title={task.title}
+                      description={task.description}
+                    />
+                  ),
+              )}
             </ul>
           ))}
 
