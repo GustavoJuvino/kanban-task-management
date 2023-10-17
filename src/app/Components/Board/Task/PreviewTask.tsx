@@ -2,11 +2,22 @@ import React, { useEffect, useRef, useState } from 'react'
 import Task from './Task'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import ModalBackground from '../../ModalBackground'
+import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
+import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 
-const PreviewTask = ({ title, description }: TaskProps) => {
+interface PreviewTaskProps {
+  title: string
+  description: string
+}
+
+const PreviewTask = ({ title, description }: PreviewTaskProps) => {
   const { clickOutside } = useClickOutside()
 
   const taskRef = useRef(null)
+  const { openEditTask } = useOpenTaskModal()
+  const { openDeleteTask } = useOpenDeleteModal()
+  const { setCurrentTask } = useSaveCurrentTask()
   const [openTask, setOpenTask] = useState(false)
 
   useEffect(() => {
@@ -16,7 +27,10 @@ const PreviewTask = ({ title, description }: TaskProps) => {
   return (
     <section>
       <div
-        onClick={() => setOpenTask(true)}
+        onClick={() => {
+          setOpenTask(true)
+          setCurrentTask(title)
+        }}
         className="
           h-auto
           w-[280px] 
@@ -33,7 +47,7 @@ const PreviewTask = ({ title, description }: TaskProps) => {
         <span className="text-body-m text-medium-gray">0 of 3 substasks</span>
       </div>
 
-      {openTask && (
+      {openTask && !openDeleteTask && !openEditTask && (
         <section
           className="
             absolute
@@ -41,11 +55,12 @@ const PreviewTask = ({ title, description }: TaskProps) => {
             top-0
             flex
             h-full
-            w-full 
-            cursor-default
+            w-full
+            cursor-default 
             flex-col
             items-center
             justify-center
+            max-sm:px-4
           "
         >
           <div
@@ -54,16 +69,19 @@ const PreviewTask = ({ title, description }: TaskProps) => {
               z-[500]
               flex 
               h-auto
-              w-[480px] 
+              w-full 
               flex-col
-              gap-y-6 
+              gap-y-6
               rounded-md 
-            bg-dark-gray 
-              p-8
+              bg-dark-gray 
+              p-6
+              sm:w-[480px] 
+              sm:p-8
             "
           >
             <Task title={title} description={description} />
           </div>
+
           <ModalBackground />
         </section>
       )}

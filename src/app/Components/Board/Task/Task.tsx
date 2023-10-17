@@ -1,18 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { EditMenuIcon } from '../../../../../public/svgs'
-import StatusMenu from '../../Modals/StatusMenu'
+import Subtasks from './Subtasks'
+import Button from '../../Button'
 import EditMenu from '../../Header/EditMenu'
+import StatusMenu from '../../Modals/StatusMenu'
 import ModalBackground from '../../ModalBackground'
+import { EditMenuIcon } from '../../../../../public/svgs'
+
 import useClickOutside from '@/app/hooks/useClickOutside'
+import { useGlobalContext } from '@/app/context/store'
+import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
+
 import {
   FormProvider,
   SubmitHandler,
   useFieldArray,
   useForm,
 } from 'react-hook-form'
-import { Form } from '../../form'
-import { useGlobalContext } from '@/app/context/store'
-import Subtasks from './Subtasks'
 
 interface TaskProps {
   title: string
@@ -20,9 +23,11 @@ interface TaskProps {
 }
 
 const Task = ({ title, description }: TaskProps) => {
+  const [loading, setLoading] = useState(false)
   const [columnName, setColumnName] = useState([''])
 
   const editMenuRef = useRef(null)
+  const { openDeleteTask } = useOpenDeleteModal()
 
   const { clickOutside } = useClickOutside()
   const { columns, tasks, subtasks } = useGlobalContext()
@@ -51,68 +56,48 @@ const Task = ({ title, description }: TaskProps) => {
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
     console.log(data)
+    // setLoading(true)
   }
 
-  return (
-    <>
-      <div className="flex items-center justify-between">
-        <h2 className="w-[345px] text-heading-l text-white">{title}</h2>
-        <div ref={editMenuRef} className="relative">
-          <EditMenuIcon
-            onClick={() => setOpenEditMenu(!openEditMenu)}
-            className="
-                cursor-pointer 
-                fill-medium-gray 
-                duration-300 
-                hover:fill-main-purple
-              "
-          />
-          <EditMenu
-            className="right-[-6.2rem]"
-            open={openEditMenu}
-            menuType="task"
-          />
+  if (!openDeleteTask)
+    return (
+      <>
+        <div className="flex items-center justify-between">
+          <h2 className="w-full text-heading-l text-white">{title}</h2>
+          <div ref={editMenuRef} className="relative">
+            <EditMenuIcon
+              onClick={() => setOpenEditMenu(!openEditMenu)}
+              className="
+              cursor-pointer 
+              fill-medium-gray 
+              duration-300 
+              hover:fill-main-purple
+            "
+            />
+            <EditMenu
+              className="right-[-0.5rem] md:right-[-6.2rem]"
+              open={openEditMenu}
+              menuType="task"
+            />
+          </div>
         </div>
-      </div>
 
-      <p className="text-body-l text-medium-gray">{description}</p>
+        <p className="text-body-l text-medium-gray">{description}</p>
 
-      <FormProvider {...createEditTaskForm}>
-        <form onSubmit={handleSubmit((data) => onSubmit(data))}>
-          <h6 className="text-body-m text-white">{`Subtasks ( 0 of 3)`}</h6>
-          <Subtasks currentTask={title} />
-
-          {/* <Form.Field className="mt-4 flex flex-col gap-y-2">
-             {formatedArr !== undefined &&
-              formatedArr.map((sub) => (
-                <Form.LabelCheck
-                  key={sub.id}
-                  className={` ${check && 'line-through'}`}
-                >
-                  <div className="relative">
-                    <Form.InputCheck
-                      type="checkbox"
-                      name="subtasks"
-                      onClick={() => setCheck(!check)}
-                      className={`${check && `bg-main-purple`}`}
-                    />
-                    {check && (
-                      <CheckIcon
-                        className="absolute left-0 top-0"
-                        sx={{ fontSize: 16, color: 'white' }}
-                      />
-                    )}
-                  </div>
-                  {sub.name}
-                </Form.LabelCheck>
-              ))} 
-          </Form.Field> */}
-          <StatusMenu menuType="edit" />
-          <button type="submit"> submit </button>
-        </form>
-      </FormProvider>
-    </>
-  )
+        <FormProvider {...createEditTaskForm}>
+          <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+            <Subtasks currentTask={title} />
+            <StatusMenu menuType="edit" />
+            <Button
+              type="submit"
+              className={`mt-6 ${loading ? 'cursor-wait' : 'cursor-pointer'}`}
+            >
+              Save Task Changes
+            </Button>
+          </form>
+        </FormProvider>
+      </>
+    )
 }
 
 export default Task

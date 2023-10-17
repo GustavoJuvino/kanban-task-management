@@ -55,13 +55,14 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         absolute
         left-0
         top-0
+        z-50
         flex
         h-full
         w-full
         flex-col
         items-center
-        justify-center
-        max-sm:p-4 
+        justify-center 
+        max-sm:p-4
       "
     >
       <ToastContainer position="top-center" autoClose={3000} theme="dark" />

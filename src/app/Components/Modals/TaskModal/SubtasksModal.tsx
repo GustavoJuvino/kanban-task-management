@@ -1,16 +1,26 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Cross } from '../../../../../public/modal'
 import Button from '../../Button'
+
 import axios from 'axios'
-
 import { Form } from '../../form'
-import { useFieldArray } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { useGlobalContext } from '@/app/context/store'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 
-const SubtasksModal = () => {
+interface SubtasksModalProps {
+  modalType: ModalTypeProps
+}
+
+const SubtasksModal = ({ modalType }: SubtasksModalProps) => {
   const [itemID, setItemID] = useState(0)
-  const { fields, append, remove } = useFieldArray({
+  const { subtasks } = useGlobalContext()
+  const { currentTask } = useSaveCurrentTask()
+
+  const { fields, append, remove, insert, update } = useFieldArray({
     name: 'subtasks',
   })
+
   const [placeholders, setPlaceholders] = useState<string[]>([
     'e.g Make coffee',
   ])
@@ -30,14 +40,40 @@ const SubtasksModal = () => {
   }, [placeholders])
 
   useEffect(() => {
-    getPlaceholders()
-    setItemID(itemID + 1)
-    append({
-      name: '',
-      subtaskID: itemID + 1,
-      completed: false,
-    })
-  }, [append])
+    if (modalType === 'add') {
+      getPlaceholders()
+      setItemID(itemID + 1)
+      append({
+        name: '',
+        subtaskID: itemID + 1,
+        completed: false,
+      })
+    }
+  }, [modalType, append])
+
+  // Edit Modal
+  useMemo(() => {
+    if (modalType === 'edit') update(0, { name: subtasks[0].name })
+  }, [modalType, update, subtasks])
+
+  useEffect(() => {
+    if (modalType === 'edit') {
+      const newArr = [...subtasks]
+      newArr.shift()
+      insert(
+        1,
+        newArr.map((sub) => ({
+          name: sub.name,
+          // id: col.id,
+          // color: col.color,
+          // itemID: col.itemID,
+          // boardID: col.boardID,
+          // oldName: col.columnName,
+          // columnName: col.columnName,
+        })),
+      )
+    }
+  }, [modalType, subtasks, insert])
 
   return (
     <section className="flex flex-col gap-y-3">

@@ -22,22 +22,25 @@ const BoardContent = () => {
   if (columns.length > 0) {
     return (
       <NoSsr>
-        <ScrollContainer
+        {/* <ScrollContainer
+          className=""
+          hideScrollbars={false}
+          vertical={false}
+        > */}
+        <section
           className="
             ml-6
             mt-6
             flex
             h-full
             w-full 
-            cursor-move 
             select-none 
             snap-x 
             gap-x-6
+            overflow-auto
             scroll-smooth
             pb-[50px]
           "
-          hideScrollbars={false}
-          vertical={false}
         >
           {formatedArr?.map((col) => (
             <ul key={col.itemID} className="flex flex-col gap-y-6">
@@ -103,7 +106,7 @@ const BoardContent = () => {
               </h1>
             </div>
           </section>
-        </ScrollContainer>
+        </section>
       </NoSsr>
     )
   } else

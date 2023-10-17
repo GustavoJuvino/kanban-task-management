@@ -6,6 +6,7 @@ import { Close } from '../../../../../public/modal'
 
 import useSaveStatus from '@/app/hooks/useSaveStatus'
 import { useGlobalContext } from '@/app/context/store'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 
 import axios from 'axios'
@@ -19,9 +20,10 @@ interface TaskModalProps {
 }
 
 const TaskModal = ({ modalType }: TaskModalProps) => {
-  const { columns } = useGlobalContext()
-  const [loading, setLoading] = useState(false)
+  const { currentTask } = useSaveCurrentTask()
   const { status, setStatus } = useSaveStatus()
+  const [loading, setLoading] = useState(false)
+  const { columns, tasks } = useGlobalContext()
   const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
 
   const createTaskForm = useForm<TaskFormInputs>({
@@ -43,32 +45,68 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
     setStatus(columns[0].columnName)
   }, [])
 
+  // Add New Task
   useEffect(() => {
-    setValue('task.status', status)
+    if (modalType === 'add') {
+      setValue('task.status', status)
 
-    columns.map((col, index) => {
-      setValue(`columns.${index}.itemID`, col.itemID)
-      setValue(`columns.${index}.columnName`, col.columnName)
+      columns.map((col, index) => {
+        setValue(`columns.${index}.itemID`, col.itemID)
+        setValue(`columns.${index}.columnName`, col.columnName)
 
-      return col
-    })
-  }, [status, setValue, columns])
+        return col
+      })
+    }
+  }, [modalType, status, setValue, columns])
 
+  // Edit Task
+  useMemo(() => {
+    if (modalType === 'edit') {
+      tasks.map((task) => {
+        if (task.title === currentTask) {
+          setValue(`task.title`, task.title)
+          setValue(`task.description`, task.description)
+        }
+        return task
+      })
+    }
+  }, [modalType, tasks, currentTask, setValue])
+
+  // Clean this axios methods
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
+    console.log(data)
     setLoading(true)
-    axios
-      .post('/api/tasks', data)
-      .then(() => {
-        toast.success('Task created successfully!')
-      })
-      .catch((error) => {
-        if (error.request.status === 409)
-          toast.error(error.response.data.message)
-        else toast.error('Something went wrong')
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    if (modalType === 'add') {
+      axios
+        .post('/api/tasks', data)
+        .then(() => {
+          toast.success('Task created successfully!')
+        })
+        .catch((error) => {
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+          else toast.error('Something went wrong')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
+
+    if (modalType === 'edit') {
+      axios
+        .post('/api/tasks', data)
+        .then(() => {
+          toast.success('Task created successfully!')
+        })
+        .catch((error) => {
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+          else toast.error('Something went wrong')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
   }
 
   return (
@@ -92,11 +130,13 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
           absolute 
           z-50 
           h-auto
-          w-auto
-          rounded-md 
+          w-auto 
+          rounded-md
           bg-dark-gray
-          p-8
+          p-6
+          mobile:w-[343px]
           sm:w-[480px]
+          sm:p-8
         "
       >
         <div className="flex items-center justify-between">
@@ -167,7 +207,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
               </Form.Label>
             </Form.Field>
 
-            <SubtasksModal />
+            <SubtasksModal modalType={modalType === 'add' ? 'add' : 'edit'} />
             <StatusMenu menuType="add" />
 
             <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
