@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Cross } from '../../../../../public/modal'
 import Button from '../../Button'
 
-import axios from 'axios'
-import { Form } from '../../form'
-import { useFieldArray, useForm } from 'react-hook-form'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+
+import axios from 'axios'
+import { Form } from '../../form'
+import { useFieldArray } from 'react-hook-form'
 
 interface SubtasksModalProps {
   modalType: ModalTypeProps
@@ -51,15 +52,28 @@ const SubtasksModal = ({ modalType }: SubtasksModalProps) => {
     }
   }, [modalType, append])
 
-  // Edit Modal
   useMemo(() => {
-    if (modalType === 'edit') update(0, { name: subtasks[0].name })
-  }, [modalType, update, subtasks])
+    if (modalType === 'edit') {
+      subtasks.map((sub) => {
+        if (sub.subtaskID === '0' && sub.fromTask === currentTask) {
+          update(0, { name: sub.name })
+        }
+        return sub
+      })
+    }
+  }, [modalType, update, subtasks, currentTask])
 
   useEffect(() => {
     if (modalType === 'edit') {
-      const newArr = [...subtasks]
-      newArr.shift()
+      const newArr: SubtaskProps[] = []
+      subtasks.map((sub) => {
+        if (sub.fromTask === currentTask && sub.subtaskID !== '0') {
+          sub.fromTask === currentTask && newArr.push(sub)
+        }
+        return sub
+      })
+      newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID))
+
       insert(
         1,
         newArr.map((sub) => ({
@@ -73,7 +87,7 @@ const SubtasksModal = ({ modalType }: SubtasksModalProps) => {
         })),
       )
     }
-  }, [modalType, subtasks, insert])
+  }, [modalType, subtasks, insert, currentTask])
 
   return (
     <section className="flex flex-col gap-y-3">

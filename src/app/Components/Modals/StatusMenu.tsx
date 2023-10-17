@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Arrow } from '../../../../public/modal'
 import { Form } from '../form'
 import useClickOutside from '@/app/hooks/useClickOutside'
@@ -12,7 +12,7 @@ interface StatusMenuProps {
 const stats = ['Todo', 'Doing', 'Done']
 
 const StatusMenu = ({ menuType }: StatusMenuProps) => {
-  const { columns } = useGlobalContext()
+  const { columns, tasks } = useGlobalContext()
   const { status, setStatus } = useSaveStatus()
   const [openMenu, setOpenMenu] = useState(false)
 
@@ -22,6 +22,10 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
   useEffect(() => {
     if (statusRef) clickOutside(statusRef, setOpenMenu)
   }, [clickOutside])
+
+  useMemo(() => {
+    columns.map((col) => col.columnName)
+  }, [])
 
   return (
     <Form.Field className="block">
