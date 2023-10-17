@@ -21,6 +21,10 @@ interface BoardFormInputs {
 
 interface TaskFormInputs {
   task: { title: string; description: string; status: string }
-  subtasks: { name: string; subtaskID: number; complete: boolean }[]
+  subtasks: {
+    name: string
+    subtaskID: number
+    completed: boolean
+  }[]
   columns: { itemID: string; columnName: string }[]
 }

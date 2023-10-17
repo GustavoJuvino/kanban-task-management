@@ -60,6 +60,7 @@ model Subtask {
   fromTask String
   subtaskID String
   taskID String @db.ObjectId 
+  completed Boolean
 
   task Task @relation(fields: [taskID], references: [id], onDelete: Cascade)
 }

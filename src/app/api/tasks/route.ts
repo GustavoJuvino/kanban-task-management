@@ -30,15 +30,6 @@ export async function POST(request: Request) {
       ),
     ),
 
-    // await prisma.task.create({
-    //   data: {
-    //     title: task.title,
-    //     description: task.description,
-    //     status: task.status,
-    //     columnID: currentUser.id,
-    //   },
-    // }),
-
     await Promise.all(
       subtasks.map(async (subtask) => {
         await prisma.subtask.create({
@@ -46,6 +37,7 @@ export async function POST(request: Request) {
             name: subtask.name,
             fromTask: task.title,
             taskID: currentUser.id,
+            completed: subtask.completed,
             subtaskID: String(subtask.subtaskID),
           },
         })

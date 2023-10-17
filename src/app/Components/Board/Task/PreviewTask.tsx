@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Task from '../Task'
+import Task from './Task'
 import useClickOutside from '@/app/hooks/useClickOutside'
-import ModalBackground from '../ModalBackground'
+import ModalBackground from '../../ModalBackground'
 
 const PreviewTask = ({ title, description }: TaskProps) => {
   const { clickOutside } = useClickOutside()
@@ -18,7 +18,7 @@ const PreviewTask = ({ title, description }: TaskProps) => {
       <div
         onClick={() => setOpenTask(true)}
         className="
-          h-[88px] 
+          h-auto
           w-[280px] 
           cursor-pointer 
           rounded-lg 
@@ -53,7 +53,7 @@ const PreviewTask = ({ title, description }: TaskProps) => {
             className="
               z-[500]
               flex 
-              h-[523px] 
+              h-auto
               w-[480px] 
               flex-col
               gap-y-6 

@@ -7,7 +7,7 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 import { useGlobalContext } from '@/app/context/store'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
-import PreviewTask from './PreviewTask'
+import PreviewTask from './Task/PreviewTask'
 
 const BoardContent = () => {
   const { hidden } = useHideSidebar()

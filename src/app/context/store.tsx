@@ -17,6 +17,9 @@ interface ContextProps {
 
   tasks: TaskProps[]
   setTasks: Dispatch<SetStateAction<TaskProps[]>>
+
+  subtasks: SubtaskProps[]
+  setSubTasks: Dispatch<SetStateAction<SubtaskProps[]>>
 }
 
 const GlobalContext = createContext<ContextProps>({
@@ -28,6 +31,9 @@ const GlobalContext = createContext<ContextProps>({
 
   tasks: [],
   setTasks: (): TaskProps[] => [],
+
+  subtasks: [],
+  setSubTasks: (): SubtaskProps[] => [],
 })
 
 export const GlobalContextProvider = ({
@@ -37,7 +43,9 @@ export const GlobalContextProvider = ({
 }) => {
   const [boards, setBoards] = useState<BoardProps[]>([])
   const [columns, setColumns] = useState<ColumnsProps[]>([])
+
   const [tasks, setTasks] = useState<TaskProps[]>([])
+  const [subtasks, setSubTasks] = useState<SubtaskProps[]>([])
 
   return (
     <GlobalContext.Provider
@@ -48,6 +56,8 @@ export const GlobalContextProvider = ({
         setColumns,
         tasks,
         setTasks,
+        subtasks,
+        setSubTasks,
       }}
     >
       {children}

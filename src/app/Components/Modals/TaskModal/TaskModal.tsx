@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../../Button'
-import Subtasks from './Subtasks'
 import StatusMenu from '../StatusMenu'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
@@ -13,6 +12,7 @@ import axios from 'axios'
 import { Form } from '../../form'
 import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import SubtasksModal from './SubtasksModal'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
@@ -28,7 +28,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
     defaultValues: {
       columns: [{ itemID: '', columnName: '' }],
       task: { title: '', description: '', status: '' },
-      subtasks: [{ subtaskID: 0, name: '', complete: false }],
+      subtasks: [{ subtaskID: 0, name: '', completed: false }],
     },
   })
 
@@ -167,8 +167,8 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
               </Form.Label>
             </Form.Field>
 
-            <Subtasks />
-            <StatusMenu />
+            <SubtasksModal />
+            <StatusMenu menuType="add" />
 
             <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
               {modalType === 'add' ? 'Create Task' : 'Save Changes'}

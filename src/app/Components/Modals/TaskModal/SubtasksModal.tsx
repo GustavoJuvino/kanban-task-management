@@ -6,7 +6,7 @@ import axios from 'axios'
 import { Form } from '../../form'
 import { useFieldArray } from 'react-hook-form'
 
-const Subtasks = () => {
+const SubtasksModal = () => {
   const [itemID, setItemID] = useState(0)
   const { fields, append, remove } = useFieldArray({
     name: 'subtasks',
@@ -35,6 +35,7 @@ const Subtasks = () => {
     append({
       name: '',
       subtaskID: itemID + 1,
+      completed: false,
     })
   }, [append])
 
@@ -83,6 +84,7 @@ const Subtasks = () => {
           append({
             name: '',
             subtaskID: itemID + 1,
+            completed: false,
           })
         }}
         type="button"
@@ -94,4 +96,4 @@ const Subtasks = () => {
   )
 }
 
-export default Subtasks
+export default SubtasksModal
