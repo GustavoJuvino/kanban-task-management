@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../../Button'
-import StatusMenu from '../StatusMenu'
+import StatusMenu from './StatusMenu'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
 
@@ -21,7 +21,7 @@ interface TaskModalProps {
 
 const TaskModal = ({ modalType }: TaskModalProps) => {
   const { currentTask } = useSaveCurrentTask()
-  const { status, setStatus } = useSaveStatus()
+  const { status } = useSaveStatus()
   const [loading, setLoading] = useState(false)
   const { columns, tasks } = useGlobalContext()
   const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
@@ -35,17 +35,11 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   })
 
   const {
-    register,
     setValue,
     handleSubmit,
     formState: { errors },
   } = createTaskForm
 
-  useMemo(() => {
-    setStatus(columns[0].columnName)
-  }, [])
-
-  // Add New Task
   useEffect(() => {
     if (modalType === 'add') {
       setValue('task.status', status)
@@ -59,53 +53,53 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
     }
   }, [modalType, status, setValue, columns])
 
-  // Edit Task
-  useMemo(() => {
+  useEffect(() => {
     if (modalType === 'edit') {
-      tasks.map((task) => {
+      tasks.map((task: TaskProps) => {
         if (task.title === currentTask) {
           setValue(`task.title`, task.title)
+          setValue('task.status', task.status)
           setValue(`task.description`, task.description)
         }
         return task
       })
-    }
-  }, [modalType, tasks, currentTask, setValue])
+    } else setValue('task.status', columns[0].columnName)
+  }, [modalType, tasks, currentTask, setValue, columns])
 
-  // Clean this axios methods
+  const axiosRequest = (data: TaskFormInputs) => {
+    axios
+      .post('/api/tasks', data)
+      .then(() => {
+        toast.success('Task created successfully!')
+      })
+      .catch((error) => {
+        if (error.request.status === 409)
+          toast.error(error.response.data.message)
+        else toast.error('Something went wrong')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
-    console.log(data)
     setLoading(true)
-    if (modalType === 'add') {
-      axios
-        .post('/api/tasks', data)
-        .then(() => {
-          toast.success('Task created successfully!')
-        })
-        .catch((error) => {
-          if (error.request.status === 409)
-            toast.error(error.response.data.message)
-          else toast.error('Something went wrong')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
+    if (modalType === 'add') axiosRequest(data)
 
     if (modalType === 'edit') {
-      axios
-        .post('/api/tasks', data)
-        .then(() => {
-          toast.success('Task created successfully!')
-        })
-        .catch((error) => {
-          if (error.request.status === 409)
-            toast.error(error.response.data.message)
-          else toast.error('Something went wrong')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
+      // axios
+      //   .post('/api/tasks', data)
+      //   .then(() => {
+      //     toast.success('Task created successfully!')
+      //   })
+      //   .catch((error) => {
+      //     if (error.request.status === 409)
+      //       toast.error(error.response.data.message)
+      //     else toast.error('Something went wrong')
+      //   })
+      //   .finally(() => {
+      //     setLoading(false)
+      //   })
     }
   }
 
@@ -121,25 +115,24 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         flex-col
         items-center
         justify-center
+        px-4
       "
     >
       <ModalBackground />
-      <div
+      <section
         id="task_container"
-        className="
-          absolute 
+        className=" 
           z-50 
           h-auto
-          w-auto 
+          w-full
           rounded-md
           bg-dark-gray
           p-6
-          mobile:w-[343px]
           sm:w-[480px]
           sm:p-8
         "
       >
-        <div className="flex items-center justify-between">
+        <div className="flex w-full items-center justify-between">
           <h2 className="text-heading-m text-white sm:text-heading-l">
             {modalType === 'add' ? 'Add New Task' : 'Edit Task'}
           </h2>
@@ -159,55 +152,48 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         <FormProvider {...createTaskForm}>
           <form
             id="task_form"
-            className="mt-2 flex flex-col gap-y-6 sm:mt-6"
+            className="mt-6 flex flex-col gap-y-6"
             onSubmit={handleSubmit((data) => onSubmit(data))}
           >
-            <Form.Field className="block">
-              <Form.Label className="text-body-m text-white">
+            <Form.Field className="flex flex-col gap-y-2">
+              <Form.Label
+                htmlFor="task_input"
+                className="text-body-m text-white"
+              >
                 Title
-                <Form.Input
-                  type="text"
-                  name="task.title"
-                  id="task_input"
-                  className="mt-2"
-                  placeholder="e.g Take coffee break"
-                />
               </Form.Label>
+              <Form.Input
+                type="text"
+                name="task.title"
+                id="task_input"
+                error={errors.task?.title?.message}
+                placeholder="e.g Take coffee break"
+                className={`${errors.task && 'border-opacity-100'}`}
+              />
             </Form.Field>
 
             <Form.Field className="flex flex-col">
-              <Form.Label className="text-body-m text-white">
-                Description
-                <textarea
-                  id="task_input"
-                  {...register('task.description', {
-                    required: "Can't be empty",
-                  })}
-                  placeholder="e.g. It’s always good to take a break. This 15 minute
-                    break will recharge the batteries a little."
-                  className="                
-                    mt-2
-                    h-[112px]
-                    w-full
-                    resize-none
-                    rounded-[4px]
-                    border-[1px]
-                    border-[#828FA3]
-                    border-opacity-25
-                    bg-transparent
-                    py-2
-                    pl-4
-                    text-body-l
-                    text-white
-                    outline-none
-                    duration-300
-                    focus:border-main-purple
-                  "
-                />
-              </Form.Label>
+              <div className="flex items-center gap-x-2">
+                <Form.Label className="text-body-m text-white">
+                  Description
+                </Form.Label>
+                {errors.task?.description?.message && (
+                  <span className="text-[12px] text-red sm:text-body-l">
+                    {errors.task?.description?.message}
+                  </span>
+                )}
+              </div>
+              <Form.TextArea
+                id="task_input"
+                name="task.description"
+                error={errors.task?.description?.message}
+              />
             </Form.Field>
 
-            <SubtasksModal modalType={modalType === 'add' ? 'add' : 'edit'} />
+            <SubtasksModal
+              subtasksErrors={errors.subtasks}
+              modalType={modalType === 'add' ? 'add' : 'edit'}
+            />
             <StatusMenu menuType="add" />
 
             <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
@@ -215,7 +201,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
             </Button>
           </form>
         </FormProvider>
-      </div>
+      </section>
     </section>
   )
 }

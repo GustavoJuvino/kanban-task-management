@@ -1,6 +1,6 @@
 import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form'
 
-type InputErrorProps =
+type ColumnsErrorsProps =
   | Merge<
       FieldError,
       (
@@ -10,6 +10,23 @@ type InputErrorProps =
               columnName: string
               id: number
               color: string
+            }>
+          >
+        | undefined
+      )[]
+    >
+  | undefined
+
+type SubtasksErrorsProps =
+  | Merge<
+      FieldError,
+      (
+        | Merge<
+            FieldError,
+            FieldErrorsImpl<{
+              name: string
+              subtaskID: number
+              completed: boolean
             }>
           >
         | undefined

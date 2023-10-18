@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Subtasks from './Subtasks'
 import Button from '../../Button'
 import EditMenu from '../../Header/EditMenu'
-import StatusMenu from '../../Modals/StatusMenu'
+import StatusMenu from '../../Modals/TaskModal/StatusMenu'
 import ModalBackground from '../../ModalBackground'
 import { EditMenuIcon } from '../../../../../public/svgs'
 

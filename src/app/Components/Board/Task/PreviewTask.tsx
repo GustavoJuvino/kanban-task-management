@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Task from './Task'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import ModalBackground from '../../ModalBackground'
 import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import { useGlobalContext } from '@/app/context/store'
 
 interface PreviewTaskProps {
   title: string
@@ -12,17 +13,27 @@ interface PreviewTaskProps {
 }
 
 const PreviewTask = ({ title, description }: PreviewTaskProps) => {
-  const { clickOutside } = useClickOutside()
-
   const taskRef = useRef(null)
+  const [openTask, setOpenTask] = useState(false)
+  const [subArr, setSubArr] = useState<SubtaskProps[]>([])
+
+  const { subtasks } = useGlobalContext()
+  const { clickOutside } = useClickOutside()
   const { openEditTask } = useOpenTaskModal()
   const { openDeleteTask } = useOpenDeleteModal()
   const { setCurrentTask } = useSaveCurrentTask()
-  const [openTask, setOpenTask] = useState(false)
+
+  // console.log(subtasks)
 
   useEffect(() => {
     if (taskRef) clickOutside(taskRef, setOpenTask)
   }, [clickOutside, setOpenTask])
+
+  useMemo(() => {
+    const newArr = [...subArr]
+    subtasks.map((sub) => sub.fromTask === title && newArr.push(sub))
+    setSubArr(newArr)
+  }, [title])
 
   return (
     <section>
@@ -44,7 +55,11 @@ const PreviewTask = ({ title, description }: PreviewTaskProps) => {
         <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
           {title}
         </h3>
-        <span className="text-body-m text-medium-gray">0 of 3 substasks</span>
+        {subArr.length > 0 && (
+          <span className="text-body-m text-medium-gray">
+            {` 0 of ${subArr.length} subtasks`}
+          </span>
+        )}
       </div>
 
       {openTask && !openDeleteTask && !openEditTask && (

@@ -20,6 +20,7 @@ interface DeleteModalProps {
 const DeleteModal = ({ deleteType }: DeleteModalProps) => {
   const router = useRouter()
   const [currentBoard, setCurrentBoard] = useState<BoardProps>()
+
   const { URL } = useGetCurrentURL()
   const { boards } = useGlobalContext()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
@@ -55,19 +56,33 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         absolute
         left-0
         top-0
-        z-50
         flex
         h-full
         w-full
         flex-col
         items-center
         justify-center 
-        max-sm:p-4
+        px-4
       "
     >
       <ToastContainer position="top-center" autoClose={3000} theme="dark" />
       <ModalBackground />
-      <section className="absolute z-50 flex h-auto w-auto flex-col gap-y-6 rounded-md bg-dark-gray p-8 sm:h-[229px] sm:w-[480px]">
+      <section
+        className="
+          absolute 
+          z-50 
+          flex 
+          h-auto 
+          w-auto 
+          flex-col
+          gap-y-6 
+          rounded-md 
+          bg-dark-gray 
+          p-8 
+          sm:h-[229px] 
+          sm:w-[480px]
+        "
+      >
         <h2 className="text-heading-l text-red">
           {`Delete this ${deleteType === 'board' ? 'board?' : 'task?'}`}
         </h2>

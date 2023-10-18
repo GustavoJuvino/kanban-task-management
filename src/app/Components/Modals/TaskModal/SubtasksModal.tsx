@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Cross } from '../../../../../public/modal'
 import Button from '../../Button'
+import { SubtasksErrorsProps } from '@/app/types/errors'
 
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
@@ -11,9 +12,10 @@ import { useFieldArray } from 'react-hook-form'
 
 interface SubtasksModalProps {
   modalType: ModalTypeProps
+  subtasksErrors: SubtasksErrorsProps
 }
 
-const SubtasksModal = ({ modalType }: SubtasksModalProps) => {
+const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
   const [itemID, setItemID] = useState(0)
   const { subtasks } = useGlobalContext()
   const { currentTask } = useSaveCurrentTask()
@@ -91,7 +93,14 @@ const SubtasksModal = ({ modalType }: SubtasksModalProps) => {
 
   return (
     <section className="flex flex-col gap-y-3">
-      <h6 className="text-body-m text-white">Subtasks</h6>
+      <div className="flex items-center gap-x-2">
+        <h6 className="text-body-m text-white">Subtasks</h6>
+        {subtasksErrors !== undefined && (
+          <span className="text-[12px] text-red sm:text-body-l">
+            Can&apos;t be empty
+          </span>
+        )}
+      </div>
 
       <div
         className={`
@@ -101,7 +110,7 @@ const SubtasksModal = ({ modalType }: SubtasksModalProps) => {
           flex-col 
           gap-y-2 
           overflow-auto
-          sm:max-h-[90px]
+          mobile:max-h-[90px]
         `}
       >
         {fields.map((field, index) => (
@@ -113,15 +122,26 @@ const SubtasksModal = ({ modalType }: SubtasksModalProps) => {
               type="text"
               placeholder={placeholders[index]}
               name={`subtasks.${index}.name` as const}
+              className={`
+                ${
+                  subtasksErrors !== undefined &&
+                  subtasksErrors[index]?.name?.message &&
+                  'border-red border-opacity-100 focus:border-red'
+                }`}
             />
             <Cross
               onClick={() => remove(index)}
-              className="
+              className={`
                 cursor-pointer 
                 fill-[#828FA3] 
                 duration-300
                 hover:fill-red
-              "
+                ${
+                  subtasksErrors !== undefined &&
+                  subtasksErrors[index]?.name?.message &&
+                  'fill-red'
+                }
+              `}
             />
           </Form.Field>
         ))}

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../../Button'
 import { Cross } from '../../../../../public/modal'
 import { Form } from '../../form'
-import { InputErrorProps } from '@/app/types/errors'
+import { ColumnsErrorsProps } from '@/app/types/errors'
 
 import { useRouter } from 'next/navigation'
 import { useFieldArray } from 'react-hook-form'
@@ -16,7 +16,7 @@ import { toast } from 'react-toastify'
 interface BoardColumnsProps {
   isSubmiting: boolean
   modalType: ModalTypeProps
-  inputErrors: InputErrorProps
+  inputErrors: ColumnsErrorsProps
 }
 
 const BoardColumns = ({
@@ -120,6 +120,11 @@ const BoardColumns = ({
                 }
                 type="text"
                 placeholder="e.g Todo"
+                className={`${
+                  inputErrors !== undefined &&
+                  inputErrors[index]?.columnName?.message &&
+                  'border-opacity-100'
+                }`}
               />
 
               <Cross
@@ -175,6 +180,11 @@ const BoardColumns = ({
                 type="text"
                 name={`boardColumns.${index}.columnName` as const}
                 placeholder="e.g New Column"
+                className={`${
+                  inputErrors !== undefined &&
+                  inputErrors[index]?.columnName?.message &&
+                  'border-opacity-100'
+                }`}
               />
               <Cross
                 onClick={() => {

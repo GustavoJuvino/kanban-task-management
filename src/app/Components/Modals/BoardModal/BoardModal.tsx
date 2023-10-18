@@ -82,45 +82,32 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     }
   }, [modalType, setValue, tasks, columns])
 
+  function axiosRequest(url: string, data: BoardFormInputs) {
+    axios
+      .post(url, data)
+      .then(() => {
+        modalType === 'add' ? onOpenNewBoard(false) : onOpenEditBoard(false)
+        router.push(`${data.board.name.replace(/\s/g, '')}`)
+        setTimeout(() => {
+          modalType === 'add'
+            ? toast.success('Board created successfully!')
+            : toast.success('Board updated successfully!')
+        }, 2000)
+      })
+      .catch((error) => {
+        if (error.request.status === 409)
+          toast.error(error.response.data.message)
+        else toast.error('Something went wrong')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
     setLoading(true)
-    if (modalType === 'add') {
-      axios
-        .post('/api/board', data)
-        .then(() => {
-          onOpenNewBoard(false)
-          router.push(`${data.board.name.replace(/\s/g, '')}`)
-          setTimeout(() => {
-            toast.success('Board created successfully!')
-          }, 2000)
-        })
-        .catch((error) => {
-          if (error.request.status === 409)
-            toast.error(error.response.data.message)
-          else toast.error('Something went wrong :(')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-    if (modalType === 'edit') {
-      axios
-        .post('/api/board/update', data)
-        .then(() => {
-          onOpenEditBoard(false)
-          router.refresh()
-          router.push(`${data.board.name.replace(/\s/g, '')}`)
-          setTimeout(() => {
-            toast.success('Board updated successfully!')
-          }, 2000)
-        })
-        .catch(() => {
-          toast.error('Something went wrong :(')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
+    if (modalType === 'add') axiosRequest('/api/board', data)
+    if (modalType === 'edit') axiosRequest('/api/board/update', data)
   }
 
   return (
@@ -172,6 +159,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
                 type="text"
                 placeholder="e.g Web Design"
                 error={errors.board?.name?.message}
+                className={`${errors.board && 'border-opacity-100'}`}
               />
             </Form.Field>
 

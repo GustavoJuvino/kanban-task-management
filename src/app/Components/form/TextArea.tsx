@@ -3,21 +3,20 @@ import { VariantProps, tv } from 'tailwind-variants'
 import { useFormContext } from 'react-hook-form'
 import { useWindowSize } from '@uidotdev/usehooks'
 
-const input = tv({
+const textArea = tv({
   base: `
-        h-10
+        mt-2
+        h-[112px]
         w-full
+        resize-none
         rounded-[4px]
         border-[1px]
         border-[#828FA3]
-        border-opacity-25
         bg-transparent
         py-2
         pl-4
-        small-mobile:text-[13px]
-        text-[10px]
+        text-[13px]
         font-medium
-        leading-[23px]
         text-white
         outline-none
         duration-300
@@ -25,32 +24,34 @@ const input = tv({
     `,
 })
 
-type InputStyleProps = ComponentProps<'input'> & VariantProps<typeof input>
+type TextAreaStyleProps = ComponentProps<'textarea'> &
+  VariantProps<typeof textArea>
 
-interface InputProps extends InputStyleProps {
+interface TextAreaProps extends TextAreaStyleProps {
   name: string
   error?: string | 0 | undefined | false
 }
 
-export function Input({ name, error, className, ...props }: InputProps) {
+export function TextArea({ name, error, className, ...props }: TextAreaProps) {
   const size = useWindowSize()
   const { register } = useFormContext()
 
   return (
-    <div className="relative flex w-full">
-      <input
+    <div className="relative flex w-full text-body-l">
+      <textarea
         {...register(name, { required: "Can't be empty" })}
         {...props}
+        placeholder="e.g. It’s always good to take a break. This 15 minute
+        break will recharge the batteries a little."
         className={`
-          ${input({ className })}
-          ${error && 'border-red focus:border-red'}
+          ${textArea({ className })}
+          ${
+            error
+              ? 'border-red border-opacity-100 focus:border-red'
+              : 'border-opacity-25'
+          }
         `}
       />
-      {error && (
-        <div className="absolute right-4 flex h-full items-center text-[12px] text-red sm:text-body-l">
-          {size.width && size.width >= 365 && <span>{error}</span>}
-        </div>
-      )}
     </div>
   )
 }
