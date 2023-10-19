@@ -47,20 +47,20 @@ export async function POST(request: Request) {
       }),
     ),
 
-    await Promise.all(
-      tasks.map(async (task) => {
-        await prisma.task.update({
-          where: {
-            id: task.id,
-            title: task.title,
-            columnID: currentUser.id,
-          },
-          data: {
-            status: boardColumns[Number(task.itemID)].columnName,
-          },
-        })
-      }),
-    ),
+    // await Promise.all(
+    //   tasks.map(async (task) => {
+    //     await prisma.task.update({
+    //       where: {
+    //         id: task.id,
+    //         title: task.title,
+    //         columnID: currentUser.id,
+    //       },
+    //       data: {
+    //         status: boardColumns[Number(task.itemID)].columnName,
+    //       },
+    //     })
+    //   }),
+    // ),
   ]
 
   return NextResponse.json(currentBoard)

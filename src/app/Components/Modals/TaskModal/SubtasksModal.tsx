@@ -84,7 +84,6 @@ const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
           // color: col.color,
           // itemID: col.itemID,
           // boardID: col.boardID,
-          // oldName: col.columnName,
           // columnName: col.columnName,
         })),
       )

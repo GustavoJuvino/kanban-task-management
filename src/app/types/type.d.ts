@@ -5,7 +5,6 @@ interface BoardFormInputs {
   boardColumns: {
     id: string
     boardID: string
-    oldName: string
     itemID: number
     color: string
     fromBoard: string

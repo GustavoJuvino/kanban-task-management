@@ -19,6 +19,7 @@ export async function DELETE(request: Request) {
         where: {
           id: col.id,
           boardID: currentUser.id,
+          columnName: col.columnName,
           fromBoard: col.fromBoard,
         },
       })

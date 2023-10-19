@@ -5,6 +5,7 @@ import Button from '../Button'
 import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 
 import axios from 'axios'
@@ -19,36 +20,53 @@ interface DeleteModalProps {
 
 const DeleteModal = ({ deleteType }: DeleteModalProps) => {
   const router = useRouter()
-  const [currentBoard, setCurrentBoard] = useState<BoardProps>()
+  const { currentTask } = useSaveCurrentTask()
+  const [deleteTask, setDeleteTask] = useState<TaskProps>()
+  const [deleteBoard, setDeleteBoard] = useState<BoardProps>()
 
   const { URL } = useGetCurrentURL()
-  const { boards } = useGlobalContext()
+  const { boards, tasks } = useGlobalContext()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
 
   useEffect(() => {
     boards.map((board) => {
       const formatBoard = board.boardName.replace(/\s/g, '')
-      if (formatBoard === URL) setCurrentBoard(board)
+      if (formatBoard === URL) setDeleteBoard(board)
       return board
     })
   }, [URL, boards])
 
-  const destroyBoard = useCallback(() => {
+  useEffect(() => {
+    tasks.map((task) => task.title === currentTask && setDeleteTask(task))
+  }, [currentTask, tasks])
+
+  function axiosRequest(url: string) {
     axios
-      .delete(`/api/board/delete`, { data: { board: currentBoard } })
+      .delete(url, {
+        data:
+          deleteType === 'board'
+            ? { board: deleteBoard }
+            : { task: deleteTask },
+      })
       .then(() => {
-        router.push('/')
-        deleteType === 'board'
-          ? onOpenDeleteBoard(false)
-          : onOpenDeleteTask(false)
-        setTimeout(() => {
-          toast.success('Board deleted successfully!')
-        }, 2000)
+        if (deleteType === 'board') {
+          router.push('/')
+          onOpenDeleteBoard(false)
+          setTimeout(() => {
+            toast.success('Board deleted successfully!')
+          }, 2000)
+        } else {
+          router.refresh()
+          onOpenDeleteTask(false)
+          setTimeout(() => {
+            toast.success('Task deleted successfully!')
+          }, 2000)
+        }
       })
       .catch(() => {
         toast.error('Something went wrong')
       })
-  }, [currentBoard, router, deleteType, onOpenDeleteBoard, onOpenDeleteTask])
+  }
 
   return (
     <section
@@ -96,7 +114,13 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         </p>
 
         <div className="flex items-center justify-between max-sm:flex-col max-sm:gap-y-4">
-          <Button onClick={destroyBoard} style={'destroyer'}>
+          <Button
+            onClick={() => {
+              if (deleteType === 'board') axiosRequest(`/api/board/delete`)
+              if (deleteType === 'task') axiosRequest(`/api/tasks/delete`)
+            }}
+            style={'destroyer'}
+          >
             Delete
           </Button>
           <Button

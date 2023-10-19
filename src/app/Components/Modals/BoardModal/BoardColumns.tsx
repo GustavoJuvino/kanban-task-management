@@ -14,13 +14,13 @@ import ObjectID from 'bson-objectid'
 import { toast } from 'react-toastify'
 
 interface BoardColumnsProps {
-  isSubmiting: boolean
+  isSubmitting: boolean
   modalType: ModalTypeProps
   inputErrors: ColumnsErrorsProps
 }
 
 const BoardColumns = ({
-  isSubmiting,
+  isSubmitting,
   inputErrors,
   modalType,
 }: BoardColumnsProps) => {
@@ -29,7 +29,7 @@ const BoardColumns = ({
   const { randomColor } = useGetRandomColor()
 
   const { columns } = useGlobalContext()
-  const [excludeCols, setExcludeCols] = useState<ColumnsProps[]>([])
+  const [excludeCols, setExcludeCols] = useState<Record<'key', string>[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
   let objectID = ''
@@ -37,6 +37,7 @@ const BoardColumns = ({
 
   const { fields, update, insert, append, remove } = useFieldArray({
     name: 'boardColumns',
+    keyName: 'key',
   })
 
   useMemo(() => {
@@ -67,7 +68,6 @@ const BoardColumns = ({
             color: col.color,
             itemID: col.itemID,
             boardID: col.boardID,
-            oldName: col.columnName,
             columnName: col.columnName,
           })),
         )
@@ -85,20 +85,20 @@ const BoardColumns = ({
   }, [insert, formatedArr])
 
   useEffect(() => {
-    if (isSubmiting && excludeCols.length > 0) {
+    if (isSubmitting && excludeCols.length > 0) {
       axios
         .delete(`/api/columns`, { data: { columns: excludeCols } })
         .then(() => {
           router.refresh()
           setTimeout(() => {
             toast.success('Column deleted successfully!')
-          }, 2000)
+          }, 1400)
         })
         .catch(() => {
           toast.error('Something went wrong')
         })
     }
-  }, [isSubmiting, excludeCols, columns, router])
+  }, [isSubmitting, excludeCols, columns, router])
 
   if (modalType === 'add') {
     return (
@@ -108,7 +108,7 @@ const BoardColumns = ({
         <div className="flex max-h-[92px] scroll-m-1 flex-col gap-y-2 overflow-auto">
           {fields.map((field, index) => (
             <Form.Field
-              key={field.id}
+              key={field.key}
               className="flex items-center gap-x-2 pr-4 sm:gap-x-4"
             >
               <Form.Input
@@ -164,11 +164,10 @@ const BoardColumns = ({
     return (
       <section className="flex flex-col gap-y-3">
         <h6 className="text-body-m text-white">Board Columns</h6>
-
         <div className="flex max-h-[92px] scroll-m-1 flex-col gap-y-2 overflow-auto">
           {fields.map((field, index) => (
             <Form.Field
-              key={field.id}
+              key={field.key}
               className="flex items-center gap-x-2 pr-4 sm:gap-x-4"
             >
               <Form.Input
@@ -189,9 +188,9 @@ const BoardColumns = ({
               <Cross
                 onClick={() => {
                   remove(index)
-                  const updateArr = [...excludeCols]
-                  columns[index] !== undefined && updateArr.push(columns[index])
-                  setExcludeCols(updateArr)
+                  const newArr = [...excludeCols]
+                  newArr.push(field)
+                  setExcludeCols(newArr)
                 }}
                 className={`
                   cursor-pointer

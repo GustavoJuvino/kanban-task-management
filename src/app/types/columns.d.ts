@@ -5,5 +5,4 @@ interface ColumnsProps {
   itemID: string
   color: string
   fromBoard: string
-  oldName?: string
 }

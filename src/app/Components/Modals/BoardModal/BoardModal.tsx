@@ -25,8 +25,8 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   const { URL } = useGetCurrentURL()
   const { randomColor } = useGetRandomColor()
   const [loading, setLoading] = useState(false)
-  const { boards, columns, tasks } = useGlobalContext()
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
+  const { boards, columns, tasks, deleteCols } = useGlobalContext()
 
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
@@ -36,7 +36,6 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
           id: '',
           itemID: 0,
           boardID: '',
-          oldName: '',
           columnName: '',
           color: randomColor,
         },
@@ -104,10 +103,53 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       })
   }
 
+  // const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
+  //   setLoading(true)
+  //   if (modalType === 'add') axiosRequest('/api/board', data)
+  //   if (modalType === 'edit') axiosRequest('/api/board/update', data)
+  // }
+
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
+    console.log(data)
     setLoading(true)
-    if (modalType === 'add') axiosRequest('/api/board', data)
-    if (modalType === 'edit') axiosRequest('/api/board/update', data)
+    if (modalType === 'add') {
+      axios
+        .post('/api/board', data)
+        .then(() => {
+          onOpenNewBoard(false)
+          router.push(`${data.board.name.replace(/\s/g, '')}`)
+          setTimeout(() => {
+            toast.success('Board created successfully!')
+          }, 2000)
+        })
+        .catch((error) => {
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+          else toast.error('Something went wrong')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
+
+    if (modalType === 'edit') {
+      axios
+        .post('/api/board/update', data)
+        .then(() => {
+          onOpenEditBoard(false)
+          router.refresh()
+          router.push(`${data.board.name.replace(/\s/g, '')}`)
+          setTimeout(() => {
+            toast.success('Board updated successfully!')
+          }, 2000)
+        })
+        .catch(() => {
+          toast.error('Something went wrong')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
   }
 
   return (
@@ -165,7 +207,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
 
             <BoardColumns
               inputErrors={errors.boardColumns}
-              isSubmiting={isSubmitting}
+              isSubmitting={isSubmitting}
               modalType={modalType === 'add' ? 'add' : 'edit'}
             />
             <Button
