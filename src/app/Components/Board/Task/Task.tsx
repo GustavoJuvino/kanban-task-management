@@ -35,7 +35,7 @@ const Task = ({ title, description }: TaskProps) => {
 
   const createEditTaskForm = useForm<TaskFormInputs>({
     defaultValues: {
-      task: { status: 'Todo' },
+      task: { fromColumn: 'Todo' },
       subtasks: [{ name: '', completed: false }],
     },
   })
@@ -86,7 +86,7 @@ const Task = ({ title, description }: TaskProps) => {
 
         <FormProvider {...createEditTaskForm}>
           <form onSubmit={handleSubmit((data) => onSubmit(data))}>
-            <Subtasks currentTask={title} />
+            <Subtasks currentTaskTitle={title} />
             <StatusMenu menuType="edit" />
             <Button
               type="submit"

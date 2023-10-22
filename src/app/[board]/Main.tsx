@@ -74,7 +74,7 @@ const Main = ({
         <Sidebar />
       </section>
 
-      <ToastContainer position="top-center" autoClose={1000} theme="dark" />
+      <ToastContainer position="top-center" autoClose={2000} theme="dark" />
       {openEditTask && <TaskModal modalType="edit" />}
 
       {openEditBoard && <BoardModal modalType="edit" />}

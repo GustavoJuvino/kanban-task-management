@@ -4,5 +4,5 @@ interface TaskProps {
   columnID?: string
   title: string
   description: string
-  status: string
+  fromColumn: string
 }

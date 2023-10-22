@@ -26,7 +26,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   const { randomColor } = useGetRandomColor()
   const [loading, setLoading] = useState(false)
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
-  const { boards, columns, tasks, deleteCols } = useGlobalContext()
+  const { boards, columns, tasks } = useGlobalContext()
 
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
@@ -40,7 +40,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
           color: randomColor,
         },
       ],
-      tasks: [{ id: '', status: '', title: '', itemID: '' }],
+      tasks: [{ id: '', fromColumn: '', title: '', itemID: '' }],
     },
   })
 
@@ -74,7 +74,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       tasks.map((task, index) => {
         setValue(`tasks.${index}.id`, task.id)
         setValue(`tasks.${index}.title`, task.title)
-        setValue(`tasks.${index}.status`, task.status)
+        setValue(`tasks.${index}.fromColumn`, task.fromColumn)
         setValue(`tasks.${index}.itemID`, task.itemID)
         return task
       })

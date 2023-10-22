@@ -7,6 +7,7 @@ import Sidebar from './Sidebar/Sidebar'
 import BoardModal from './Modals/BoardModal/BoardModal'
 import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
 import { useGlobalContext } from '../context/store'
+import { ToastContainer } from 'react-toastify'
 
 interface HomePageProps {
   currentBoards: BoardProps[]
@@ -25,6 +26,8 @@ const HomePage = ({ currentBoards }: HomePageProps) => {
       <section className="flex h-auto w-auto max-sm:justify-center">
         <Sidebar />
       </section>
+
+      <ToastContainer position="top-center" autoClose={1500} theme="dark" />
 
       {openNewBoard && <BoardModal modalType="add" />}
 

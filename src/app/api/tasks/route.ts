@@ -13,23 +13,35 @@ export async function POST(request: Request) {
   const body: TaskFormInputs = await request.json()
   const { task, subtasks, columns } = body
 
+  const existingTask = await prisma.task.findFirst({
+    where: { title: task.title, fromColumn: task.fromColumn },
+  })
+
+  if (existingTask) {
+    return NextResponse.json(
+      { message: 'Task already exists in this column' },
+      {
+        status: 409,
+      },
+    )
+  }
+
   const createTask = [
     await Promise.all(
       columns.map(
         async (col) =>
-          task.status === col.columnName &&
+          task.fromColumn === col.columnName &&
           (await prisma.task.create({
             data: {
               title: task.title,
               itemID: col.itemID,
-              status: task.status,
+              fromColumn: task.fromColumn,
               columnID: currentUser.id,
               description: task.description,
             },
           })),
       ),
     ),
-
     await Promise.all(
       subtasks.map(async (subtask) => {
         await prisma.subtask.create({
@@ -37,6 +49,7 @@ export async function POST(request: Request) {
             name: subtask.name,
             fromTask: task.title,
             taskID: currentUser.id,
+            fromColumn: task.fromColumn,
             completed: subtask.completed,
             subtaskID: String(subtask.subtaskID),
           },

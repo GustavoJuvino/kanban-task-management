@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../../Button'
 import StatusMenu from './StatusMenu'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
 
-import useSaveStatus from '@/app/hooks/useSaveStatus'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 
 import axios from 'axios'
@@ -14,22 +14,25 @@ import { Form } from '../../form'
 import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import SubtasksModal from './SubtasksModal'
+import { useRouter } from 'next/navigation'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
 }
 
 const TaskModal = ({ modalType }: TaskModalProps) => {
-  const { currentTask } = useSaveCurrentTask()
-  const { status } = useSaveStatus()
   const [loading, setLoading] = useState(false)
   const { columns, tasks } = useGlobalContext()
+
+  const router = useRouter()
+  const { currentTask } = useSaveCurrentTask()
+  const { currentColumn } = useSaveCurrentColumn()
   const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
 
   const createTaskForm = useForm<TaskFormInputs>({
     defaultValues: {
       columns: [{ itemID: '', columnName: '' }],
-      task: { title: '', description: '', status: '' },
+      task: { title: '', description: '', fromColumn: '' },
       subtasks: [{ subtaskID: 0, name: '', completed: false }],
     },
   })
@@ -42,7 +45,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
 
   useEffect(() => {
     if (modalType === 'add') {
-      setValue('task.status', status)
+      setValue('task.fromColumn', currentColumn)
 
       columns.map((col, index) => {
         setValue(`columns.${index}.itemID`, col.itemID)
@@ -51,25 +54,26 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         return col
       })
     }
-  }, [modalType, status, setValue, columns])
+  }, [modalType, currentColumn, setValue, columns])
 
   useEffect(() => {
     if (modalType === 'edit') {
       tasks.map((task: TaskProps) => {
         if (task.title === currentTask) {
           setValue(`task.title`, task.title)
-          setValue('task.status', task.status)
+          setValue('task.fromColumn', task.fromColumn)
           setValue(`task.description`, task.description)
         }
         return task
       })
-    } else setValue('task.status', columns[0].columnName)
+    } else setValue('task.fromColumn', columns[0].columnName)
   }, [modalType, tasks, currentTask, setValue, columns])
 
   const axiosRequest = (data: TaskFormInputs) => {
     axios
       .post('/api/tasks', data)
       .then(() => {
+        router.refresh()
         toast.success('Task created successfully!')
       })
       .catch((error) => {

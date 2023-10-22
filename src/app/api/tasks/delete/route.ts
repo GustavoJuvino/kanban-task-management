@@ -13,12 +13,6 @@ export async function DELETE(request: Request) {
   const body = await request.json()
   const { task } = body
 
-  //   title: task.title,
-  //   itemID: col.itemID,
-  //   status: task.status,
-  //   columnID: currentUser.id,
-  //   description: task.description,
-
   const deleteTask = [
     await prisma.task.delete({
       where: {
@@ -31,25 +25,10 @@ export async function DELETE(request: Request) {
     await prisma.subtask.deleteMany({
       where: {
         fromTask: task.title,
+        fromColumn: task.fromColumn,
       },
     }),
   ]
-
-  //   const deleteBoard = [
-  //     await prisma.board.delete({
-  //       where: {
-  //         boardName: board.boardName,
-  //         userID: currentUser.id,
-  //       },
-  //     }),
-
-  //     await prisma.column.deleteMany({
-  //       where: {
-  //         fromBoard: board.boardName.replace(/\s/g, ''),
-  //         boardID: currentUser.id,
-  //       },
-  //     }),
-  //   ]
 
   return NextResponse.json(deleteTask)
 }

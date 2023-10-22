@@ -11,20 +11,63 @@ export async function DELETE(request: Request) {
   }
 
   const body = await request.json()
-  const { columns } = body
+  const { columns, tasks, subtasks } = body
 
-  const deleteColumns = await Promise.all(
-    columns.map(async (col: ColumnsProps) => {
-      await prisma.column.delete({
-        where: {
-          id: col.id,
-          boardID: currentUser.id,
-          columnName: col.columnName,
-          fromBoard: col.fromBoard,
-        },
-      })
-    }),
-  )
+  // await Promise.all(
+  //   columns.map(
+  //     async (col) =>
+  //       task.fromColumn === col.columnName &&
+  //       (await prisma.task.create({
+  //         data: {
+  //           title: task.title,
+  //           itemID: col.itemID,
+  //           fromColumn: task.fromColumn,
+  //           columnID: currentUser.id,
+  //           description: task.description,
+  //         },
+  //       })),
+  //   ),
+  // ),
+
+  const deleteColumns = [
+    await Promise.all(
+      columns.map(async (col: ColumnsProps) => {
+        if (col.columnName !== '') {
+          await prisma.column.delete({
+            where: {
+              id: col.id,
+              boardID: currentUser.id,
+              columnName: col.columnName,
+              fromBoard: col.fromBoard,
+            },
+          })
+        }
+        tasks.map(async (task: TaskProps) => {
+          await prisma.task.delete({
+            where: {
+              id: task.id,
+              title: task.title,
+              itemID: col.itemID,
+              fromColumn: col.columnName,
+              columnID: currentUser.id,
+            },
+          })
+          await Promise.all(
+            subtasks.map(async (subtask: SubtaskProps) => {
+              await prisma.subtask.delete({
+                where: {
+                  id: subtask.id,
+                  name: subtask.name,
+                  fromTask: task.title,
+                  subtaskID: String(subtask.subtaskID),
+                },
+              })
+            }),
+          )
+        })
+      }),
+    ),
+  ]
 
   return NextResponse.json(deleteColumns)
 }

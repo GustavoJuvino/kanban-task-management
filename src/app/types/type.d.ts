@@ -1,7 +1,7 @@
 type ModalTypeProps = 'add' | 'edit'
 
 interface BoardFormInputs {
-  board: { name: string; currentBoard: string }
+  board: { id: string; name: string; currentBoard: string }
   boardColumns: {
     id: string
     boardID: string
@@ -13,17 +13,18 @@ interface BoardFormInputs {
   tasks: {
     id: string
     title: string
-    status: string
     itemID: string
+    fromColumn: string
   }[]
 }
 
 interface TaskFormInputs {
-  task: { title: string; description: string; status: string }
+  task: { id: string; title: string; description: string; fromColumn: string }
   subtasks: {
     name: string
     subtaskID: number
     completed: boolean
+    fromColumn: string
   }[]
   columns: { itemID: string; columnName: string }[]
 }

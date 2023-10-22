@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Arrow } from '../../../../../public/modal'
 import { Form } from '../../form'
-import useClickOutside from '@/app/hooks/useClickOutside'
-import { useGlobalContext } from '@/app/context/store'
-import useSaveStatus from '@/app/hooks/useSaveStatus'
-import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+
 import { useForm } from 'react-hook-form'
+import { useGlobalContext } from '@/app/context/store'
+import useClickOutside from '@/app/hooks/useClickOutside'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 interface StatusMenuProps {
   menuType: ModalTypeProps
@@ -17,8 +18,8 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
   const { setValue } = useForm()
   const { currentTask } = useSaveCurrentTask()
   const { columns, tasks } = useGlobalContext()
-  const { status, setStatus } = useSaveStatus()
   const [openMenu, setOpenMenu] = useState(false)
+  const { currentColumn, setCurrentColumn } = useSaveCurrentColumn()
 
   const statusRef = useRef(null)
   const { clickOutside } = useClickOutside()
@@ -40,8 +41,8 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
         <Form.Input
           readOnly
           type="text"
-          value={status}
-          name="task.status"
+          value={currentColumn}
+          name="task.fromColumn"
           className="
             mt-2
             cursor-pointer
@@ -83,7 +84,7 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
               ? columns.map((col) => (
                   <li
                     key={col.id}
-                    onClick={() => setStatus(col.columnName)}
+                    onClick={() => setCurrentColumn(col.columnName)}
                     className="w-fit cursor-pointer duration-300 hover:text-white"
                   >
                     {col.columnName}
@@ -92,7 +93,7 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
               : stats.map((stat) => (
                   <li
                     key={stat}
-                    onClick={() => setStatus(stat)}
+                    onClick={() => setCurrentColumn(stat)}
                     className="w-fit cursor-pointer duration-300 hover:text-white"
                   >
                     {stat}

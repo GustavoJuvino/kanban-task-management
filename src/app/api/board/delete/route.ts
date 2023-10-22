@@ -11,22 +11,40 @@ export async function DELETE(request: Request) {
   }
 
   const body = await request.json()
-  const { board } = body
+  const { board, columns } = body
 
   const deleteBoard = [
     await prisma.board.delete({
       where: {
-        boardName: board.boardName,
+        id: board.id,
+        boardName: board.name,
         userID: currentUser.id,
       },
     }),
 
-    await prisma.column.deleteMany({
-      where: {
-        fromBoard: board.boardName.replace(/\s/g, ''),
-        boardID: currentUser.id,
-      },
-    }),
+    await Promise.all(
+      columns.map(async (col: ColumnsProps) => {
+        await prisma.column.deleteMany({
+          where: {
+            fromBoard: col.fromBoard,
+            boardID: col.boardID,
+          },
+        })
+        await prisma.task.deleteMany({
+          where: {
+            fromColumn: col.columnName,
+            columnID: currentUser.id,
+          },
+        })
+
+        await prisma.subtask.deleteMany({
+          where: {
+            fromColumn: col.columnName,
+            taskID: currentUser.id,
+          },
+        })
+      }),
+    ),
   ]
 
   return NextResponse.json(deleteBoard)

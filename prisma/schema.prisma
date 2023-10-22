@@ -45,10 +45,10 @@ model Column {
 model Task {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   columnID String @db.ObjectId
-  title String
-  status String
-  description String
   itemID String
+  title String 
+  fromColumn String
+  description String
 
   column Column @relation(fields: [columnID], references: [id], onDelete: Cascade)
   subtasks Subtask[]
@@ -56,10 +56,11 @@ model Task {
 
 model Subtask {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  taskID String @db.ObjectId 
+  subtaskID String
   name String
   fromTask String
-  subtaskID String
-  taskID String @db.ObjectId 
+  fromColumn String
   completed Boolean
 
   task Task @relation(fields: [taskID], references: [id], onDelete: Cascade)

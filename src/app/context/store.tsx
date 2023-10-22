@@ -15,9 +15,6 @@ interface ContextProps {
   columns: ColumnsProps[]
   setColumns: Dispatch<SetStateAction<ColumnsProps[]>>
 
-  deleteCols: ColumnsProps[]
-  setDeleteCols: Dispatch<SetStateAction<ColumnsProps[]>>
-
   tasks: TaskProps[]
   setTasks: Dispatch<SetStateAction<TaskProps[]>>
 
@@ -31,9 +28,6 @@ const GlobalContext = createContext<ContextProps>({
 
   columns: [],
   setColumns: (): ColumnsProps[] => [],
-
-  deleteCols: [],
-  setDeleteCols: (): ColumnsProps[] => [],
 
   tasks: [],
   setTasks: (): TaskProps[] => [],
@@ -49,7 +43,6 @@ export const GlobalContextProvider = ({
 }) => {
   const [boards, setBoards] = useState<BoardProps[]>([])
   const [columns, setColumns] = useState<ColumnsProps[]>([])
-  const [deleteCols, setDeleteCols] = useState<ColumnsProps[]>([])
 
   const [tasks, setTasks] = useState<TaskProps[]>([])
   const [subtasks, setSubTasks] = useState<SubtaskProps[]>([])
@@ -61,8 +54,6 @@ export const GlobalContextProvider = ({
         setBoards,
         columns,
         setColumns,
-        deleteCols,
-        setDeleteCols,
         tasks,
         setTasks,
         subtasks,

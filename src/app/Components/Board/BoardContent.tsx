@@ -44,7 +44,7 @@ const BoardContent = () => {
         >
           {formatedArr?.map((col) => (
             <ul key={col.itemID} className="flex flex-col gap-y-6">
-              <div className="flex gap-x-3">
+              <div className="flex w-28 gap-x-3">
                 <i
                   style={{ backgroundColor: col.color }}
                   className="h-[15px] w-[15px] rounded-full"
@@ -57,11 +57,12 @@ const BoardContent = () => {
 
               {tasks.map(
                 (task) =>
-                  task.status === col.columnName && (
+                  task.fromColumn === col.columnName && (
                     <PreviewTask
                       key={task.id}
                       title={task.title}
                       description={task.description}
+                      currentColumnName={col.columnName}
                     />
                   ),
               )}

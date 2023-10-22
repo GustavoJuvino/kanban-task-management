@@ -3,18 +3,20 @@ import { Form } from '../../form'
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useGlobalContext } from '@/app/context/store'
 import CheckIcon from '@mui/icons-material/Check'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 interface SubtasksProps {
-  currentTask: string
+  currentTaskTitle: string
 }
 
-const Subtasks = ({ currentTask }: SubtasksProps) => {
+const Subtasks = ({ currentTaskTitle }: SubtasksProps) => {
   const [subsChecked, setSubsChecked] = useState<boolean[]>()
   const [formatedArr, setFormatedArr] = useState<SubtaskProps[]>()
-  const { subtasks } = useGlobalContext()
+
+  const { tasks, subtasks } = useGlobalContext()
+  const { currentColumn } = useSaveCurrentColumn()
 
   const { setValue } = useForm<TaskFormInputs>()
-
   const { fields, update, insert } = useFieldArray({
     name: 'subtasks',
   })
@@ -22,14 +24,19 @@ const Subtasks = ({ currentTask }: SubtasksProps) => {
   useEffect(() => {
     const newArr: SubtaskProps[] = []
     if (subtasks.length > 0) {
-      subtasks.map((sub) => sub.fromTask === currentTask && newArr.push(sub))
+      subtasks.map(
+        (sub) =>
+          sub.fromTask === currentTaskTitle &&
+          sub.fromColumn === currentColumn &&
+          newArr.push(sub),
+      )
       if (newArr.length > 0) {
         setFormatedArr(
           newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)),
         )
       }
     }
-  }, [subtasks, currentTask])
+  }, [subtasks, tasks, currentTaskTitle, currentColumn])
 
   useEffect(() => {
     if (formatedArr !== undefined) {

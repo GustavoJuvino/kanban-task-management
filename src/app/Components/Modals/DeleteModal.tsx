@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 
 import axios from 'axios'
@@ -20,52 +21,77 @@ interface DeleteModalProps {
 
 const DeleteModal = ({ deleteType }: DeleteModalProps) => {
   const router = useRouter()
-  const { currentTask } = useSaveCurrentTask()
   const [deleteTask, setDeleteTask] = useState<TaskProps>()
   const [deleteBoard, setDeleteBoard] = useState<BoardProps>()
+  const [deleteCols, setDeleteCols] = useState<ColumnsProps[]>([])
+
+  const { currentTask } = useSaveCurrentTask()
+  const { currentColumn } = useSaveCurrentColumn()
 
   const { URL } = useGetCurrentURL()
-  const { boards, tasks } = useGlobalContext()
+  const { boards, columns, tasks } = useGlobalContext()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
 
+  // Boards
   useEffect(() => {
     boards.map((board) => {
       const formatBoard = board.boardName.replace(/\s/g, '')
-      if (formatBoard === URL) setDeleteBoard(board)
+      if (formatBoard === URL) {
+        setDeleteBoard(board)
+        const newArr = [...deleteCols]
+        columns.map((col) => col.fromBoard === formatBoard && newArr.push(col))
+        setDeleteCols(newArr)
+      }
       return board
     })
-  }, [URL, boards])
+  }, [URL, boards, columns, currentColumn])
 
+  // Tasks
   useEffect(() => {
-    tasks.map((task) => task.title === currentTask && setDeleteTask(task))
-  }, [currentTask, tasks])
+    if (deleteType === 'task') {
+      tasks.map((task) => {
+        if (task.title === currentTask && task.fromColumn === currentColumn) {
+          setDeleteTask(task)
+        }
+        return task
+      })
+    }
+  }, [currentTask, tasks, currentColumn, deleteType])
 
   function axiosRequest(url: string) {
-    axios
-      .delete(url, {
-        data:
-          deleteType === 'board'
-            ? { board: deleteBoard }
-            : { task: deleteTask },
-      })
-      .then(() => {
-        if (deleteType === 'board') {
+    if (deleteType === 'board') {
+      axios
+        .delete(url, {
+          data: { board: deleteBoard, columns: deleteCols },
+        })
+        .then(() => {
           router.push('/')
           onOpenDeleteBoard(false)
           setTimeout(() => {
             toast.success('Board deleted successfully!')
-          }, 2000)
-        } else {
+          }, 1500)
+        })
+        .catch(() => {
+          toast.error('Something went wrong')
+        })
+    }
+
+    if (deleteType === 'task') {
+      axios
+        .delete(url, {
+          data: { task: deleteTask },
+        })
+        .then(() => {
           router.refresh()
           onOpenDeleteTask(false)
           setTimeout(() => {
             toast.success('Task deleted successfully!')
-          }, 2000)
-        }
-      })
-      .catch(() => {
-        toast.error('Something went wrong')
-      })
+          }, 1500)
+        })
+        .catch(() => {
+          toast.error('Something went wrong')
+        })
+    }
   }
 
   return (
@@ -107,9 +133,9 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
 
         <p className="text-body-l text-medium-gray">
           {deleteType === 'board'
-            ? `Are you sure you want to delete the ‘Platform Launch’ board? This
+            ? `Are you sure you want to delete the ‘${deleteBoard?.boardName}’ board? This
             action will remove all columns and tasks and cannot be reversed.`
-            : `Are you sure you want to delete the ‘Build settings UI’ task
+            : `Are you sure you want to delete the ‘${currentTask}’ task
               and its subtasks? This action cannot be reversed.`}
         </p>
 

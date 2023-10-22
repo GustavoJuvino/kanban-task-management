@@ -28,7 +28,7 @@ const BoardColumns = ({
   const [itemID, setItemID] = useState(1)
   const { randomColor } = useGetRandomColor()
 
-  const { columns } = useGlobalContext()
+  const { columns, tasks, subtasks } = useGlobalContext()
   const [excludeCols, setExcludeCols] = useState<Record<'key', string>[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
@@ -48,7 +48,6 @@ const BoardColumns = ({
         color: randomColor,
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [append])
 
   useEffect(() => {
@@ -75,7 +74,7 @@ const BoardColumns = ({
         generateObjectID()
         update(0, {
           id: objectID,
-          columnName: '1',
+          columnName: 'e.g Todo',
           itemID,
           color: randomColor,
         })
@@ -87,7 +86,9 @@ const BoardColumns = ({
   useEffect(() => {
     if (isSubmitting && excludeCols.length > 0) {
       axios
-        .delete(`/api/columns`, { data: { columns: excludeCols } })
+        .delete(`/api/columns`, {
+          data: { columns: excludeCols, tasks, subtasks },
+        })
         .then(() => {
           router.refresh()
           setTimeout(() => {
@@ -98,7 +99,7 @@ const BoardColumns = ({
           toast.error('Something went wrong')
         })
     }
-  }, [isSubmitting, excludeCols, columns, router])
+  }, [isSubmitting, router, excludeCols, columns, tasks, subtasks])
 
   if (modalType === 'add') {
     return (

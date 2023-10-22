@@ -6,13 +6,19 @@ import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
 import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import { useGlobalContext } from '@/app/context/store'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 interface PreviewTaskProps {
   title: string
   description: string
+  currentColumnName: string
 }
 
-const PreviewTask = ({ title, description }: PreviewTaskProps) => {
+const PreviewTask = ({
+  title,
+  description,
+  currentColumnName,
+}: PreviewTaskProps) => {
   const taskRef = useRef(null)
   const [openTask, setOpenTask] = useState(false)
   const [subArr, setSubArr] = useState<SubtaskProps[]>([])
@@ -22,8 +28,7 @@ const PreviewTask = ({ title, description }: PreviewTaskProps) => {
   const { openEditTask } = useOpenTaskModal()
   const { openDeleteTask } = useOpenDeleteModal()
   const { setCurrentTask } = useSaveCurrentTask()
-
-  // console.log(subtasks)
+  const { setCurrentColumn } = useSaveCurrentColumn()
 
   useEffect(() => {
     if (taskRef) clickOutside(taskRef, setOpenTask)
@@ -31,9 +36,14 @@ const PreviewTask = ({ title, description }: PreviewTaskProps) => {
 
   useMemo(() => {
     const newArr = [...subArr]
-    subtasks.map((sub) => sub.fromTask === title && newArr.push(sub))
+    subtasks.map(
+      (sub) =>
+        sub.fromTask === title &&
+        sub.fromColumn === currentColumnName &&
+        newArr.push(sub),
+    )
     setSubArr(newArr)
-  }, [title])
+  }, [title, subtasks, currentColumnName])
 
   return (
     <section>
@@ -41,6 +51,7 @@ const PreviewTask = ({ title, description }: PreviewTaskProps) => {
         onClick={() => {
           setOpenTask(true)
           setCurrentTask(title)
+          setCurrentColumn(currentColumnName)
         }}
         className="
           h-auto
