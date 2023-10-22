@@ -17,31 +17,31 @@ const Header = () => {
     <>
       <header
         className="
-        flex 
-        h-auto 
-        w-full 
-        bg-dark-gray 
-        max-sm:py-5 
-        sm:h-20 
-        lg:h-24
-      "
+          flex 
+          h-auto 
+          w-full 
+          bg-dark-gray 
+          max-sm:py-5 
+          sm:h-20 
+          lg:h-24
+        "
       >
         <Button onClick={() => signOut()}>Sign Out</Button>
         {hidden && (
           <NoSsr>
             <div
               className="
-            flex 
-            h-full 
-            w-auto
-            items-center
-            justify-center 
-            border-b-[1px] 
-            border-r-[1px] 
-            border-lines-dark 
-            px-6
-            max-sm:hidden
-          "
+                flex 
+                h-full 
+                w-auto
+                items-center
+                justify-center 
+                border-b-[1px] 
+                border-r-[1px] 
+                border-lines-dark 
+                px-6
+                max-sm:hidden
+              "
             >
               <LogoLight />
             </div>
@@ -50,17 +50,17 @@ const Header = () => {
 
         <section
           className="
-          flex 
-          h-full 
-          w-full 
-          items-center 
-          justify-between 
-          border-lines-dark 
-          px-4 
-          sm:border-b-[1px]
-          sm:px-6
-          lg:px-8
-        "
+            flex 
+            h-full 
+            w-full 
+            items-center 
+            justify-between 
+            border-lines-dark 
+            px-4 
+            sm:border-b-[1px]
+            sm:px-6
+            lg:px-8
+          "
         >
           <section className="flex items-center gap-x-2 small-mobile:gap-x-4">
             <LogoMobile className="sm:hidden" />

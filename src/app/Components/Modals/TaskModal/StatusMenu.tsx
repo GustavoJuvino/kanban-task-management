@@ -84,7 +84,9 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
               ? columns.map((col) => (
                   <li
                     key={col.id}
-                    onClick={() => setCurrentColumn(col.columnName)}
+                    onClick={() => {
+                      setCurrentColumn(col.columnName)
+                    }}
                     className="w-fit cursor-pointer duration-300 hover:text-white"
                   >
                     {col.columnName}

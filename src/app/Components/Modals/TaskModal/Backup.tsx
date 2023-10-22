@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import SubtasksModal from './SubtasksModal'
 import { useRouter } from 'next/navigation'
+import { title } from 'process'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
@@ -44,10 +45,9 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
     formState: { errors },
   } = createTaskForm
 
-  // Add Task
   useEffect(() => {
     if (modalType === 'add') {
-      setValue('task.fromColumn', currentColumn)
+      setValue(`task.fromColumn`, columns[0].columnName)
       columns.map((col, index) => {
         setValue(`columns.${index}.itemID`, col.itemID)
         setValue(`columns.${index}.columnName`, col.columnName)
@@ -55,13 +55,13 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         return col
       })
     }
-  }, [modalType, currentColumn, setValue, columns])
+  }, [setValue, columns, modalType, setCurrentColumn])
 
   // Edit Task
   useEffect(() => {
     if (modalType === 'edit') {
       tasks.map((task: TaskProps) => {
-        if (task.title === currentTask) {
+        if (task.title === currentTask && task.fromColumn === currentColumn) {
           setValue(`task.title`, task.title)
           setValue('task.fromColumn', task.fromColumn)
           setValue(`task.description`, task.description)
@@ -69,7 +69,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         return task
       })
     }
-  }, [modalType, tasks, currentTask, setValue, columns])
+  }, [modalType, tasks, currentTask, currentColumn, setValue, columns])
 
   const axiosRequest = (data: TaskFormInputs) => {
     axios
@@ -77,10 +77,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       .then(() => {
         router.refresh()
         reset({
-          task: {
-            title: '',
-            description: '',
-          },
+          task: { title: '', description: 'teste', fromColumn: currentColumn },
         })
         toast.success('Task created successfully!')
       })
@@ -94,27 +91,30 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       })
   }
 
+  useEffect(() => {
+    console.log(currentColumn)
+  }, [currentColumn])
+
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
     console.log(data)
-
     setLoading(true)
     if (modalType === 'add') axiosRequest(data)
 
-    // if (modalType === 'edit') {
-    //   // axios
-    //   //   .post('/api/tasks', data)
-    //   //   .then(() => {
-    //   //     toast.success('Task created successfully!')
-    //   //   })
-    //   //   .catch((error) => {
-    //   //     if (error.request.status === 409)
-    //   //       toast.error(error.response.data.message)
-    //   //     else toast.error('Something went wrong')
-    //   //   })
-    //   //   .finally(() => {
-    //   //     setLoading(false)
-    //   //   })
-    // }
+    if (modalType === 'edit') {
+      // axios
+      //   .post('/api/tasks', data)
+      //   .then(() => {
+      //     toast.success('Task created successfully!')
+      //   })
+      //   .catch((error) => {
+      //     if (error.request.status === 409)
+      //       toast.error(error.response.data.message)
+      //     else toast.error('Something went wrong')
+      //   })
+      //   .finally(() => {
+      //     setLoading(false)
+      //   })
+    }
   }
 
   return (
@@ -206,9 +206,9 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
 
             <SubtasksModal
               subtasksErrors={errors.subtasks}
-              modalType={modalType}
+              modalType={modalType === 'add' ? 'add' : 'edit'}
             />
-            <StatusMenu menuType={modalType} />
+            <StatusMenu menuType="add" />
 
             <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
               {modalType === 'add' ? 'Create Task' : 'Save Changes'}

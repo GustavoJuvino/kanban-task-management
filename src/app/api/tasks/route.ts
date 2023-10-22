@@ -28,10 +28,9 @@ export async function POST(request: Request) {
 
   const createTask = [
     await Promise.all(
-      columns.map(
-        async (col) =>
-          task.fromColumn === col.columnName &&
-          (await prisma.task.create({
+      columns.map(async (col) => {
+        if (task.fromColumn === col.columnName) {
+          await prisma.task.create({
             data: {
               title: task.title,
               itemID: col.itemID,
@@ -39,11 +38,13 @@ export async function POST(request: Request) {
               columnID: currentUser.id,
               description: task.description,
             },
-          })),
-      ),
+          })
+        }
+      }),
     ),
+
     await Promise.all(
-      subtasks.map(async (subtask) => {
+      subtasks?.map(async (subtask) => {
         await prisma.subtask.create({
           data: {
             name: subtask.name,

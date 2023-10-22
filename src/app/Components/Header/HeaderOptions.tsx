@@ -1,19 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Button from '../Button'
 import EditMenu from './EditMenu'
-import { usePathname } from 'next/navigation'
-import { useWindowSize } from '@uidotdev/usehooks'
-import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
-import useClickOutside from '@/app/hooks/useClickOutside'
 import { EditMenuIcon, IconAdd } from '../../../../public/svgs'
 
+import { usePathname } from 'next/navigation'
+import { useWindowSize } from '@uidotdev/usehooks'
+import { useGlobalContext } from '@/app/context/store'
+import useClickOutside from '@/app/hooks/useClickOutside'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
+import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
+
 const HeaderOptions = () => {
+  const [openMenu, setOpenMenu] = useState(false)
+
+  const { columns } = useGlobalContext()
+  const { clickOutside } = useClickOutside()
+  const { onOpenNewTask } = useOpenTaskModal()
+  const { setCurrentColumn } = useSaveCurrentColumn()
+
   const size = useWindowSize()
   const pathname = usePathname()
-  const [openMenu, setOpenMenu] = useState(false)
-  const { onOpenNewTask } = useOpenTaskModal()
-
-  const { clickOutside } = useClickOutside()
   const editMenuRef = useRef(null)
 
   useEffect(() => {
@@ -24,7 +30,10 @@ const HeaderOptions = () => {
     return (
       <section className="flex items-center gap-x-4 sm:gap-x-6">
         <Button
-          onClick={() => onOpenNewTask(true)}
+          onClick={() => {
+            onOpenNewTask(true)
+            setCurrentColumn(columns[0].columnName)
+          }}
           className="
             flex
             w-12

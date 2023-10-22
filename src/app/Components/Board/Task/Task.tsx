@@ -75,9 +75,9 @@ const Task = ({ title, description }: TaskProps) => {
             "
             />
             <EditMenu
-              className="right-[-0.5rem] md:right-[-6.2rem]"
-              open={openEditMenu}
               menuType="task"
+              open={openEditMenu}
+              className="right-[-0.5rem] md:right-[-6.2rem]"
             />
           </div>
         </div>

@@ -23,7 +23,7 @@ const PreviewTask = ({
   const [openTask, setOpenTask] = useState(false)
   const [subArr, setSubArr] = useState<SubtaskProps[]>([])
 
-  const { subtasks } = useGlobalContext()
+  const { tasks, subtasks } = useGlobalContext()
   const { clickOutside } = useClickOutside()
   const { openEditTask } = useOpenTaskModal()
   const { openDeleteTask } = useOpenDeleteModal()
@@ -43,7 +43,7 @@ const PreviewTask = ({
         newArr.push(sub),
     )
     setSubArr(newArr)
-  }, [title, subtasks, currentColumnName])
+  }, [])
 
   return (
     <section>

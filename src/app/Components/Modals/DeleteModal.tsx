@@ -44,7 +44,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
       }
       return board
     })
-  }, [URL, boards, columns, currentColumn])
+  }, [URL, boards, columns])
 
   // Tasks
   useEffect(() => {
@@ -56,7 +56,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         return task
       })
     }
-  }, [currentTask, tasks, currentColumn, deleteType])
+  }, [currentTask, tasks, deleteType])
 
   function axiosRequest(url: string) {
     if (deleteType === 'board') {

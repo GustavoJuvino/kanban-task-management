@@ -36,7 +36,7 @@ const Subtasks = ({ currentTaskTitle }: SubtasksProps) => {
         )
       }
     }
-  }, [subtasks, tasks, currentTaskTitle, currentColumn])
+  }, [subtasks, tasks, currentTaskTitle])
 
   useEffect(() => {
     if (formatedArr !== undefined) {
