@@ -10,13 +10,17 @@ import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 interface PreviewTaskProps {
   title: string
+  taskID: string
   description: string
+  taskColumn: string
   currentColumnName: string
 }
 
 const PreviewTask = ({
   title,
+  taskID,
   description,
+  taskColumn,
   currentColumnName,
 }: PreviewTaskProps) => {
   const taskRef = useRef(null)
@@ -34,7 +38,7 @@ const PreviewTask = ({
     if (taskRef) clickOutside(taskRef, setOpenTask)
   }, [clickOutside, setOpenTask])
 
-  useMemo(() => {
+  useEffect(() => {
     const newArr = [...subArr]
     subtasks.map(
       (sub) =>
@@ -50,7 +54,11 @@ const PreviewTask = ({
       <div
         onClick={() => {
           setOpenTask(true)
-          setCurrentTask(title)
+          setCurrentTask({
+            taskTitle: title,
+            id: taskID,
+            taskColumn,
+          })
           setCurrentColumn(currentColumnName)
         }}
         className="

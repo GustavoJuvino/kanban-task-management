@@ -60,7 +60,9 @@ const BoardContent = () => {
                   task.fromColumn === col.columnName && (
                     <PreviewTask
                       key={task.id}
+                      taskID={task.id}
                       title={task.title}
+                      taskColumn={task.fromColumn}
                       description={task.description}
                       currentColumnName={col.columnName}
                     />

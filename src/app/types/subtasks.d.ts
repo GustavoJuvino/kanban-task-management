@@ -1,5 +1,5 @@
 interface SubtaskProps {
-  id?: string
+  id: string
   name: string
   fromTask: string
   subtaskID?: string

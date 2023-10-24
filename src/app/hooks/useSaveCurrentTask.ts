@@ -1,12 +1,18 @@
 import { create } from 'zustand'
 
+type currentTaskProps = {
+  id: string
+  taskTitle: string
+  taskColumn: string
+}
+
 interface CurrentURL {
-  currentTask: string
-  setCurrentTask: (status: string) => void
+  currentTask: currentTaskProps
+  setCurrentTask: (status: currentTaskProps) => void
 }
 
 const useSaveCurrentTask = create<CurrentURL>()((set) => ({
-  currentTask: '',
+  currentTask: { id: '', taskTitle: '', taskColumn: '' },
   setCurrentTask: (status) =>
     set((state) => ({ currentTask: (state.currentTask = status) })),
 }))

@@ -42,7 +42,7 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
           readOnly
           type="text"
           value={currentColumn}
-          name="task.fromColumn"
+          name="task.updateColumn"
           className="
             mt-2
             cursor-pointer

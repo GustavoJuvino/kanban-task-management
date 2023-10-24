@@ -50,7 +50,10 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
   useEffect(() => {
     if (deleteType === 'task') {
       tasks.map((task) => {
-        if (task.title === currentTask && task.fromColumn === currentColumn) {
+        if (
+          task.title === currentTask.taskTitle &&
+          task.fromColumn === currentColumn
+        ) {
           setDeleteTask(task)
         }
         return task

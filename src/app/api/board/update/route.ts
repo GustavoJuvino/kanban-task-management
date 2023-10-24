@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   }
 
   const body: BoardFormInputs = await request.json()
-  const { board, boardColumns, tasks } = body
+  const { board, boardColumns, tasks, subtasks } = body
 
   const currentBoard = [
     await prisma.board.update({
@@ -47,20 +47,44 @@ export async function POST(request: Request) {
       }),
     ),
 
-    // await Promise.all(
-    //   tasks.map(async (task) => {
-    //     await prisma.task.update({
-    //       where: {
-    //         id: task.id,
-    //         title: task.title,
-    //         columnID: currentUser.id,
-    //       },
-    //       data: {
-    //         status: boardColumns[Number(task.itemID)].columnName,
-    //       },
-    //     })
-    //   }),
-    // ),
+    tasks !== undefined &&
+      (await Promise.all(
+        tasks.map(async (task) => {
+          await prisma.task.update({
+            where: {
+              id: task.id,
+              title: task.title,
+              columnID: currentUser.id,
+            },
+            data: {
+              fromColumn: boardColumns[Number(task.itemID)].columnName,
+              updateColumn: boardColumns[Number(task.itemID)].columnName,
+            },
+          })
+
+          subtasks !== undefined &&
+            (await Promise.all(
+              subtasks.map(async (subtask) => {
+                if (
+                  subtask.fromColumn === task.fromColumn &&
+                  subtask.fromTask === task.title
+                ) {
+                  await prisma.subtask.update({
+                    where: {
+                      id: subtask.id,
+                      name: subtask.name,
+                      fromTask: subtask.fromTask,
+                      fromColumn: subtask.fromColumn,
+                    },
+                    data: {
+                      fromColumn: boardColumns[Number(task.itemID)].columnName,
+                    },
+                  })
+                }
+              }),
+            ))
+        }),
+      )),
   ]
 
   return NextResponse.json(currentBoard)

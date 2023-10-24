@@ -9,19 +9,36 @@ import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import axios from 'axios'
 import { Form } from '../../form'
 import { useFieldArray } from 'react-hook-form'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
+import { useRouter } from 'next/navigation'
+import ObjectID from 'bson-objectid'
+import { toast } from 'react-toastify'
 
 interface SubtasksModalProps {
   modalType: ModalTypeProps
+  isSubmitting: boolean
   subtasksErrors: SubtasksErrorsProps
 }
 
-const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
+const SubtasksModal = ({
+  modalType,
+  isSubmitting,
+  subtasksErrors,
+}: SubtasksModalProps) => {
   const [itemID, setItemID] = useState(0)
+  const [excludeSubs, setExcludeSubs] = useState<Record<'key', string>[]>([])
+
+  const router = useRouter()
   const { subtasks } = useGlobalContext()
   const { currentTask } = useSaveCurrentTask()
+  const { currentColumn } = useSaveCurrentColumn()
 
-  const { fields, append, remove, insert, update } = useFieldArray({
+  let objectID = ''
+  const generateObjectID = () => (objectID = ObjectID().toHexString())
+
+  const { fields, append, remove, insert } = useFieldArray({
     name: 'subtasks',
+    keyName: 'key',
   })
 
   const [placeholders, setPlaceholders] = useState<string[]>([
@@ -42,7 +59,8 @@ const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
     })
   }, [placeholders])
 
-  useEffect(() => {
+  // Add Subtasks
+  useMemo(() => {
     if (modalType === 'add') {
       getPlaceholders()
       setItemID(itemID + 1)
@@ -54,41 +72,54 @@ const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
     }
   }, [modalType, append])
 
-  useMemo(() => {
-    if (modalType === 'edit') {
-      subtasks.map((sub) => {
-        if (sub.subtaskID === '0' && sub.fromTask === currentTask) {
-          update(0, { name: sub.name })
-        }
-        return sub
-      })
-    }
-  }, [modalType, update, subtasks, currentTask])
-
+  //  Edit Subtasks
   useEffect(() => {
-    if (modalType === 'edit') {
+    if (modalType === 'edit' && subtasks.length > 1) {
       const newArr: SubtaskProps[] = []
       subtasks.map((sub) => {
-        if (sub.fromTask === currentTask && sub.subtaskID !== '0') {
-          sub.fromTask === currentTask && newArr.push(sub)
+        if (
+          sub.fromTask === currentTask.taskTitle &&
+          sub.fromColumn === currentColumn
+        ) {
+          newArr.push(sub)
         }
         return sub
       })
-      newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID))
+      newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)).shift()
 
       insert(
         1,
         newArr.map((sub) => ({
+          id: sub.id,
           name: sub.name,
-          // id: col.id,
-          // color: col.color,
-          // itemID: col.itemID,
-          // boardID: col.boardID,
-          // columnName: col.columnName,
+          subtaskID: sub.subtaskID,
+          fromTask: sub.fromTask,
+          fromColumn: sub.fromColumn,
+          completed: sub.completed,
         })),
       )
     }
-  }, [modalType, subtasks, insert, currentTask])
+  }, [modalType, insert, subtasks, currentTask, currentColumn])
+
+  // Exclude subtasks in Edit Subtasks modal
+  console.log(excludeSubs)
+  // useEffect(() => {
+  //   if (isSubmitting && excludeSubs.length > 0) {
+  //     axios
+  //       .delete(`/api/subtasks`, {
+  //         data: { subtasks: excludeSubs },
+  //       })
+  //       .then(() => {
+  //         router.refresh()
+  //         setTimeout(() => {
+  //           toast.success('Subtask(s) deleted successfully!')
+  //         }, 1400)
+  //       })
+  //       .catch(() => {
+  //         toast.error('Something went wrong')
+  //       })
+  //   }
+  // }, [isSubmitting, excludeSubs, router])
 
   return (
     <section className="flex flex-col gap-y-3">
@@ -114,7 +145,7 @@ const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
       >
         {fields.map((field, index) => (
           <Form.Field
-            key={field.id}
+            key={field.key}
             className="flex items-center gap-x-2 pr-4 sm:gap-x-4"
           >
             <Form.Input
@@ -129,7 +160,14 @@ const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
                 }`}
             />
             <Cross
-              onClick={() => remove(index)}
+              onClick={() => {
+                remove(index)
+                if (modalType === 'edit') {
+                  const newArr = [...excludeSubs]
+                  newArr.push(field)
+                  setExcludeSubs(newArr)
+                }
+              }}
               className={`
                 cursor-pointer 
                 fill-[#828FA3] 
@@ -150,11 +188,21 @@ const SubtasksModal = ({ modalType, subtasksErrors }: SubtasksModalProps) => {
         onClick={() => {
           getPlaceholders()
           setItemID(itemID + 1)
-          append({
-            name: '',
-            subtaskID: itemID + 1,
-            completed: false,
-          })
+          if (modalType === 'add') {
+            append({
+              name: '',
+              completed: false,
+              subtaskID: itemID + 1,
+            })
+          } else {
+            generateObjectID()
+            append({
+              name: '',
+              id: objectID,
+              completed: false,
+              subtaskID: itemID + 1,
+            })
+          }
         }}
         type="button"
         style={'light'}

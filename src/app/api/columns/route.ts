@@ -13,22 +13,6 @@ export async function DELETE(request: Request) {
   const body = await request.json()
   const { columns, tasks, subtasks } = body
 
-  // await Promise.all(
-  //   columns.map(
-  //     async (col) =>
-  //       task.fromColumn === col.columnName &&
-  //       (await prisma.task.create({
-  //         data: {
-  //           title: task.title,
-  //           itemID: col.itemID,
-  //           fromColumn: task.fromColumn,
-  //           columnID: currentUser.id,
-  //           description: task.description,
-  //         },
-  //       })),
-  //   ),
-  // ),
-
   const deleteColumns = [
     await Promise.all(
       columns.map(async (col: ColumnsProps) => {

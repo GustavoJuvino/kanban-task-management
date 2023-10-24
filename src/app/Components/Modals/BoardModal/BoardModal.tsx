@@ -26,7 +26,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   const { randomColor } = useGetRandomColor()
   const [loading, setLoading] = useState(false)
   const { onOpenNewBoard, onOpenEditBoard } = useOpenBoardModal()
-  const { boards, columns, tasks } = useGlobalContext()
+  const { boards, columns, tasks, subtasks } = useGlobalContext()
 
   const createBoardForm = useForm<BoardFormInputs>({
     defaultValues: {
@@ -41,6 +41,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         },
       ],
       tasks: [{ id: '', fromColumn: '', title: '', itemID: '' }],
+      subtasks: [{ id: '', name: '', fromTask: '', fromColumn: '' }],
     },
   })
 
@@ -74,12 +75,21 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       tasks.map((task, index) => {
         setValue(`tasks.${index}.id`, task.id)
         setValue(`tasks.${index}.title`, task.title)
-        setValue(`tasks.${index}.fromColumn`, task.fromColumn)
         setValue(`tasks.${index}.itemID`, task.itemID)
+        setValue(`tasks.${index}.fromColumn`, task.fromColumn)
         return task
       })
+
+      subtasks.map((sub, index) => {
+        setValue(`subtasks.${index}.id`, sub.id)
+        setValue(`subtasks.${index}.name`, sub.name)
+        setValue(`subtasks.${index}.fromTask`, sub.fromTask)
+        setValue(`subtasks.${index}.fromColumn`, sub.fromColumn)
+
+        return sub
+      })
     }
-  }, [modalType, setValue, tasks, columns])
+  }, [modalType, setValue, tasks, subtasks, columns])
 
   function axiosRequest(url: string, data: BoardFormInputs) {
     axios
@@ -110,7 +120,6 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   // }
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    console.log(data)
     setLoading(true)
     if (modalType === 'add') {
       axios
