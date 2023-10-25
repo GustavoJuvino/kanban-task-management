@@ -16,54 +16,92 @@ import {
   useFieldArray,
   useForm,
 } from 'react-hook-form'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
-interface TaskProps {
-  title: string
-  description: string
-}
+// interface TaskProps {
+//   title: string
+//   description: string
+// }
 
-const Task = ({ title, description }: TaskProps) => {
+const Task = () => {
   const [loading, setLoading] = useState(false)
-  const [columnName, setColumnName] = useState([''])
 
   const editMenuRef = useRef(null)
   const { openDeleteTask } = useOpenDeleteModal()
 
+  const router = useRouter()
+
   const { clickOutside } = useClickOutside()
-  const { columns, tasks, subtasks } = useGlobalContext()
+  const { currentTask } = useSaveCurrentTask()
+  const { tasks } = useGlobalContext()
   const [openEditMenu, setOpenEditMenu] = useState(false)
 
   const createEditTaskForm = useForm<TaskFormInputs>({
     defaultValues: {
-      task: { fromColumn: 'Todo' },
-      subtasks: [{ name: '', completed: false }],
+      task: {
+        id: '',
+        title: '',
+        status: '',
+        fromColumn: '',
+      },
+      subtasks: [
+        {
+          id: '',
+          name: '',
+          subtaskID: 0,
+          fromTask: '',
+          fromColumn: '',
+          completed: false,
+        },
+      ],
     },
   })
 
-  const {
-    handleSubmit,
-    formState: { errors },
-  } = createEditTaskForm
+  const { setValue, handleSubmit } = createEditTaskForm
 
   useEffect(() => {
     if (editMenuRef) clickOutside(editMenuRef, setOpenEditMenu)
   }, [clickOutside])
 
-  useMemo(() => {
-    const newArr = columns.map((col) => col.columnName)
-    setColumnName(newArr)
-  }, [columns])
+  useEffect(() => {
+    tasks.map((task) => {
+      if (task.id === currentTask.id) {
+        setValue('task.id', task.id)
+        setValue('task.title', task.title)
+        setValue('task.fromColumn', task.fromColumn)
+      }
+      return task
+    })
+  }, [setValue, tasks])
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
     console.log(data)
-    // setLoading(true)
+    setLoading(true)
+
+    axios
+      .post('/api/tasks/update', data)
+      .then(() => {
+        router.refresh()
+        toast.success('Task updated successfully!')
+      })
+      .catch(() => {
+        toast.error('Something went wrong')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   if (!openDeleteTask)
     return (
       <>
         <div className="flex items-center justify-between">
-          <h2 className="w-full text-heading-l text-white">{title}</h2>
+          <h2 className="w-full text-heading-l text-white">
+            {currentTask.taskTitle}
+          </h2>
           <div ref={editMenuRef} className="relative">
             <EditMenuIcon
               onClick={() => setOpenEditMenu(!openEditMenu)}
@@ -82,12 +120,14 @@ const Task = ({ title, description }: TaskProps) => {
           </div>
         </div>
 
-        <p className="text-body-l text-medium-gray">{description}</p>
+        <p className="text-body-l text-medium-gray">
+          {currentTask.taskDescription}
+        </p>
 
         <FormProvider {...createEditTaskForm}>
           <form onSubmit={handleSubmit((data) => onSubmit(data))}>
-            <Subtasks currentTaskTitle={title} />
-            <StatusMenu menuType="edit" />
+            <Subtasks />
+            <StatusMenu menuType="edit" setFirstValue={setValue} />
             <Button
               type="submit"
               className={`mt-6 ${loading ? 'cursor-wait' : 'cursor-pointer'}`}

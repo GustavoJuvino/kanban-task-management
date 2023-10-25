@@ -3,6 +3,7 @@ interface TaskProps {
   itemID: string
   columnID: string
   title: string
+  status?: string
   description: string
   fromColumn: string
   updateTitle: string

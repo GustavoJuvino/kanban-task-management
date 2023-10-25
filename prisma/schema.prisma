@@ -47,10 +47,11 @@ model Task {
   columnID String @db.ObjectId
   itemID String
   title String 
+  status String?
   fromColumn String
-  updateColumn String
   updateTitle String
   description String
+  updateColumn String
 
   column Column @relation(fields: [columnID], references: [id], onDelete: Cascade)
   subtasks Subtask[]

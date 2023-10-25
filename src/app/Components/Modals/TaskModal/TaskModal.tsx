@@ -149,7 +149,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
           toast.success('Task created successfully!')
         } else {
           onOpenEditTask(false)
-          toast.success('Task updated successfully!')
+          toast.success('Task edited successfully!')
         }
       })
       .catch((error) => {
@@ -166,7 +166,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
     console.log(data)
     setLoading(true)
     if (modalType === 'add') axiosRequest('/api/tasks', data)
-    if (modalType === 'edit') axiosRequest('/api/tasks/update', data)
+    if (modalType === 'edit') axiosRequest('/api/tasks/edit', data)
   }
 
   return (

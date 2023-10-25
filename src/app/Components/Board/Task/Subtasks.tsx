@@ -4,16 +4,14 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useGlobalContext } from '@/app/context/store'
 import CheckIcon from '@mui/icons-material/Check'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 
-interface SubtasksProps {
-  currentTaskTitle: string
-}
-
-const Subtasks = ({ currentTaskTitle }: SubtasksProps) => {
+const Subtasks = () => {
   const [subsChecked, setSubsChecked] = useState<boolean[]>()
   const [formatedArr, setFormatedArr] = useState<SubtaskProps[]>()
 
   const { tasks, subtasks } = useGlobalContext()
+  const { currentTask } = useSaveCurrentTask()
   const { currentColumn } = useSaveCurrentColumn()
 
   const { setValue } = useForm<TaskFormInputs>()
@@ -26,7 +24,7 @@ const Subtasks = ({ currentTaskTitle }: SubtasksProps) => {
     if (subtasks.length > 0) {
       subtasks.map(
         (sub) =>
-          sub.fromTask === currentTaskTitle &&
+          sub.fromTask === currentTask.taskTitle &&
           sub.fromColumn === currentColumn &&
           newArr.push(sub),
       )
@@ -36,20 +34,32 @@ const Subtasks = ({ currentTaskTitle }: SubtasksProps) => {
         )
       }
     }
-  }, [subtasks, tasks, currentTaskTitle])
+  }, [])
 
   useEffect(() => {
     if (formatedArr !== undefined) {
       const newArr = [...formatedArr]
       newArr.shift()
 
-      update(0, { name: formatedArr[0].name, completed: false })
+      update(0, {
+        id: formatedArr[0].id,
+        name: formatedArr[0].name,
+        fromTask: formatedArr[0].fromTask,
+        subtaskID: formatedArr[0].subtaskID,
+        completed: formatedArr[0].completed,
+        fromColumn: formatedArr[0].fromColumn,
+      })
+
       if (newArr !== undefined)
         insert(
           1,
           newArr.map((sub) => ({
+            id: sub.id,
             name: sub.name,
+            fromTask: sub.fromTask,
+            subtaskID: sub.subtaskID,
             completed: sub.completed,
+            fromColumn: sub.fromColumn,
           })),
         )
     }

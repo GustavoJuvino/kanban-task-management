@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Task from './Task'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import ModalBackground from '../../ModalBackground'
@@ -7,7 +7,6 @@ import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import { useRouter } from 'next/navigation'
 
 interface PreviewTaskProps {
   title: string
@@ -27,10 +26,9 @@ const PreviewTask = ({
   const taskRef = useRef(null)
   const [openTask, setOpenTask] = useState(false)
   const [subArr, setSubArr] = useState<SubtaskProps[]>([])
+  const [completedSubs, setCompletedSubs] = useState<SubtaskProps[]>([])
 
-  const router = useRouter()
-
-  const { tasks, subtasks } = useGlobalContext()
+  const { subtasks } = useGlobalContext()
   const { clickOutside } = useClickOutside()
   const { openEditTask } = useOpenTaskModal()
   const { openDeleteTask } = useOpenDeleteModal()
@@ -43,16 +41,26 @@ const PreviewTask = ({
 
   useEffect(() => {
     const formatSubs = [...subtasks]
+    const checkSubs: SubtaskProps[] = []
     const newArr: SubtaskProps[] = []
 
-    formatSubs.map(
-      (sub) =>
-        sub.fromTask === title &&
-        sub.fromColumn === currentColumnName &&
-        newArr.push(sub),
-    )
+    formatSubs.map((sub) => {
+      if (sub.fromTask === title && sub.fromColumn === currentColumnName) {
+        checkSubs.push(sub)
+      }
 
-    setSubArr(newArr)
+      if (
+        sub.completed &&
+        sub.fromTask === title &&
+        sub.fromColumn === currentColumnName
+      ) {
+        newArr.push(sub)
+      }
+      return sub
+    })
+
+    setSubArr(checkSubs)
+    setCompletedSubs(newArr)
   }, [subtasks])
 
   return (
@@ -61,9 +69,10 @@ const PreviewTask = ({
         onClick={() => {
           setOpenTask(true)
           setCurrentTask({
-            taskTitle: title,
             id: taskID,
             taskColumn,
+            taskTitle: title,
+            taskDescription: description,
           })
           setCurrentColumn(currentColumnName)
         }}
@@ -82,7 +91,7 @@ const PreviewTask = ({
         </h3>
         {subArr.length > 0 && (
           <span className="text-body-m text-medium-gray">
-            {` 0 of ${subArr.length} subtasks`}
+            {` ${completedSubs.length} of ${subArr.length} subtasks`}
           </span>
         )}
       </div>
@@ -119,7 +128,7 @@ const PreviewTask = ({
               sm:p-8
             "
           >
-            <Task title={title} description={description} />
+            <Task />
           </div>
 
           <ModalBackground />

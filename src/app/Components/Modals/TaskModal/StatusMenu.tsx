@@ -1,23 +1,23 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Arrow } from '../../../../../public/modal'
 import { Form } from '../../form'
 
-import { useForm } from 'react-hook-form'
+import { UseFormSetValue } from 'react-hook-form'
 import { useGlobalContext } from '@/app/context/store'
 import useClickOutside from '@/app/hooks/useClickOutside'
-import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 interface StatusMenuProps {
   menuType: ModalTypeProps
+  setFirstValue?: UseFormSetValue<TaskFormInputs>
 }
 
 const stats = ['Todo', 'Doing', 'Done']
 
-const StatusMenu = ({ menuType }: StatusMenuProps) => {
-  const { setValue } = useForm()
-  const { currentTask } = useSaveCurrentTask()
-  const { columns, tasks } = useGlobalContext()
+const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
+  const [status, setStatus] = useState(stats[0])
+
+  const { columns } = useGlobalContext()
   const [openMenu, setOpenMenu] = useState(false)
   const { currentColumn, setCurrentColumn } = useSaveCurrentColumn()
 
@@ -27,6 +27,10 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
   useEffect(() => {
     if (statusRef) clickOutside(statusRef, setOpenMenu)
   }, [clickOutside])
+
+  useEffect(() => {
+    setFirstValue !== undefined && setFirstValue('task.status', status)
+  }, [setFirstValue, status])
 
   return (
     <Form.Field className="block">
@@ -41,8 +45,8 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
         <Form.Input
           readOnly
           type="text"
-          value={currentColumn}
-          name="task.updateColumn"
+          value={menuType === 'add' ? currentColumn : status}
+          name="task.status"
           className="
             mt-2
             cursor-pointer
@@ -84,9 +88,7 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
               ? columns.map((col) => (
                   <li
                     key={col.id}
-                    onClick={() => {
-                      setCurrentColumn(col.columnName)
-                    }}
+                    onClick={() => setCurrentColumn(col.columnName)}
                     className="w-fit cursor-pointer duration-300 hover:text-white"
                   >
                     {col.columnName}
@@ -95,7 +97,7 @@ const StatusMenu = ({ menuType }: StatusMenuProps) => {
               : stats.map((stat) => (
                   <li
                     key={stat}
-                    onClick={() => setCurrentColumn(stat)}
+                    onClick={() => setStatus(stat)}
                     className="w-fit cursor-pointer duration-300 hover:text-white"
                   >
                     {stat}
