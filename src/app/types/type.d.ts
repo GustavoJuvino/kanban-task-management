@@ -31,6 +31,7 @@ interface TaskFormInputs {
     title: string
     description: string
     fromColumn: string
+    updateTitle: string
     updateColumn: string
   }
   subtasks: {

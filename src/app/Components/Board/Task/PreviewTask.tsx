@@ -7,6 +7,7 @@ import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
+import { useRouter } from 'next/navigation'
 
 interface PreviewTaskProps {
   title: string
@@ -27,6 +28,8 @@ const PreviewTask = ({
   const [openTask, setOpenTask] = useState(false)
   const [subArr, setSubArr] = useState<SubtaskProps[]>([])
 
+  const router = useRouter()
+
   const { tasks, subtasks } = useGlobalContext()
   const { clickOutside } = useClickOutside()
   const { openEditTask } = useOpenTaskModal()
@@ -39,15 +42,18 @@ const PreviewTask = ({
   }, [clickOutside, setOpenTask])
 
   useEffect(() => {
-    const newArr = [...subArr]
-    subtasks.map(
+    const formatSubs = [...subtasks]
+    const newArr: SubtaskProps[] = []
+
+    formatSubs.map(
       (sub) =>
         sub.fromTask === title &&
         sub.fromColumn === currentColumnName &&
         newArr.push(sub),
     )
+
     setSubArr(newArr)
-  }, [])
+  }, [subtasks])
 
   return (
     <section>

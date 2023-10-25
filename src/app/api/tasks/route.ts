@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const { task, subtasks, columns } = body
 
   const existingTask = await prisma.task.findFirst({
-    where: { title: task.title, fromColumn: task.updateColumn },
+    where: { title: task.updateTitle, fromColumn: task.updateColumn },
   })
 
   if (existingTask) {
@@ -32,12 +32,13 @@ export async function POST(request: Request) {
         if (task.updateColumn === col.columnName) {
           await prisma.task.create({
             data: {
-              title: task.title,
+              title: task.updateTitle,
               itemID: col.itemID,
+              columnID: currentUser.id,
+              updateTitle: task.updateTitle,
+              description: task.description,
               fromColumn: task.updateColumn,
               updateColumn: task.updateColumn,
-              columnID: currentUser.id,
-              description: task.description,
             },
           })
         }
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
           await prisma.subtask.create({
             data: {
               name: subtask.name,
-              fromTask: task.title,
+              fromTask: task.updateTitle,
               taskID: currentUser.id,
               fromColumn: task.updateColumn,
               completed: subtask.completed,

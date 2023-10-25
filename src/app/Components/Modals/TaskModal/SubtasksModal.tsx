@@ -69,7 +69,7 @@ const SubtasksModal = ({
         subtaskID: itemID + 1,
         completed: false,
       })
-    }
+    } else getPlaceholders()
   }, [modalType, append])
 
   //  Edit Subtasks
@@ -99,27 +99,25 @@ const SubtasksModal = ({
         })),
       )
     }
-  }, [modalType, insert, subtasks, currentTask, currentColumn])
+  }, [modalType, insert, currentTask])
 
   // Exclude subtasks in Edit Subtasks modal
-  console.log(excludeSubs)
-  // useEffect(() => {
-  //   if (isSubmitting && excludeSubs.length > 0) {
-  //     axios
-  //       .delete(`/api/subtasks`, {
-  //         data: { subtasks: excludeSubs },
-  //       })
-  //       .then(() => {
-  //         router.refresh()
-  //         setTimeout(() => {
-  //           toast.success('Subtask(s) deleted successfully!')
-  //         }, 1400)
-  //       })
-  //       .catch(() => {
-  //         toast.error('Something went wrong')
-  //       })
-  //   }
-  // }, [isSubmitting, excludeSubs, router])
+  useEffect(() => {
+    console.log(excludeSubs)
+    if (isSubmitting && excludeSubs.length > 0) {
+      axios
+        .delete(`/api/subtasks`, {
+          data: { subtasks: excludeSubs },
+        })
+        .then(() => {
+          router.refresh()
+          toast.success('Subtask(s) deleted successfully!')
+        })
+        .catch(() => {
+          toast.error('Something went wrong')
+        })
+    }
+  }, [isSubmitting, excludeSubs, router])
 
   return (
     <section className="flex flex-col gap-y-3">
@@ -134,11 +132,11 @@ const SubtasksModal = ({
 
       <div
         className={`
-          flex 
+          flex
           max-h-12
-          scroll-m-1 
-          flex-col 
-          gap-y-2 
+          scroll-m-1
+          flex-col
+          gap-y-2
           overflow-auto
           mobile:max-h-[90px]
         `}
@@ -169,8 +167,8 @@ const SubtasksModal = ({
                 }
               }}
               className={`
-                cursor-pointer 
-                fill-[#828FA3] 
+                cursor-pointer
+                fill-[#828FA3]
                 duration-300
                 hover:fill-red
                 ${

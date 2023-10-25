@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import SubtasksModal from './SubtasksModal'
 import { useRouter } from 'next/navigation'
+import ObjectID from 'bson-objectid'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
@@ -29,6 +30,9 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   const { currentColumn } = useSaveCurrentColumn()
   const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
 
+  let objectID = ''
+  const generateObjectID = () => (objectID = ObjectID().toHexString())
+
   const createTaskForm = useForm<TaskFormInputs>({
     defaultValues: {
       columns: [{ itemID: '', columnName: '' }],
@@ -37,8 +41,9 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         title: '',
         columnID: '',
         fromColumn: '',
-        updateColumn: '',
         description: '',
+        updateTitle: '',
+        updateColumn: '',
       },
       subtasks: [
         {
@@ -73,32 +78,66 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   }, [modalType, currentColumn, setValue, columns])
 
   // Edit Task
+  useMemo(() => {
+    if (modalType === 'edit') {
+      tasks.map((task) => {
+        if (
+          task.id === currentTask.id &&
+          task.title === currentTask.taskTitle
+        ) {
+          setValue('task.updateColumn', currentColumn)
+        }
+
+        return task
+      })
+    }
+  }, [currentColumn, setValue])
+
   useEffect(() => {
     if (modalType === 'edit') {
-      tasks.map((task: TaskProps) => {
+      tasks.map((task) => {
         if (
           task.id === currentTask.id &&
           task.title === currentTask.taskTitle
         ) {
           setValue(`task.id`, task.id)
           setValue(`task.title`, task.title)
+          setValue(`task.updateTitle`, task.updateTitle)
           setValue(`task.columnID`, task.columnID)
           setValue('task.fromColumn', task.fromColumn)
-          setValue('task.updateColumn', currentColumn)
           setValue(`task.description`, task.description)
         }
 
         return task
       })
 
-      if (subtasks[0].fromColumn === currentTask.taskColumn) {
-        setValue(`subtasks.${0}.id`, subtasks[0].id)
-        setValue(`subtasks.${0}.name`, subtasks[0].name)
-        setValue(`subtasks.${0}.fromTask`, subtasks[0].fromTask)
-        setValue(`subtasks.${0}.fromColumn`, subtasks[0].fromColumn)
-      }
+      const newArr: SubtaskProps[] = []
+      subtasks.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID))
+
+      subtasks.map((sub) => {
+        if (
+          sub.fromTask === currentTask.taskTitle &&
+          sub.fromColumn === currentTask.taskColumn
+        ) {
+          newArr.push(sub)
+        } else {
+          generateObjectID()
+          setValue(`subtasks.${0}.id`, objectID)
+        }
+        return sub
+      })
+
+      newArr.map((item, index) => {
+        if (index < 1) {
+          setValue(`subtasks.${0}.id`, item.id)
+          setValue(`subtasks.${0}.name`, item.name)
+          setValue(`subtasks.${0}.fromTask`, item.fromTask)
+          setValue(`subtasks.${0}.fromColumn`, item.fromColumn)
+        }
+        return item
+      })
     }
-  }, [modalType, tasks, subtasks, currentTask, currentColumn, setValue])
+  }, [modalType, tasks, subtasks, currentTask, setValue])
 
   const axiosRequest = (url: string, data: TaskFormInputs) => {
     axios
@@ -125,7 +164,6 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
     console.log(data)
-
     setLoading(true)
     if (modalType === 'add') axiosRequest('/api/tasks', data)
     if (modalType === 'edit') axiosRequest('/api/tasks/update', data)
@@ -192,9 +230,9 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
               </Form.Label>
               <Form.Input
                 type="text"
-                name="task.title"
+                name="task.updateTitle"
                 id="task_input"
-                error={errors.task?.title?.message}
+                error={errors.task?.updateTitle?.message}
                 placeholder="e.g Take coffee break"
                 className={`${errors.task && 'border-opacity-100'}`}
               />

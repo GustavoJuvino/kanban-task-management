@@ -16,13 +16,12 @@ export async function DELETE(request: Request) {
   const deleteSubs = [
     await Promise.all(
       subtasks.map(async (sub: SubtaskProps) => {
-        if (sub.name !== '') {
+        if (sub.name !== '' && sub.id !== '') {
           await prisma.subtask.delete({
             where: {
               id: sub.id,
               name: sub.name,
               fromTask: sub.fromTask,
-              subtaskID: String(sub.subtaskID),
               fromColumn: sub.fromColumn,
             },
           })

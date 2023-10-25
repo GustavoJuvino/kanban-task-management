@@ -49,6 +49,7 @@ model Task {
   title String 
   fromColumn String
   updateColumn String
+  updateTitle String
   description String
 
   column Column @relation(fields: [columnID], references: [id], onDelete: Cascade)
