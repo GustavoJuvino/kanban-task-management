@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Arrow } from '../../../../../public/modal'
 import { Form } from '../../form'
 
@@ -6,6 +6,7 @@ import { UseFormSetValue } from 'react-hook-form'
 import { useGlobalContext } from '@/app/context/store'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 
 interface StatusMenuProps {
   menuType: ModalTypeProps
@@ -15,10 +16,11 @@ interface StatusMenuProps {
 const stats = ['Todo', 'Doing', 'Done']
 
 const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
-  const [status, setStatus] = useState(stats[0])
+  const [status, setStatus] = useState<string | undefined>()
 
-  const { columns } = useGlobalContext()
+  const { tasks, columns } = useGlobalContext()
   const [openMenu, setOpenMenu] = useState(false)
+  const { currentTask } = useSaveCurrentTask()
   const { currentColumn, setCurrentColumn } = useSaveCurrentColumn()
 
   const statusRef = useRef(null)
@@ -29,6 +31,15 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
   }, [clickOutside])
 
   useEffect(() => {
+    tasks.map((task) => {
+      if (task.id === currentTask.id) {
+        task.status ? setStatus(task.status) : setStatus('Todo')
+      }
+      return task
+    })
+  }, [])
+
+  useMemo(() => {
     setFirstValue !== undefined && setFirstValue('task.status', status)
   }, [setFirstValue, status])
 
@@ -46,7 +57,7 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
           readOnly
           type="text"
           value={menuType === 'add' ? currentColumn : status}
-          name="task.status"
+          name={menuType === 'add' ? 'task.updateColumn' : 'task.status'}
           className="
             mt-2
             cursor-pointer

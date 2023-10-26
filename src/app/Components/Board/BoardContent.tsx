@@ -2,22 +2,53 @@
 
 import React, { useEffect, useState } from 'react'
 import Button from '../Button'
+import PreviewTask from './Task/PreviewTask'
+
 import { NoSsr } from '@mui/material'
-import ScrollContainer from 'react-indiana-drag-scroll'
 import { useGlobalContext } from '@/app/context/store'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
-import PreviewTask from './Task/PreviewTask'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 const BoardContent = () => {
+  const { tasks, columns } = useGlobalContext()
+  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
+  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>(tasks)
+
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
-  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
-  const { tasks, columns } = useGlobalContext()
 
   useEffect(() => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
   }, [columns])
+
+  const handleDragDrop = (results: any) => {
+    const { source, destination, type } = results
+
+    // eslint-disable-next-line prettier/prettier
+    if (!destination) return;
+
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      // eslint-disable-next-line prettier/prettier
+      return;
+    }
+
+    if (type === 'group') {
+      const reorderedTasks = [...tasks]
+      const sourceIndex = source.index
+      const destinationIndex = destination.index
+
+      console.log(sourceIndex, destinationIndex)
+
+      const [removedTask] = reorderedTasks.splice(sourceIndex, 0)
+      reorderedTasks.splice(destinationIndex, 0, removedTask)
+
+      return setReorderTasks(reorderedTasks)
+    }
+  }
 
   if (columns.length > 0) {
     return (
@@ -43,32 +74,60 @@ const BoardContent = () => {
           "
         >
           {formatedArr?.map((col) => (
-            <ul key={col.itemID} className="flex flex-col gap-y-6">
-              <div className="flex w-28 gap-x-3">
-                <i
-                  style={{ backgroundColor: col.color }}
-                  className="h-[15px] w-[15px] rounded-full"
-                />
-
-                <h4 className="text-heading-s uppercase text-medium-gray">
-                  {`${col.columnName}`}
-                </h4>
-              </div>
-
-              {tasks.map(
-                (task) =>
-                  task.fromColumn === col.columnName && (
-                    <PreviewTask
-                      key={task.id}
-                      taskID={task.id}
-                      title={task.title}
-                      taskColumn={task.fromColumn}
-                      description={task.description}
-                      currentColumnName={col.columnName}
+            <section key={col.itemID}>
+              <DragDropContext onDragEnd={handleDragDrop}>
+                <ul className="flex flex-col gap-y-6">
+                  <div className="flex w-40 gap-x-3">
+                    <i
+                      style={{ backgroundColor: col.color }}
+                      className="h-[15px] w-[15px] rounded-full"
                     />
-                  ),
-              )}
-            </ul>
+
+                    <h4 className="text-heading-s uppercase text-medium-gray">
+                      {`${col.columnName}`}
+                    </h4>
+                  </div>
+
+                  <Droppable droppableId={col.itemID} type="group">
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="flex flex-col gap-y-6"
+                      >
+                        {reorderTasks.map(
+                          (task, index) =>
+                            task.fromColumn === col.columnName && (
+                              <Draggable
+                                key={task.id}
+                                index={index}
+                                draggableId={task.id}
+                              >
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.dragHandleProps}
+                                    {...provided.draggableProps}
+                                  >
+                                    <PreviewTask
+                                      key={task.id}
+                                      taskID={task.id}
+                                      title={task.title}
+                                      taskColumn={task.fromColumn}
+                                      description={task.description}
+                                      currentColumnName={col.columnName}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ),
+                        )}
+                      </div>
+                    )}
+                  </Droppable>
+                </ul>
+              </DragDropContext>
+            </section>
           ))}
 
           <section className="relative mt-10 h-auto w-[280px]">

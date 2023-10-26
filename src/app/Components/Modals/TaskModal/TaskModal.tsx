@@ -23,7 +23,7 @@ interface TaskModalProps {
 
 const TaskModal = ({ modalType }: TaskModalProps) => {
   const [loading, setLoading] = useState(false)
-  const { columns, tasks, subtasks } = useGlobalContext()
+  const { boards, columns, tasks, subtasks } = useGlobalContext()
 
   const router = useRouter()
   const { currentTask } = useSaveCurrentTask()

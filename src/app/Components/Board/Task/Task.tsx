@@ -71,6 +71,7 @@ const Task = () => {
       if (task.id === currentTask.id) {
         setValue('task.id', task.id)
         setValue('task.title', task.title)
+        setValue('task.status', task.status)
         setValue('task.fromColumn', task.fromColumn)
       }
       return task

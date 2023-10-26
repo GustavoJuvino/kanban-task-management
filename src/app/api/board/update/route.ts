@@ -27,47 +27,51 @@ export async function POST(request: Request) {
 
     await Promise.all(
       boardColumns.map(async (column) => {
-        await prisma.column.upsert({
-          where: {
-            id: column.id,
-            boardID: currentUser.id,
-          },
-          update: {
-            columnName: column.columnName,
-            fromBoard: board.name.replace(/\s/g, ''),
-          },
-          create: {
-            fromBoard: board.name.replace(/\s/g, ''),
-            columnName: column.columnName,
-            itemID: String(column.itemID),
-            color: column.color,
-            boardID: currentUser.id,
-          },
-        })
+        boardColumns !== undefined &&
+          (await prisma.column.upsert({
+            where: {
+              id: column.id,
+              boardID: currentUser.id,
+            },
+            update: {
+              columnName: column.columnName,
+              fromBoard: board.name.replace(/\s/g, ''),
+            },
+            create: {
+              fromBoard: board.name.replace(/\s/g, ''),
+              columnName: column.columnName,
+              itemID: String(column.itemID),
+              color: column.color,
+              boardID: currentUser.id,
+            },
+          }))
       }),
     ),
 
     tasks !== undefined &&
       (await Promise.all(
         tasks.map(async (task) => {
-          await prisma.task.update({
-            where: {
-              id: task.id,
-              title: task.title,
-              columnID: currentUser.id,
-            },
-            data: {
-              fromColumn: boardColumns[Number(task.itemID)].columnName,
-              updateColumn: boardColumns[Number(task.itemID)].columnName,
-            },
-          })
+          if (task.id !== '') {
+            await prisma.task.update({
+              where: {
+                id: task.id,
+                title: task.title,
+                columnID: currentUser.id,
+              },
+              data: {
+                fromColumn: boardColumns[Number(task.itemID)].columnName,
+                updateColumn: boardColumns[Number(task.itemID)].columnName,
+              },
+            })
+          }
 
           subtasks !== undefined &&
             (await Promise.all(
               subtasks.map(async (subtask) => {
                 if (
-                  subtask.fromColumn === task.fromColumn &&
-                  subtask.fromTask === task.title
+                  subtask.id !== '' &&
+                  subtask.fromTask === task.title &&
+                  subtask.fromColumn === task.fromColumn
                 ) {
                   await prisma.subtask.update({
                     where: {

@@ -48,6 +48,7 @@ model Task {
   itemID String
   title String 
   status String?
+  fromBoard String
   fromColumn String
   updateTitle String
   description String

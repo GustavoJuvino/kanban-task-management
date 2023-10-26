@@ -15,8 +15,8 @@ export async function DELETE(request: Request) {
 
   const deleteColumns = [
     await Promise.all(
-      columns.map(async (col: ColumnsProps) => {
-        if (col.columnName !== '') {
+      columns !== undefined &&
+        columns.map(async (col: ColumnsProps) => {
           await prisma.column.delete({
             where: {
               id: col.id,
@@ -25,31 +25,32 @@ export async function DELETE(request: Request) {
               fromBoard: col.fromBoard,
             },
           })
-        }
-        tasks.map(async (task: TaskProps) => {
-          await prisma.task.delete({
-            where: {
-              id: task.id,
-              title: task.title,
-              itemID: col.itemID,
-              fromColumn: col.columnName,
-              columnID: currentUser.id,
-            },
-          })
-          await Promise.all(
-            subtasks.map(async (subtask: SubtaskProps) => {
-              await prisma.subtask.delete({
+
+          tasks !== undefined &&
+            tasks.map(async (task: TaskProps) => {
+              await prisma.task.delete({
                 where: {
-                  id: subtask.id,
-                  name: subtask.name,
-                  fromTask: task.title,
-                  subtaskID: String(subtask.subtaskID),
+                  id: task.id,
+                  title: task.title,
+                  itemID: col.itemID,
+                  fromColumn: col.columnName,
+                  columnID: currentUser.id,
                 },
               })
-            }),
-          )
-        })
-      }),
+              await Promise.all(
+                subtasks.map(async (subtask: SubtaskProps) => {
+                  await prisma.subtask.delete({
+                    where: {
+                      id: subtask.id,
+                      name: subtask.name,
+                      fromTask: task.title,
+                      subtaskID: String(subtask.subtaskID),
+                    },
+                  })
+                }),
+              )
+            })
+        }),
     ),
   ]
 

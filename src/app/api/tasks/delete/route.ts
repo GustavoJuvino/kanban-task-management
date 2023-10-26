@@ -14,13 +14,14 @@ export async function DELETE(request: Request) {
   const { task } = body
 
   const deleteTask = [
-    await prisma.task.delete({
-      where: {
-        id: task.id,
-        columnID: task.columnID,
-        title: task.title,
-      },
-    }),
+    task.id !== undefined &&
+      (await prisma.task.delete({
+        where: {
+          id: task.id,
+          columnID: task.columnID,
+          title: task.title,
+        },
+      })),
 
     await prisma.subtask.deleteMany({
       where: {
