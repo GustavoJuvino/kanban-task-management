@@ -14,12 +14,14 @@ interface BoardFormInputs {
     id: string
     title: string
     itemID: string
+    fromBoard: string
     fromColumn: string
   }[]
   subtasks: {
     id: string
     name: string
     fromTask: string
+    fromBoard: string
     fromColumn: string
   }[]
 }
@@ -32,6 +34,7 @@ interface TaskFormInputs {
     status?: string
     description: string
     fromColumn: string
+    fromBoard: string
     updateTitle: string
     updateColumn: string
   }
@@ -41,6 +44,7 @@ interface TaskFormInputs {
     fromTask: string
     subtaskID: number
     completed: boolean
+    fromBoard: string
     fromColumn: string
   }[]
   columns: { itemID: string; columnName: string }[]

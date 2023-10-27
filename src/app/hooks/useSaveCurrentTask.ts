@@ -2,6 +2,7 @@ import { create } from 'zustand'
 
 type currentTaskProps = {
   id: string
+  taskBoard: string
   taskTitle: string
   taskColumn: string
   taskDescription: string
@@ -13,7 +14,13 @@ interface CurrentURL {
 }
 
 const useSaveCurrentTask = create<CurrentURL>()((set) => ({
-  currentTask: { id: '', taskTitle: '', taskColumn: '', taskDescription: '' },
+  currentTask: {
+    id: '',
+    taskBoard: '',
+    taskTitle: '',
+    taskColumn: '',
+    taskDescription: '',
+  },
   setCurrentTask: (status) =>
     set((state) => ({ currentTask: (state.currentTask = status) })),
 }))

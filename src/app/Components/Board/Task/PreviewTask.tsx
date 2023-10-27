@@ -7,27 +7,24 @@ import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 
 interface PreviewTaskProps {
   title: string
   taskID: string
   description: string
   taskColumn: string
+  taskBoard: string
   currentColumnName: string
 }
 
-const PreviewTask = ({
-  title,
-  taskID,
-  description,
-  taskColumn,
-  currentColumnName,
-}: PreviewTaskProps) => {
+const PreviewTask = ({ ...props }: PreviewTaskProps) => {
   const taskRef = useRef(null)
   const [openTask, setOpenTask] = useState(false)
   const [subArr, setSubArr] = useState<SubtaskProps[]>([])
   const [completedSubs, setCompletedSubs] = useState<SubtaskProps[]>([])
 
+  const { URL } = useGetCurrentURL()
   const { subtasks } = useGlobalContext()
   const { clickOutside } = useClickOutside()
   const { openEditTask } = useOpenTaskModal()
@@ -45,14 +42,19 @@ const PreviewTask = ({
     const newArr: SubtaskProps[] = []
 
     formatSubs.map((sub) => {
-      if (sub.fromTask === title && sub.fromColumn === currentColumnName) {
+      if (
+        sub.fromTask === props.title &&
+        sub.fromColumn === props.currentColumnName &&
+        sub.fromBoard.replace(/\s/g, '') === URL
+      ) {
         checkSubs.push(sub)
       }
 
       if (
         sub.completed &&
-        sub.fromTask === title &&
-        sub.fromColumn === currentColumnName
+        sub.fromTask === props.title &&
+        sub.fromColumn === props.currentColumnName &&
+        sub.fromBoard.replace(/\s/g, '') === URL
       ) {
         newArr.push(sub)
       }
@@ -69,12 +71,13 @@ const PreviewTask = ({
         onClick={() => {
           setOpenTask(true)
           setCurrentTask({
-            id: taskID,
-            taskColumn,
-            taskTitle: title,
-            taskDescription: description,
+            id: props.taskID,
+            taskColumn: props.taskColumn,
+            taskBoard: props.taskBoard,
+            taskTitle: props.title,
+            taskDescription: props.description,
           })
-          setCurrentColumn(currentColumnName)
+          setCurrentColumn(props.currentColumnName)
         }}
         className="
           h-auto
@@ -87,7 +90,7 @@ const PreviewTask = ({
         "
       >
         <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
-          {title}
+          {props.title}
         </h3>
         {subArr.length > 0 && (
           <span className="text-body-m text-medium-gray">

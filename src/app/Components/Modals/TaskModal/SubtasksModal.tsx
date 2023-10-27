@@ -74,17 +74,22 @@ const SubtasksModal = ({
 
   //  Edit Subtasks
   useEffect(() => {
-    if (modalType === 'edit' && subtasks.length > 1) {
+    const currentSubs = subtasks.map(
+      (sub) =>
+        sub.fromColumn === currentColumn &&
+        sub.fromTask === currentTask.taskTitle &&
+        sub.fromBoard === currentTask.taskBoard &&
+        sub,
+    )
+    currentSubs.filter((sub) => sub !== false)
+
+    if (modalType === 'edit' && currentSubs.length > 1) {
       const newArr: SubtaskProps[] = []
-      subtasks.map((sub) => {
-        if (
-          sub.fromTask === currentTask.taskTitle &&
-          sub.fromColumn === currentColumn
-        ) {
-          newArr.push(sub)
-        }
+      currentSubs.map((sub) => {
+        if (sub) newArr.push(sub)
         return sub
       })
+
       newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)).shift()
 
       insert(
@@ -103,7 +108,6 @@ const SubtasksModal = ({
 
   // Exclude subtasks in Edit Subtasks modal
   useEffect(() => {
-    console.log(excludeSubs)
     if (isSubmitting && excludeSubs.length > 0) {
       axios
         .delete(`/api/subtasks`, {

@@ -64,6 +64,7 @@ model Subtask {
   subtaskID String
   name String
   fromTask String
+  fromBoard String
   fromColumn String
   completed Boolean
 

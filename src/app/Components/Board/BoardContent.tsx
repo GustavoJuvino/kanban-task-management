@@ -9,9 +9,12 @@ import { useGlobalContext } from '@/app/context/store'
 import { useHideSidebar } from '@/app/hooks/useHideSidebar'
 import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 
 const BoardContent = () => {
   const { tasks, columns } = useGlobalContext()
+  const { URL } = useGetCurrentURL()
+
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
   const [reorderTasks, setReorderTasks] = useState<TaskProps[]>(tasks)
 
@@ -21,6 +24,8 @@ const BoardContent = () => {
   useEffect(() => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
   }, [columns])
+
+  // Config to when the user changes the board names, will change the from board from tasks as wel
 
   const handleDragDrop = (results: any) => {
     const { source, destination, type } = results
@@ -88,43 +93,57 @@ const BoardContent = () => {
                     </h4>
                   </div>
 
-                  <Droppable droppableId={col.itemID} type="group">
+                  {tasks.map(
+                    (task) =>
+                      task.fromBoard.replace(/\s/g, '') === URL &&
+                      task.fromColumn === col.columnName && (
+                        <PreviewTask
+                          key={task.id}
+                          taskID={task.id}
+                          title={task.title}
+                          taskBoard={task.fromBoard}
+                          taskColumn={task.fromColumn}
+                          description={task.description}
+                          currentColumnName={col.columnName}
+                        />
+                      ),
+                  )}
+
+                  {/* <Droppable droppableId={col.itemID} type="group">
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                         className="flex flex-col gap-y-6"
                       >
-                        {reorderTasks.map(
-                          (task, index) =>
-                            task.fromColumn === col.columnName && (
-                              <Draggable
-                                key={task.id}
-                                index={index}
-                                draggableId={task.id}
-                              >
-                                {(provided) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.dragHandleProps}
-                                    {...provided.draggableProps}
-                                  >
-                                    <PreviewTask
-                                      key={task.id}
-                                      taskID={task.id}
-                                      title={task.title}
-                                      taskColumn={task.fromColumn}
-                                      description={task.description}
-                                      currentColumnName={col.columnName}
-                                    />
-                                  </div>
-                                )}
-                              </Draggable>
-                            ),
+                        {tasks.map((task, index) => (
+                                <Draggable
+                                  key={task.id}
+                                  index={index}
+                                  draggableId={task.id}
+                                >
+                                  {(provided) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.dragHandleProps}
+                                      {...provided.draggableProps}
+                                    >
+                                      <PreviewTask
+                                        key={task.id}
+                                        taskID={task.id}
+                                        title={task.title}
+                                        taskColumn={task.fromColumn}
+                                        description={task.description}
+                                        currentColumnName={col.columnName}
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>,
+                              ),
                         )}
                       </div>
                     )}
-                  </Droppable>
+                  </Droppable> */}
                 </ul>
               </DragDropContext>
             </section>

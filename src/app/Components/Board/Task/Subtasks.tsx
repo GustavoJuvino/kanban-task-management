@@ -5,11 +5,13 @@ import { useGlobalContext } from '@/app/context/store'
 import CheckIcon from '@mui/icons-material/Check'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 
 const Subtasks = () => {
   const [subsChecked, setSubsChecked] = useState<boolean[]>()
   const [formatedArr, setFormatedArr] = useState<SubtaskProps[]>()
 
+  const { URL } = useGetCurrentURL()
   const { tasks, subtasks } = useGlobalContext()
   const { currentTask } = useSaveCurrentTask()
   const { currentColumn } = useSaveCurrentColumn()
@@ -26,6 +28,7 @@ const Subtasks = () => {
         (sub) =>
           sub.fromTask === currentTask.taskTitle &&
           sub.fromColumn === currentColumn &&
+          sub.fromBoard.replace(/\s/g, '') === URL &&
           newArr.push(sub),
       )
       if (newArr.length > 0) {

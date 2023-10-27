@@ -5,5 +5,6 @@ interface SubtaskProps {
   subtaskID: string
   taskID?: string
   completed: boolean
+  fromBoard: string
   fromColumn: string
 }

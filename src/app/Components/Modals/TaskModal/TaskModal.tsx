@@ -16,6 +16,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import SubtasksModal from './SubtasksModal'
 import { useRouter } from 'next/navigation'
 import ObjectID from 'bson-objectid'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
@@ -23,12 +24,13 @@ interface TaskModalProps {
 
 const TaskModal = ({ modalType }: TaskModalProps) => {
   const [loading, setLoading] = useState(false)
-  const { boards, columns, tasks, subtasks } = useGlobalContext()
 
   const router = useRouter()
+  const { URL } = useGetCurrentURL()
   const { currentTask } = useSaveCurrentTask()
   const { currentColumn } = useSaveCurrentColumn()
   const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
+  const { boards, columns, tasks, subtasks } = useGlobalContext()
 
   let objectID = ''
   const generateObjectID = () => (objectID = ObjectID().toHexString())
@@ -40,6 +42,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         id: '',
         title: '',
         columnID: '',
+        fromBoard: '',
         fromColumn: '',
         description: '',
         updateTitle: '',
@@ -68,6 +71,12 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   useEffect(() => {
     if (modalType === 'add') {
       setValue('task.updateColumn', currentColumn)
+      boards.map(
+        (board) =>
+          board.boardName.replace(/\s/g, '') === URL &&
+          setValue('task.fromBoard', board.boardName),
+      )
+
       columns.map((col, index) => {
         setValue(`columns.${index}.itemID`, col.itemID)
         setValue(`columns.${index}.columnName`, col.columnName)
@@ -75,7 +84,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         return col
       })
     }
-  }, [modalType, currentColumn, setValue, columns])
+  }, [modalType, currentColumn, setValue, columns, boards, URL])
 
   // Edit Task
   useMemo(() => {
@@ -117,7 +126,8 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       subtasks.map((sub) => {
         if (
           sub.fromTask === currentTask.taskTitle &&
-          sub.fromColumn === currentTask.taskColumn
+          sub.fromColumn === currentTask.taskColumn &&
+          sub.fromBoard === currentTask.taskBoard
         ) {
           newArr.push(sub)
         } else {

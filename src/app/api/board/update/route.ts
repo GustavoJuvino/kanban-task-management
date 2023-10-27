@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     tasks !== undefined &&
       (await Promise.all(
         tasks.map(async (task) => {
-          if (task.id !== '') {
+          if (task.id !== '' && task.fromBoard === board.name) {
             await prisma.task.update({
               where: {
                 id: task.id,
@@ -59,6 +59,7 @@ export async function POST(request: Request) {
                 columnID: currentUser.id,
               },
               data: {
+                fromBoard: board.name.replace(/\s/g, ''),
                 fromColumn: boardColumns[Number(task.itemID)].columnName,
                 updateColumn: boardColumns[Number(task.itemID)].columnName,
               },
@@ -71,7 +72,8 @@ export async function POST(request: Request) {
                 if (
                   subtask.id !== '' &&
                   subtask.fromTask === task.title &&
-                  subtask.fromColumn === task.fromColumn
+                  subtask.fromColumn === task.fromColumn &&
+                  subtask.fromBoard === board.name
                 ) {
                   await prisma.subtask.update({
                     where: {
@@ -81,6 +83,7 @@ export async function POST(request: Request) {
                       fromColumn: subtask.fromColumn,
                     },
                     data: {
+                      fromBoard: board.name.replace(/\s/g, ''),
                       fromColumn: boardColumns[Number(task.itemID)].columnName,
                     },
                   })

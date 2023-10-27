@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       where: {
         id: task.id,
         title: task.title,
+        fromBoard: task.fromBoard,
         fromColumn: task.fromColumn,
       },
       data: {
@@ -34,6 +35,7 @@ export async function POST(request: Request) {
               name: subtask.name,
               taskID: currentUser.id,
               fromColumn: task.fromColumn,
+              fromBoard: subtask.fromBoard,
             },
             data: {
               completed: subtask.completed,

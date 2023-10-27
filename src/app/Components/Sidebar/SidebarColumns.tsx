@@ -6,8 +6,8 @@ import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 
 const SidebarColumns = () => {
   const router = useRouter()
-  const { boards } = useGlobalContext()
   const { URL } = useGetCurrentURL()
+  const { boards } = useGlobalContext()
 
   return (
     <ul className="mt-5">
