@@ -13,9 +13,9 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { useGlobalContext } from '../context/store'
 import useGetCurrentURL from '../hooks/useGetCurrentURL'
-import useOpenTaskModal from '../hooks/ModalHooks/useOpenTaskModal'
-import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
-import useOpenDeleteModal from '../hooks/ModalHooks/useOpenDeleteModal'
+import useOpenTaskModal from '../helper/ModalHooks/useOpenTaskModal'
+import useOpenBoardModal from '../helper/ModalHooks/useOpenBoardModal'
+import useOpenDeleteModal from '../helper/ModalHooks/useOpenDeleteModal'
 
 interface MainProps {
   boardURL: string

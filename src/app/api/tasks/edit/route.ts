@@ -63,6 +63,7 @@ export async function POST(request: Request) {
               taskID: currentUser.id,
               fromColumn: task.updateColumn,
               completed: subtask.completed,
+              fromBoard: subtask.fromBoard,
               subtaskID: String(subtask.subtaskID),
             },
           })

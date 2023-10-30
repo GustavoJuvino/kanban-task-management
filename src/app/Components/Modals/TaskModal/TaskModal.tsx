@@ -7,7 +7,7 @@ import { Close } from '../../../../../public/modal'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
+import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
 
 import axios from 'axios'
 import { Form } from '../../form'
@@ -41,6 +41,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       task: {
         id: '',
         title: '',
+        itemID: '',
         columnID: '',
         fromBoard: '',
         fromColumn: '',
@@ -70,7 +71,14 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   // Add Task
   useEffect(() => {
     if (modalType === 'add') {
+      const itemID = tasks.map((task) => Number(task.itemID))
+
+      setValue(
+        'task.itemID',
+        itemID.length > 0 ? String(Math.max(...itemID) + 1) : '0',
+      )
       setValue('task.updateColumn', currentColumn)
+
       boards.map(
         (board) =>
           board.boardName.replace(/\s/g, '') === URL &&

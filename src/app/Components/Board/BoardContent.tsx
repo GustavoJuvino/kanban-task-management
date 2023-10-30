@@ -1,22 +1,25 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../Button'
 import PreviewTask from './Task/PreviewTask'
 
 import { NoSsr } from '@mui/material'
 import { useGlobalContext } from '@/app/context/store'
-import { useHideSidebar } from '@/app/hooks/useHideSidebar'
-import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
+import { useHideSidebar } from '@/app/helper/useHideSidebar'
+import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const BoardContent = () => {
   const { tasks, columns } = useGlobalContext()
   const { URL } = useGetCurrentURL()
 
+  const [updateTasks, setUpdateTasks] = useState<TaskProps[]>()
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
-  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>(tasks)
+  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
 
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
@@ -25,35 +28,75 @@ const BoardContent = () => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
   }, [columns])
 
-  // Config to when the user changes the board names, will change the from board from tasks as wel
+  useMemo(() => {
+    setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
+  }, [])
 
   const handleDragDrop = (results: any) => {
     const { source, destination, type } = results
 
-    // eslint-disable-next-line prettier/prettier
-    if (!destination) return;
+    if (!results.destination) return null
 
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
-      // eslint-disable-next-line prettier/prettier
-      return;
-    }
+    const reorderedTasks = [...reorderTasks]
 
-    if (type === 'group') {
-      const reorderedTasks = [...tasks]
-      const sourceIndex = source.index
-      const destinationIndex = destination.index
+    const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
 
-      console.log(sourceIndex, destinationIndex)
+    reorderedTasks.splice(results.destination.index, 0, reorderItem)
 
-      const [removedTask] = reorderedTasks.splice(sourceIndex, 0)
-      reorderedTasks.splice(destinationIndex, 0, removedTask)
-
-      return setReorderTasks(reorderedTasks)
-    }
+    setReorderTasks(reorderedTasks)
   }
+
+  useEffect(() => {
+    const newArr: TaskProps[] = []
+
+    columns.map((col) => {
+      reorderTasks.map((updateTask) => {
+        if (
+          updateTask.fromBoard.replace(/\s/g, '') === URL &&
+          updateTask.fromColumn === col.columnName
+        ) {
+          newArr.push(updateTask)
+        }
+
+        return updateTask
+      })
+      return col
+    })
+
+    if (newArr !== undefined) {
+      localStorage.setItem('updateTasks', JSON.stringify(newArr))
+    }
+  }, [reorderTasks, URL])
+
+  useEffect(() => {
+    const storageTasks = localStorage.getItem('updateTasks')
+    const updateTasks: TaskProps[] = storageTasks && JSON.parse(storageTasks)
+
+    const newArr: TaskProps[] = []
+    updateTasks.length > 0 &&
+      updateTasks.map((task, index) =>
+        newArr.push({ ...task, itemID: index.toString() }),
+      )
+    setUpdateTasks(newArr)
+  }, [reorderTasks])
+
+  useMemo(() => {
+    if (updateTasks !== undefined) {
+      axios
+        .post('/api/tasks/updateItemID', updateTasks)
+        .then(() => {
+          toast.success('Task edited successfully!')
+        })
+        .catch((error) => {
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+          else toast.error('Something went wrong')
+        })
+        .finally(() => {
+          console.log('Finally')
+        })
+    }
+  }, [updateTasks])
 
   if (columns.length > 0) {
     return (
@@ -81,6 +124,59 @@ const BoardContent = () => {
           {formatedArr?.map((col) => (
             <section key={col.itemID}>
               <DragDropContext onDragEnd={handleDragDrop}>
+                {/* <Droppable droppableId={col.columnName} type="group">
+                  {(provided) => (
+                    <ul
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="flex flex-col gap-y-6"
+                    >
+                      <div className="flex w-40 gap-x-3">
+                        <i
+                          style={{ backgroundColor: col.color }}
+                          className="h-[15px] w-[15px] rounded-full"
+                        />
+
+                        <h4 className="text-heading-s uppercase text-medium-gray">
+                          {`${col.columnName}`}
+                        </h4>
+                      </div>
+
+                      {reorderTasks !== undefined &&
+                        reorderTasks.map(
+                          (task) =>
+                            task.fromBoard.replace(/\s/g, '') === URL &&
+                            task.fromColumn === col.columnName && (
+                              <Draggable
+                                key={task.id}
+                                index={Number(task.itemID)}
+                                draggableId={task.itemID}
+                              >
+                                {(provided) => (
+                                  <div
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    ref={provided.innerRef}
+                                  >
+                                    <PreviewTask
+                                      key={task.id}
+                                      taskID={task.id}
+                                      title={task.title}
+                                      taskBoard={task.fromBoard}
+                                      taskColumn={task.fromColumn}
+                                      description={task.description}
+                                      currentColumnName={col.columnName}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ),
+                        )}
+                      {provided.placeholder}
+                    </ul>
+                  )}
+                </Droppable> */}
+
                 <ul className="flex flex-col gap-y-6">
                   <div className="flex w-40 gap-x-3">
                     <i
@@ -93,57 +189,47 @@ const BoardContent = () => {
                     </h4>
                   </div>
 
-                  {tasks.map(
-                    (task) =>
-                      task.fromBoard.replace(/\s/g, '') === URL &&
-                      task.fromColumn === col.columnName && (
-                        <PreviewTask
-                          key={task.id}
-                          taskID={task.id}
-                          title={task.title}
-                          taskBoard={task.fromBoard}
-                          taskColumn={task.fromColumn}
-                          description={task.description}
-                          currentColumnName={col.columnName}
-                        />
-                      ),
-                  )}
-
-                  {/* <Droppable droppableId={col.itemID} type="group">
+                  <Droppable droppableId={col.columnName} type="group">
                     {(provided) => (
-                      <div
+                      <section
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                         className="flex flex-col gap-y-6"
                       >
-                        {tasks.map((task, index) => (
+                        {reorderTasks !== undefined &&
+                          reorderTasks.map(
+                            (task, index) =>
+                              task.fromBoard.replace(/\s/g, '') === URL &&
+                              task.fromColumn === col.columnName && (
                                 <Draggable
                                   key={task.id}
                                   index={index}
-                                  draggableId={task.id}
+                                  draggableId={task.itemID}
                                 >
                                   {(provided) => (
                                     <div
-                                      ref={provided.innerRef}
-                                      {...provided.dragHandleProps}
                                       {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      ref={provided.innerRef}
                                     >
                                       <PreviewTask
                                         key={task.id}
                                         taskID={task.id}
                                         title={task.title}
+                                        taskBoard={task.fromBoard}
                                         taskColumn={task.fromColumn}
                                         description={task.description}
                                         currentColumnName={col.columnName}
                                       />
                                     </div>
                                   )}
-                                </Draggable>,
+                                </Draggable>
                               ),
-                        )}
-                      </div>
+                          )}
+                        {provided.placeholder}
+                      </section>
                     )}
-                  </Droppable> */}
+                  </Droppable>
                 </ul>
               </DragDropContext>
             </section>

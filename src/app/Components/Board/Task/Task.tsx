@@ -8,7 +8,7 @@ import { EditMenuIcon } from '../../../../../public/svgs'
 
 import useClickOutside from '@/app/hooks/useClickOutside'
 import { useGlobalContext } from '@/app/context/store'
-import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
+import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 
 import {
   FormProvider,

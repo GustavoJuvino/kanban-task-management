@@ -20,6 +20,7 @@ export async function DELETE(request: Request) {
           id: task.id,
           columnID: task.columnID,
           title: task.title,
+          fromBoard: task.fromBoard,
         },
       })),
 
@@ -27,6 +28,7 @@ export async function DELETE(request: Request) {
       where: {
         fromTask: task.title,
         fromColumn: task.fromColumn,
+        fromBoard: task.fromBoard,
       },
     }),
   ]

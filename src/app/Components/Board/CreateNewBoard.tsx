@@ -1,6 +1,6 @@
 import React from 'react'
 import { IconBoard } from '../../../../public/sidebar'
-import useOpenBoardModal from '@/app/hooks/ModalHooks/useOpenBoardModal'
+import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
 
 const CreateNewBoard = () => {
   const { onOpenNewBoard } = useOpenBoardModal()

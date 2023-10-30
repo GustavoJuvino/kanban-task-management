@@ -32,7 +32,6 @@ export async function DELETE(request: Request) {
                 where: {
                   id: task.id,
                   title: task.title,
-                  itemID: col.itemID,
                   fromColumn: col.columnName,
                   columnID: currentUser.id,
                 },

@@ -7,7 +7,7 @@ import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import useOpenDeleteModal from '@/app/hooks/ModalHooks/useOpenDeleteModal'
+import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'

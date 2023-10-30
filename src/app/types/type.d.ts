@@ -31,6 +31,7 @@ interface TaskFormInputs {
     id: string
     columnID: string
     title: string
+    itemID: string
     status?: string
     description: string
     fromColumn: string

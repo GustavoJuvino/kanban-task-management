@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { VisibilityOn } from '../../../../public/svgs'
-import { useHideSidebar } from '@/app/hooks/useHideSidebar'
+import { useHideSidebar } from '@/app/helper/useHideSidebar'
 
 const ShowMenu = () => {
   const [hover, setHover] = useState(false)

@@ -8,7 +8,7 @@ import CreateNewBoard from '../Board/CreateNewBoard'
 import { Cross } from '../../../../public/modal'
 import { LogoLight } from '../../../../public/svgs'
 import { useWindowSize } from '@uidotdev/usehooks'
-import { useHideSidebar } from '@/app/hooks/useHideSidebar'
+import { useHideSidebar } from '@/app/helper/useHideSidebar'
 import SidebarColumns from './SidebarColumns'
 import { useGlobalContext } from '@/app/context/store'
 

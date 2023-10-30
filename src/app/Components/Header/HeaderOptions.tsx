@@ -8,7 +8,7 @@ import { useWindowSize } from '@uidotdev/usehooks'
 import { useGlobalContext } from '@/app/context/store'
 import useClickOutside from '@/app/hooks/useClickOutside'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import useOpenTaskModal from '@/app/hooks/ModalHooks/useOpenTaskModal'
+import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
 
 const HeaderOptions = () => {
   const [openMenu, setOpenMenu] = useState(false)
@@ -29,12 +29,13 @@ const HeaderOptions = () => {
   if (pathname !== '/')
     return (
       <section className="flex items-center gap-x-4 sm:gap-x-6">
-        <Button
-          onClick={() => {
-            onOpenNewTask(true)
-            setCurrentColumn(columns[0].columnName)
-          }}
-          className="
+        {columns.length > 0 && (
+          <Button
+            onClick={() => {
+              onOpenNewTask(true)
+              setCurrentColumn(columns[0].columnName)
+            }}
+            className="
             flex
             w-12
             items-center
@@ -42,9 +43,10 @@ const HeaderOptions = () => {
             max-sm:h-8
             sm:w-[164px]
           "
-        >
-          {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
-        </Button>
+          >
+            {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
+          </Button>
+        )}
         <div ref={editMenuRef}>
           <EditMenuIcon
             onClick={() => setOpenMenu(!openMenu)}

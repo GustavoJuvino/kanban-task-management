@@ -5,7 +5,7 @@ import Header from './Header/Header'
 import Button from './Button'
 import Sidebar from './Sidebar/Sidebar'
 import BoardModal from './Modals/BoardModal/BoardModal'
-import useOpenBoardModal from '../hooks/ModalHooks/useOpenBoardModal'
+import useOpenBoardModal from '../helper/ModalHooks/useOpenBoardModal'
 import { useGlobalContext } from '../context/store'
 import { ToastContainer } from 'react-toastify'
 

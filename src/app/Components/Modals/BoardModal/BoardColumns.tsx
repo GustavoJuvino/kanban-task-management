@@ -7,7 +7,7 @@ import { ColumnsErrorsProps } from '@/app/types/errors'
 import { useRouter } from 'next/navigation'
 import { useFieldArray } from 'react-hook-form'
 import { useGlobalContext } from '@/app/context/store'
-import { useGetRandomColor } from '@/app/hooks/useGetRandomColor'
+import { useGetRandomColor } from '@/app/helper/useGetRandomColor'
 
 import axios from 'axios'
 import ObjectID from 'bson-objectid'
