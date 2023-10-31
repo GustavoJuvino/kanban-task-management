@@ -43,7 +43,7 @@ const BoardColumns = ({
   useMemo(() => {
     if (modalType === 'add') {
       append({
-        columnName: '',
+        updateColumnName: '',
         itemID,
         color: randomColor,
       })
@@ -67,20 +67,20 @@ const BoardColumns = ({
             color: col.color,
             itemID: col.itemID,
             boardID: col.boardID,
-            columnName: col.columnName,
+            columnName: col.updateColumnName,
+            updateColumnName: col.updateColumnName,
           })),
         )
       } else {
         generateObjectID()
         update(0, {
           id: objectID,
-          columnName: 'e.g Todo',
+          updateColumnName: 'e.g Todo',
           itemID,
           color: randomColor,
         })
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [insert, formatedArr])
 
   useEffect(() => {
@@ -114,16 +114,16 @@ const BoardColumns = ({
             >
               <Form.Input
                 id="form_input"
-                name={`boardColumns.${index}.columnName` as const}
+                name={`boardColumns.${index}.updateColumnName` as const}
                 error={
                   inputErrors !== undefined &&
-                  inputErrors[index]?.columnName?.message
+                  inputErrors[index]?.updateColumnName?.message
                 }
                 type="text"
                 placeholder="e.g Todo"
                 className={`${
                   inputErrors !== undefined &&
-                  inputErrors[index]?.columnName?.message &&
+                  inputErrors[index]?.updateColumnName?.message &&
                   'border-opacity-100'
                 }`}
               />
@@ -137,7 +137,7 @@ const BoardColumns = ({
                     hover:fill-red
                     ${
                       inputErrors !== undefined &&
-                      inputErrors[index]?.columnName?.message &&
+                      inputErrors[index]?.updateColumnName?.message &&
                       'fill-red'
                     }
                 `}
@@ -151,7 +151,7 @@ const BoardColumns = ({
           onClick={() => {
             setItemID(itemID + 1)
             append({
-              columnName: '',
+              updateColumnName: '',
               itemID: itemID + 1,
               color: randomColor,
             })
@@ -175,14 +175,14 @@ const BoardColumns = ({
                 id="form_input"
                 error={
                   inputErrors !== undefined &&
-                  inputErrors[index]?.columnName?.message
+                  inputErrors[index]?.updateColumnName?.message
                 }
                 type="text"
-                name={`boardColumns.${index}.columnName` as const}
+                name={`boardColumns.${index}.updateColumnName` as const}
                 placeholder="e.g New Column"
                 className={`${
                   inputErrors !== undefined &&
-                  inputErrors[index]?.columnName?.message &&
+                  inputErrors[index]?.updateColumnName?.message &&
                   'border-opacity-100'
                 }`}
               />
@@ -200,7 +200,7 @@ const BoardColumns = ({
                   hover:fill-red
                   ${
                     inputErrors !== undefined &&
-                    inputErrors[index]?.columnName?.message &&
+                    inputErrors[index]?.updateColumnName?.message &&
                     'fill-red'
                   }
                 `}
@@ -216,7 +216,7 @@ const BoardColumns = ({
             setItemID(itemID + 1)
             append({
               id: objectID,
-              columnName: '',
+              updateColumnName: '',
               itemID: itemID + 1,
               color: randomColor,
             })

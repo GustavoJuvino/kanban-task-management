@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Button from '../Button'
 import PreviewTask from './Task/PreviewTask'
 
@@ -12,14 +12,19 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 
 const BoardContent = () => {
   const { tasks, columns } = useGlobalContext()
   const { URL } = useGetCurrentURL()
 
-  const [updateTasks, setUpdateTasks] = useState<TaskProps[]>()
-  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
-  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
+  const router = useRouter()
+  const [update, setUpdate] = useState(false)
+  const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
+  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
+  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>(
+    tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)),
+  )
 
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
@@ -28,13 +33,7 @@ const BoardContent = () => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
   }, [columns])
 
-  useMemo(() => {
-    setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
-  }, [])
-
   const handleDragDrop = (results: any) => {
-    const { source, destination, type } = results
-
     if (!results.destination) return null
 
     const reorderedTasks = [...reorderTasks]
@@ -44,59 +43,73 @@ const BoardContent = () => {
     reorderedTasks.splice(results.destination.index, 0, reorderItem)
 
     setReorderTasks(reorderedTasks)
+    setUpdate(true)
   }
 
+  // useEffect(() => {
+  // const newArr: TaskProps[] = []
+  // columns.map((col) => {
+  //   reorderTasks.map((updateTask) => {
+  //     if (
+  //       updateTask.fromBoard.replace(/\s/g, '') === URL &&
+  //       updateTask.fromColumn === col.columnName
+  //     ) {
+  //       newArr.push(updateTask)
+  //     }
+
+  //     return updateTask
+  //   })
+  //   return col
+  // })
+
+  //   if (newArr !== undefined) {
+  //     localStorage.setItem('updateTasks', JSON.stringify(newArr))
+  //   }
+  // }, [reorderTasks, URL])
+
   useEffect(() => {
-    const newArr: TaskProps[] = []
+    if (reorderTasks.length > 0) {
+      const checkTasks: TaskProps[] = []
+      columns.map((col) => {
+        reorderTasks.map((updateTask) => {
+          if (
+            updateTask.fromBoard.replace(/\s/g, '') === URL &&
+            updateTask.fromColumn === col.columnName
+          ) {
+            checkTasks.push(updateTask)
+          }
 
-    columns.map((col) => {
-      reorderTasks.map((updateTask) => {
-        if (
-          updateTask.fromBoard.replace(/\s/g, '') === URL &&
-          updateTask.fromColumn === col.columnName
-        ) {
-          newArr.push(updateTask)
-        }
-
-        return updateTask
+          return updateTask
+        })
+        return col
       })
-      return col
-    })
 
-    if (newArr !== undefined) {
-      localStorage.setItem('updateTasks', JSON.stringify(newArr))
+      if (checkTasks.length > 0) {
+        const newArr: TaskProps[] = []
+
+        checkTasks.map((task, index) =>
+          newArr.push({ ...task, itemID: index.toString() }),
+        )
+
+        setUpdateTasks(newArr)
+      }
     }
-  }, [reorderTasks, URL])
+  }, [URL, columns, reorderTasks])
 
   useEffect(() => {
-    const storageTasks = localStorage.getItem('updateTasks')
-    const updateTasks: TaskProps[] = storageTasks && JSON.parse(storageTasks)
-
-    const newArr: TaskProps[] = []
-    updateTasks.length > 0 &&
-      updateTasks.map((task, index) =>
-        newArr.push({ ...task, itemID: index.toString() }),
-      )
-    setUpdateTasks(newArr)
-  }, [reorderTasks])
-
-  useMemo(() => {
-    if (updateTasks !== undefined) {
+    if (update && updateTasks !== undefined && updateTasks?.length > 0) {
       axios
         .post('/api/tasks/updateItemID', updateTasks)
-        .then(() => {
-          toast.success('Task edited successfully!')
-        })
         .catch((error) => {
           if (error.request.status === 409)
             toast.error(error.response.data.message)
           else toast.error('Something went wrong')
         })
         .finally(() => {
-          console.log('Finally')
+          setUpdate(false)
         })
     }
-  }, [updateTasks])
+  }, [updateTasks, update])
 
   if (columns.length > 0) {
     return (
@@ -124,59 +137,6 @@ const BoardContent = () => {
           {formatedArr?.map((col) => (
             <section key={col.itemID}>
               <DragDropContext onDragEnd={handleDragDrop}>
-                {/* <Droppable droppableId={col.columnName} type="group">
-                  {(provided) => (
-                    <ul
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="flex flex-col gap-y-6"
-                    >
-                      <div className="flex w-40 gap-x-3">
-                        <i
-                          style={{ backgroundColor: col.color }}
-                          className="h-[15px] w-[15px] rounded-full"
-                        />
-
-                        <h4 className="text-heading-s uppercase text-medium-gray">
-                          {`${col.columnName}`}
-                        </h4>
-                      </div>
-
-                      {reorderTasks !== undefined &&
-                        reorderTasks.map(
-                          (task) =>
-                            task.fromBoard.replace(/\s/g, '') === URL &&
-                            task.fromColumn === col.columnName && (
-                              <Draggable
-                                key={task.id}
-                                index={Number(task.itemID)}
-                                draggableId={task.itemID}
-                              >
-                                {(provided) => (
-                                  <div
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    ref={provided.innerRef}
-                                  >
-                                    <PreviewTask
-                                      key={task.id}
-                                      taskID={task.id}
-                                      title={task.title}
-                                      taskBoard={task.fromBoard}
-                                      taskColumn={task.fromColumn}
-                                      description={task.description}
-                                      currentColumnName={col.columnName}
-                                    />
-                                  </div>
-                                )}
-                              </Draggable>
-                            ),
-                        )}
-                      {provided.placeholder}
-                    </ul>
-                  )}
-                </Droppable> */}
-
                 <ul className="flex flex-col gap-y-6">
                   <div className="flex w-40 gap-x-3">
                     <i
@@ -197,6 +157,7 @@ const BoardContent = () => {
                         className="flex flex-col gap-y-6"
                       >
                         {reorderTasks !== undefined &&
+                          reorderTasks.length > 0 &&
                           reorderTasks.map(
                             (task, index) =>
                               task.fromBoard.replace(/\s/g, '') === URL &&

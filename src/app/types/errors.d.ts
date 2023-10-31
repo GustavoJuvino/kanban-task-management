@@ -10,6 +10,7 @@ type ColumnsErrorsProps =
               columnName: string
               id: number
               color: string
+              updateColumnName: string
             }>
           >
         | undefined

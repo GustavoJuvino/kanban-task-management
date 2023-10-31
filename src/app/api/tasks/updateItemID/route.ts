@@ -10,26 +10,24 @@ export async function POST(request: Request) {
     return NextResponse.error()
   }
 
-  const body: BoardFormInputs = await request.json()
-  const { tasks } = body
+  const body: TaskProps[] = await request.json()
 
-  const currentTasks =
-    tasks &&
-    (await Promise.all(
-      tasks.map(async (task) => {
-        await prisma.task.update({
-          where: {
-            id: task.id,
-            title: task.title,
-            fromBoard: task.fromBoard,
-            fromColumn: task.fromColumn,
-          },
-          data: {
-            itemID: task.itemID,
-          },
-        })
-      }),
-    ))
+  const currentTasks = await Promise.all(
+    body.map(async (task: any) => {
+      await prisma.task.update({
+        where: {
+          id: task.id,
+          title: task.title,
+          fromBoard: task.fromBoard,
+          fromColumn: task.fromColumn,
+        },
+        data: {
+          itemID: task.itemID,
+          title: task.updateTitle,
+        },
+      })
+    }),
+  )
 
   return NextResponse.json(currentTasks)
 }

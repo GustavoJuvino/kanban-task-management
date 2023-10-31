@@ -38,6 +38,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
           boardID: '',
           columnName: '',
           color: randomColor,
+          updateColumnName: '',
         },
       ],
       tasks: [{ id: '', fromColumn: '', title: '', itemID: '' }],
@@ -121,7 +122,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
     console.log(data)
-    setLoading(true)
+    // setLoading(true)
     if (modalType === 'add') {
       axios
         .post('/api/board', data)
@@ -142,24 +143,24 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         })
     }
 
-    if (modalType === 'edit') {
-      axios
-        .post('/api/board/update', data)
-        .then(() => {
-          onOpenEditBoard(false)
-          router.refresh()
-          router.push(`${data.board.name.replace(/\s/g, '')}`)
-          setTimeout(() => {
-            toast.success('Board updated successfully!')
-          }, 2000)
-        })
-        .catch(() => {
-          toast.error('Something went wrong')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
+    // if (modalType === 'edit') {
+    //   axios
+    //     .post('/api/board/update', data)
+    //     .then(() => {
+    //       onOpenEditBoard(false)
+    //       router.refresh()
+    //       router.push(`${data.board.name.replace(/\s/g, '')}`)
+    //       setTimeout(() => {
+    //         toast.success('Board updated successfully!')
+    //       }, 2000)
+    //     })
+    //     .catch(() => {
+    //       toast.error('Something went wrong')
+    //     })
+    //     .finally(() => {
+    //       setLoading(false)
+    //     })
+    // }
   }
 
   return (

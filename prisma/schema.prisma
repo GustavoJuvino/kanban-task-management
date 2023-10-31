@@ -34,6 +34,7 @@ model Column {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   boardID String @db.ObjectId
   columnName String
+  updateColumnName String
   itemID String
   color String
   fromBoard String  

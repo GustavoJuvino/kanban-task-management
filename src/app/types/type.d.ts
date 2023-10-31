@@ -9,6 +9,7 @@ interface BoardFormInputs {
     color: string
     fromBoard: string
     columnName: string
+    updateColumnName: string
   }[]
   tasks: {
     id: string
