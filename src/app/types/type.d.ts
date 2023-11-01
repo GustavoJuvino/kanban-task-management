@@ -17,6 +17,7 @@ interface BoardFormInputs {
     itemID: string
     fromBoard: string
     fromColumn: string
+    updateColumn: string
   }[]
   subtasks: {
     id: string

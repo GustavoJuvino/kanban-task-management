@@ -50,6 +50,7 @@ export async function POST(request: Request) {
             where: {
               id: subtask.id,
               taskID: currentUser.id,
+              fromBoard: task.fromBoard,
               fromColumn: task.fromColumn,
             },
             update: {
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
               taskID: currentUser.id,
               fromColumn: task.updateColumn,
               completed: subtask.completed,
-              fromBoard: subtask.fromBoard,
+              fromBoard: task.fromBoard,
               subtaskID: String(subtask.subtaskID),
             },
           })

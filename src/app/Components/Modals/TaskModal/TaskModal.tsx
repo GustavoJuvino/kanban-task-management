@@ -103,6 +103,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
           task.title === currentTask.taskTitle
         ) {
           setValue('task.updateColumn', currentColumn)
+          setValue('task.fromBoard', task.fromBoard)
         }
 
         return task

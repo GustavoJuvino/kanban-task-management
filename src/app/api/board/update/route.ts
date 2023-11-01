@@ -47,6 +47,49 @@ export async function POST(request: Request) {
             boardID: currentUser.id,
           },
         })
+
+        tasks.map(async (task) => {
+          if (task.id !== '') {
+            await prisma.task.update({
+              where: {
+                id: task.id,
+                title: task.title,
+                columnID: currentUser.id,
+                fromBoard: column.fromBoard,
+                fromColumn: column.columnName,
+              },
+              data: {
+                fromBoard: board.name.replace(/\s/g, ''),
+                fromColumn: column.updateColumnName,
+                updateColumn: column.updateColumnName,
+              },
+            })
+
+            subtasks !== undefined &&
+              (await Promise.all(
+                subtasks.map(async (subtask) => {
+                  if (
+                    subtask.id !== '' &&
+                    subtask.fromColumn === column.columnName
+                  ) {
+                    await prisma.subtask.update({
+                      where: {
+                        id: subtask.id,
+                        name: subtask.name,
+                        taskID: currentUser.id,
+                        fromTask: subtask.fromTask,
+                        fromColumn: subtask.fromColumn,
+                      },
+                      data: {
+                        fromBoard: board.name.replace(/\s/g, ''),
+                        fromColumn: column.updateColumnName,
+                      },
+                    })
+                  }
+                }),
+              ))
+          }
+        })
       }),
     ),
 
@@ -57,44 +100,20 @@ export async function POST(request: Request) {
     //       task.fromBoard === board.name &&
     //       task.fromColumn === column.columnName
     //     ) {
-    //       await prisma.task.update({
-    //         where: {
-    //           id: task.id,
-    //           title: task.title,
-    //           columnID: currentUser.id,
-    //         },
-    //         data: {
-    //           fromBoard: board.name.replace(/\s/g, ''),
-    //           fromColumn: column.updateColumnName,
-    //           updateColumn: column.updateColumnName,
-    //         },
-    //       })
-    //     }
+    //   await prisma.task.update({
+    //     where: {
+    //       id: task.id,
+    //       title: task.title,
+    //       columnID: currentUser.id,
+    //     },
+    //     data: {
+    //       fromBoard: board.name.replace(/\s/g, ''),
+    //       fromColumn: column.updateColumnName,
+    //       updateColumn: column.updateColumnName,
+    //     },
+    //   })
+    // }
 
-    //     subtasks !== undefined &&
-    //       (await Promise.all(
-    //         subtasks.map(async (subtask) => {
-    //           if (
-    //             subtask.id !== '' &&
-    //             subtask.fromTask === task.title &&
-    //             subtask.fromColumn === task.fromColumn &&
-    //             subtask.fromBoard === board.name
-    //           ) {
-    //             await prisma.subtask.update({
-    //               where: {
-    //                 id: subtask.id,
-    //                 name: subtask.name,
-    //                 fromTask: subtask.fromTask,
-    //                 fromColumn: subtask.fromColumn,
-    //               },
-    //               data: {
-    //                 fromBoard: board.name.replace(/\s/g, ''),
-    //                 fromColumn: column.updateColumnName,
-    //               },
-    //             })
-    //           }
-    //         }),
-    //       ))
     //   }),
     // ),
   ]

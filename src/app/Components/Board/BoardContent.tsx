@@ -22,15 +22,19 @@ const BoardContent = () => {
   const [update, setUpdate] = useState(false)
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
-  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>(
-    tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)),
-  )
+  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
 
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
 
   useEffect(() => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
+  }, [columns])
+
+  useEffect(() => {
+    if (reorderTasks.length === 0) {
+      setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
+    }
   }, [columns])
 
   const handleDragDrop = (results: any) => {
@@ -45,27 +49,6 @@ const BoardContent = () => {
     setReorderTasks(reorderedTasks)
     setUpdate(true)
   }
-
-  // useEffect(() => {
-  // const newArr: TaskProps[] = []
-  // columns.map((col) => {
-  //   reorderTasks.map((updateTask) => {
-  //     if (
-  //       updateTask.fromBoard.replace(/\s/g, '') === URL &&
-  //       updateTask.fromColumn === col.columnName
-  //     ) {
-  //       newArr.push(updateTask)
-  //     }
-
-  //     return updateTask
-  //   })
-  //   return col
-  // })
-
-  //   if (newArr !== undefined) {
-  //     localStorage.setItem('updateTasks', JSON.stringify(newArr))
-  //   }
-  // }, [reorderTasks, URL])
 
   useEffect(() => {
     if (reorderTasks.length > 0) {
