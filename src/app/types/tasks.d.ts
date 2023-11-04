@@ -9,4 +9,5 @@ interface TaskProps {
   description: string
   updateTitle: string
   updateColumn: string
+  subtasksIDS?: string[]
 }

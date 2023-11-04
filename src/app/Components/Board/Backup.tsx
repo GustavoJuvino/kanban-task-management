@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Button from '../Button'
 import PreviewTask from './Task/PreviewTask'
 
@@ -10,50 +10,92 @@ import { useHideSidebar } from '@/app/helper/useHideSidebar'
 import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 
 const BoardContent = () => {
-  const { tasks, columns } = useGlobalContext()
+  const { tasks, columns, subtasks } = useGlobalContext()
   const { URL } = useGetCurrentURL()
 
-  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>()
-  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>(tasks)
+  const router = useRouter()
+  const [update, setUpdate] = useState(false)
+
+  const [currentSubs, setCurrentSubs] = useState<SubtaskProps[]>([])
+  const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
+  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
 
   const { hidden } = useHideSidebar()
   const { onOpenEditBoard } = useOpenBoardModal()
+
+  useMemo(() => {
+    const newArr: SubtaskProps[] = []
+    subtasks.map(
+      (sub) => sub.fromBoard.replace(/\s/g, '') === URL && newArr.push(sub),
+    )
+    setCurrentSubs(newArr)
+  }, [URL, subtasks])
 
   useEffect(() => {
     setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
   }, [columns])
 
-  // Config to when the user changes the board names, will change the from board from tasks as wel
+  useEffect(() => {
+    if (reorderTasks.length === 0) {
+      setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
+    }
+  }, [columns])
 
   const handleDragDrop = (results: any) => {
-    const { source, destination, type } = results
+    if (!results.destination) return null
 
-    // eslint-disable-next-line prettier/prettier
-    if (!destination) return;
+    const reorderedTasks = [...reorderTasks]
 
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
-      // eslint-disable-next-line prettier/prettier
-      return;
+    const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
+
+    // const ids: string[] = []
+    // currentSubs.map(
+    //   (sub) => sub.fromTask === reorderItem.title && ids.push(sub.id),
+    // )
+
+    if (results.destination.droppableId !== results.source.droppableId) {
+      reorderedTasks.splice(results.destination.index, 0, {
+        ...reorderItem,
+        itemID: results.destination.index,
+        fromColumn: results.destination.droppableId,
+        // subtasksIDS: ids,
+      })
+    } else {
+      reorderedTasks.splice(results.destination.index, 0, {
+        ...reorderItem,
+        itemID: results.destination.index,
+      })
     }
 
-    if (type === 'group') {
-      const reorderedTasks = [...tasks]
-      const sourceIndex = source.index
-      const destinationIndex = destination.index
-
-      console.log(sourceIndex, destinationIndex)
-
-      const [removedTask] = reorderedTasks.splice(sourceIndex, 0)
-      reorderedTasks.splice(destinationIndex, 0, removedTask)
-
-      return setReorderTasks(reorderedTasks)
-    }
+    setReorderTasks(reorderedTasks)
+    setUpdate(true)
   }
+
+  useEffect(() => {
+    console.log(reorderTasks)
+  }, [reorderTasks])
+
+  useEffect(() => {
+    if (update && reorderTasks !== undefined && reorderTasks?.length > 0)
+      axios
+        .post('/api/tasks/updateItemID', reorderTasks)
+        // .then(() => {
+        //   router.refresh()
+        // })
+        .catch((error) => {
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+          else toast.error('Something went wrong')
+        })
+        .finally(() => {
+          setUpdate(false)
+        })
+  }, [update, URL, reorderTasks])
 
   if (columns.length > 0) {
     return (
@@ -63,88 +105,87 @@ const BoardContent = () => {
           hideScrollbars={false}
           vertical={false}
         > */}
-        <section
-          className="
-            ml-6
-            mt-6
-            flex
-            h-full
-            w-full 
-            select-none 
-            snap-x 
-            gap-x-6
-            overflow-auto
-            scroll-smooth
-            pb-[50px]
-          "
-        >
-          {formatedArr?.map((col) => (
-            <section key={col.itemID}>
-              <DragDropContext onDragEnd={handleDragDrop}>
-                <ul className="flex flex-col gap-y-6">
-                  <div className="flex w-40 gap-x-3">
-                    <i
-                      style={{ backgroundColor: col.color }}
-                      className="h-[15px] w-[15px] rounded-full"
-                    />
+        <DragDropContext onDragEnd={handleDragDrop}>
+          <section
+            className="
+              ml-6
+              mt-6
+              flex
+              h-full
+              w-full 
+              select-none 
+              snap-x 
+              gap-x-6
+              overflow-auto
+              scroll-smooth
+              pb-[50px]
+            "
+          >
+            {formatedArr?.map((col) => (
+              <section key={col.itemID}>
+                <Droppable droppableId={col.columnName} type="group">
+                  {(provided) => (
+                    <section
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="h-auto w-auto"
+                    >
+                      <ul className="flex flex-col gap-y-6">
+                        <div className="flex w-40 gap-x-3">
+                          <i
+                            style={{ backgroundColor: col.color }}
+                            className="h-[15px] w-[15px] rounded-full"
+                          />
 
-                    <h4 className="text-heading-s uppercase text-medium-gray">
-                      {`${col.columnName}`}
-                    </h4>
-                  </div>
+                          <h4 className="text-heading-s uppercase text-medium-gray">
+                            {`${col.columnName}`}
+                          </h4>
+                        </div>
 
-                  {tasks.map(
-                    (task) =>
-                      task.fromBoard.replace(/\s/g, '') === URL &&
-                      task.fromColumn === col.columnName && (
-                        <PreviewTask
-                          key={task.id}
-                          taskID={task.id}
-                          title={task.title}
-                          taskBoard={task.fromBoard}
-                          taskColumn={task.fromColumn}
-                          description={task.description}
-                          currentColumnName={col.columnName}
-                        />
-                      ),
-                  )}
-
-                  <Droppable droppableId={col.columnName} type="group">
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="flex flex-col gap-y-6"
-                      >
-                        {reorderTasks !== undefined &&
-                          reorderTasks
-                            .sort((a, b) => Number(a.itemID) - Number(b.itemID))
-                            .map(
-                              (task) =>
+                        <section className="flex flex-col gap-y-6">
+                          {reorderTasks !== undefined &&
+                            reorderTasks.length > 0 &&
+                            reorderTasks.map(
+                              (task, index) =>
                                 task.fromBoard.replace(/\s/g, '') === URL &&
                                 task.fromColumn === col.columnName && (
-                                  <PreviewTask
+                                  <Draggable
                                     key={task.id}
-                                    taskID={task.id}
-                                    title={task.title}
-                                    taskBoard={task.fromBoard}
-                                    taskColumn={task.fromColumn}
-                                    description={task.description}
-                                    currentColumnName={col.columnName}
-                                  />
+                                    index={index}
+                                    draggableId={task.itemID.toString()}
+                                  >
+                                    {(provided) => (
+                                      <div
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        ref={provided.innerRef}
+                                      >
+                                        <PreviewTask
+                                          key={task.id}
+                                          taskID={task.id}
+                                          title={task.title}
+                                          taskBoard={task.fromBoard}
+                                          taskColumn={task.fromColumn}
+                                          description={task.description}
+                                          currentColumnName={col.columnName}
+                                        />
+                                      </div>
+                                    )}
+                                  </Draggable>
                                 ),
                             )}
-                      </div>
-                    )}
-                  </Droppable>
-                </ul>
-              </DragDropContext>
-            </section>
-          ))}
+                        </section>
+                      </ul>
+                      {provided.placeholder}
+                    </section>
+                  )}
+                </Droppable>
+              </section>
+            ))}
 
-          <section className="relative mt-10 h-auto w-[280px]">
-            <div
-              className="
+            <section className="relative mt-10 h-auto w-[280px]">
+              <div
+                className="
                 h-full
                 w-[280px]
                 rounded-md
@@ -153,10 +194,10 @@ const BoardContent = () => {
                 to-[#2b2c3750]
                 opacity-25
               "
-            />
-            <div
-              onClick={() => onOpenEditBoard(true)}
-              className="
+              />
+              <div
+                onClick={() => onOpenEditBoard(true)}
+                className="
                 absolute 
                 top-0 
                 flex 
@@ -166,21 +207,22 @@ const BoardContent = () => {
                 items-center 
                 justify-center
               "
-            >
-              <h1
-                className="
+              >
+                <h1
+                  className="
                   cursor-pointer 
                   text-heading-xl 
                   text-medium-gray 
                   duration-300 
                   hover:text-main-purple
                 "
-              >
-                + New Column
-              </h1>
-            </div>
+                >
+                  + New Column
+                </h1>
+              </div>
+            </section>
           </section>
-        </section>
+        </DragDropContext>
       </NoSsr>
     )
   } else

@@ -19,13 +19,28 @@ export async function POST(request: Request) {
           id: task.id,
           title: task.title,
           fromBoard: task.fromBoard,
-          fromColumn: task.fromColumn,
         },
         data: {
-          itemID: task.itemID,
           title: task.updateTitle,
+          fromColumn: task.fromColumn,
+          itemID: task.itemID.toString(),
         },
       })
+
+      task.subtasksIDS !== undefined &&
+        (await Promise.all(
+          task.subtasksIDS.map(async (id: string) => {
+            await prisma.subtask.update({
+              where: {
+                id,
+                fromBoard: task.fromBoard,
+              },
+              data: {
+                fromColumn: task.fromColumn,
+              },
+            })
+          }),
+        ))
     }),
   )
 

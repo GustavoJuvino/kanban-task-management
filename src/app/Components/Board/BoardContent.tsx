@@ -15,11 +15,13 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 
 const BoardContent = () => {
-  const { tasks, columns } = useGlobalContext()
+  const { tasks, columns, subtasks } = useGlobalContext()
   const { URL } = useGetCurrentURL()
 
   const router = useRouter()
   const [update, setUpdate] = useState(false)
+
+  const [checkSubs, setCheckSubs] = useState<SubtaskProps[]>([])
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
   const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
@@ -35,64 +37,89 @@ const BoardContent = () => {
     if (reorderTasks.length === 0) {
       setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
     }
-  }, [columns])
+  }, [tasks, reorderTasks])
+
+  useMemo(() => {
+    const newArr: SubtaskProps[] = []
+
+    subtasks !== undefined &&
+      subtasks.map(
+        (sub) => sub.fromBoard.replace(/\s/g, '') === URL && newArr.push(sub),
+      )
+
+    setCheckSubs(newArr)
+  }, [URL, subtasks])
 
   const handleDragDrop = (results: any) => {
     if (!results.destination) return null
 
-    const reorderedTasks = [...reorderTasks]
+    if (results.type === 'group') {
+      const reorderedTasks = [...reorderTasks]
 
-    const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
+      const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
+      // reorderedTasks.splice(results.destination.index, 0, reorderItem)
 
-    reorderedTasks.splice(results.destination.index, 0, reorderItem)
+      if (results.source.droppableId !== results.destination.droppableId) {
+        reorderedTasks.splice(results.destination.index, 0, {
+          ...reorderItem,
+          fromColumn: results.destination.droppableId,
+        })
+      } else {
+        reorderedTasks.splice(results.destination.index, 0, reorderItem)
+      }
 
-    setReorderTasks(reorderedTasks)
-    setUpdate(true)
+      setUpdate(true)
+      setReorderTasks(reorderedTasks)
+    }
   }
 
-  useEffect(() => {
-    if (reorderTasks.length > 0) {
-      const checkTasks: TaskProps[] = []
-      columns.map((col) => {
-        reorderTasks.map((updateTask) => {
-          if (
-            updateTask.fromBoard.replace(/\s/g, '') === URL &&
-            updateTask.fromColumn === col.columnName
-          ) {
-            checkTasks.push(updateTask)
-          }
+  // useEffect(() => {
+  //   console.log(reorderTasks)
+  // }, [reorderTasks])
 
-          return updateTask
-        })
-        return col
-      })
+  // useEffect(() => {q
+  //   if (reorderTasks.length > 0) {
+  //     const checkTasks: TaskProps[] = []
+  //     columns.map((col) => {
+  //       reorderTasks.map((updateTask) => {
+  //         if (
+  //           updateTask.fromBoard.replace(/\s/g, '') === URL &&
+  //           updateTask.fromColumn === col.columnName
+  //         ) {
+  //           checkTasks.push(updateTask)
+  //         }
 
-      if (checkTasks.length > 0) {
-        const newArr: TaskProps[] = []
+  //         return updateTask
+  //       })
+  //       return col
+  //     })
 
-        checkTasks.map((task, index) =>
-          newArr.push({ ...task, itemID: index.toString() }),
-        )
+  //     if (checkTasks.length > 0) {
+  //       const newArr: TaskProps[] = []
 
-        setUpdateTasks(newArr)
-      }
-    }
-  }, [URL, columns, reorderTasks])
+  //       checkTasks.map((task, index) =>
+  //         newArr.push({ ...task, itemID: index.toString() }),
+  //       )
 
-  useEffect(() => {
-    if (update && updateTasks !== undefined && updateTasks?.length > 0) {
-      axios
-        .post('/api/tasks/updateItemID', updateTasks)
-        .catch((error) => {
-          if (error.request.status === 409)
-            toast.error(error.response.data.message)
-          else toast.error('Something went wrong')
-        })
-        .finally(() => {
-          setUpdate(false)
-        })
-    }
-  }, [updateTasks, update])
+  //       setUpdateTasks(newArr)
+  //     }
+  //   }
+  // }, [URL, columns, reorderTasks])
+
+  // useEffect(() => {
+  //   if (update && updateTasks !== undefined && updateTasks?.length > 0) {
+  //     axios
+  //       .post('/api/tasks/updateItemID', updateTasks)
+  //       .catch((error) => {
+  //         if (error.request.status === 409)
+  //           toast.error(error.response.data.message)
+  //         else toast.error('Something went wrong')
+  //       })
+  //       .finally(() => {
+  //         setUpdate(false)
+  //       })
+  //   }
+  // }, [updateTasks, update])
 
   if (columns.length > 0) {
     return (
@@ -102,8 +129,9 @@ const BoardContent = () => {
           hideScrollbars={false}
           vertical={false}
         > */}
-        <section
-          className="
+        <DragDropContext onDragEnd={handleDragDrop}>
+          <section
+            className="
             ml-6
             mt-6
             flex
@@ -116,29 +144,28 @@ const BoardContent = () => {
             scroll-smooth
             pb-[50px]
           "
-        >
-          {formatedArr?.map((col) => (
-            <section key={col.itemID}>
-              <DragDropContext onDragEnd={handleDragDrop}>
-                <ul className="flex flex-col gap-y-6">
-                  <div className="flex w-40 gap-x-3">
-                    <i
-                      style={{ backgroundColor: col.color }}
-                      className="h-[15px] w-[15px] rounded-full"
-                    />
+          >
+            {formatedArr?.map((col) => (
+              <section key={col.itemID}>
+                <Droppable droppableId={col.columnName} type="group">
+                  {(provided) => (
+                    <ul
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="flex flex-col gap-y-6"
+                    >
+                      <div className="flex w-40 gap-x-3">
+                        <i
+                          style={{ backgroundColor: col.color }}
+                          className="h-[15px] w-[15px] rounded-full"
+                        />
 
-                    <h4 className="text-heading-s uppercase text-medium-gray">
-                      {`${col.columnName}`}
-                    </h4>
-                  </div>
+                        <h4 className="text-heading-s uppercase text-medium-gray">
+                          {`${col.columnName}`}
+                        </h4>
+                      </div>
 
-                  <Droppable droppableId={col.columnName} type="group">
-                    {(provided) => (
-                      <section
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="flex flex-col gap-y-6"
-                      >
+                      <section className="flex flex-col gap-y-6">
                         {reorderTasks !== undefined &&
                           reorderTasks.length > 0 &&
                           reorderTasks.map(
@@ -170,18 +197,135 @@ const BoardContent = () => {
                                 </Draggable>
                               ),
                           )}
-                        {provided.placeholder}
                       </section>
-                    )}
-                  </Droppable>
-                </ul>
-              </DragDropContext>
-            </section>
-          ))}
+                      {provided.placeholder}
+                    </ul>
+                  )}
+                </Droppable>
+              </section>
 
-          <section className="relative mt-10 h-auto w-[280px]">
-            <div
-              className="
+              // <section key={col.itemID}>
+              //   <DragDropContext onDragEnd={handleDragDrop}>
+              //     <Droppable droppableId={col.columnName} type="group">
+              //       {(provided) => (
+              //         <section
+              //           ref={provided.innerRef}
+              //           {...provided.droppableProps}
+              //         >
+              //           <ul className="flex flex-col gap-y-6">
+              //             <div className="flex w-40 gap-x-3">
+              //               <i
+              //                 style={{ backgroundColor: col.color }}
+              //                 className="h-[15px] w-[15px] rounded-full"
+              //               />
+
+              //               <h4 className="text-heading-s uppercase text-medium-gray">
+              //                 {`${col.columnName}`}
+              //               </h4>
+              //             </div>
+
+              //             <section className="flex flex-col gap-y-6">
+              //               {reorderTasks !== undefined &&
+              //                 reorderTasks.length > 0 &&
+              //                 reorderTasks.map(
+              //                   (task, index) =>
+              //                     task.fromBoard.replace(/\s/g, '') === URL &&
+              //                     task.fromColumn === col.columnName && (
+              //                       <Draggable
+              //                         key={task.id}
+              //                         index={index}
+              //                         draggableId={task.itemID}
+              //                       >
+              //                         {(provided) => (
+              //                           <div
+              //                             {...provided.draggableProps}
+              //                             {...provided.dragHandleProps}
+              //                             ref={provided.innerRef}
+              //                           >
+              //                             <PreviewTask
+              //                               key={task.id}
+              //                               taskID={task.id}
+              //                               title={task.title}
+              //                               taskBoard={task.fromBoard}
+              //                               taskColumn={task.fromColumn}
+              //                               description={task.description}
+              //                               currentColumnName={col.columnName}
+              //                             />
+              //                           </div>
+              //                         )}
+              //                       </Draggable>
+              //                     ),
+              //                 )}
+              //             </section>
+              //           </ul>
+              //           {provided.placeholder}
+              //         </section>
+              //       )}
+              //     </Droppable>
+              //     {/* <section className="h-auto w-auto">
+              //       <Droppable droppableId={col.columnName} type="group">
+              //         {(provided) => (
+              //           <ul
+              //             ref={provided.innerRef}
+              //             {...provided.droppableProps}
+              //             className="flex flex-col gap-y-6"
+              //           >
+              //             <div className="flex w-40 gap-x-3">
+              //               <i
+              //                 style={{ backgroundColor: col.color }}
+              //                 className="h-[15px] w-[15px] rounded-full"
+              //               />
+
+              //               <h4 className="text-heading-s uppercase text-medium-gray">
+              //                 {`${col.columnName}`}
+              //               </h4>
+              //             </div>
+
+              //             <section className="flex flex-col gap-y-6">
+              //               {reorderTasks !== undefined &&
+              //                 reorderTasks.length > 0 &&
+              //                 reorderTasks.map(
+              //                   (task, index) =>
+              //                     task.fromBoard.replace(/\s/g, '') === URL &&
+              //                     task.fromColumn === col.columnName && (
+              //                       <Draggable
+              //                         key={task.id}
+              //                         index={index}
+              //                         draggableId={task.itemID}
+              //                       >
+              //                         {(provided) => (
+              //                           <div
+              //                             {...provided.draggableProps}
+              //                             {...provided.dragHandleProps}
+              //                             ref={provided.innerRef}
+              //                           >
+              //                             <PreviewTask
+              //                               key={task.id}
+              //                               taskID={task.id}
+              //                               title={task.title}
+              //                               taskBoard={task.fromBoard}
+              //                               taskColumn={task.fromColumn}
+              //                               description={task.description}
+              //                               currentColumnName={col.columnName}
+              //                             />
+              //                           </div>
+              //                         )}
+              //                       </Draggable>
+              //                     ),
+              //                 )}
+              //               {provided.placeholder}
+              //             </section>
+              //           </ul>
+              //         )}
+              //       </Droppable>
+              //     </section> */}
+              //   </DragDropContext>
+              // </section>
+            ))}
+
+            <section className="relative mt-10 h-auto w-[280px]">
+              <div
+                className="
                 h-full
                 w-[280px]
                 rounded-md
@@ -190,10 +334,10 @@ const BoardContent = () => {
                 to-[#2b2c3750]
                 opacity-25
               "
-            />
-            <div
-              onClick={() => onOpenEditBoard(true)}
-              className="
+              />
+              <div
+                onClick={() => onOpenEditBoard(true)}
+                className="
                 absolute 
                 top-0 
                 flex 
@@ -203,21 +347,22 @@ const BoardContent = () => {
                 items-center 
                 justify-center
               "
-            >
-              <h1
-                className="
+              >
+                <h1
+                  className="
                   cursor-pointer 
                   text-heading-xl 
                   text-medium-gray 
                   duration-300 
                   hover:text-main-purple
                 "
-              >
-                + New Column
-              </h1>
-            </div>
+                >
+                  + New Column
+                </h1>
+              </div>
+            </section>
           </section>
-        </section>
+        </DragDropContext>
       </NoSsr>
     )
   } else

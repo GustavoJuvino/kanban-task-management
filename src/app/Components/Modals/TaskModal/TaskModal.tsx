@@ -82,7 +82,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       boards.map(
         (board) =>
           board.boardName.replace(/\s/g, '') === URL &&
-          setValue('task.fromBoard', board.boardName),
+          setValue('task.fromBoard', board.boardName.replace(/\s/g, '')),
       )
 
       columns.map((col, index) => {
@@ -95,22 +95,6 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   }, [modalType, currentColumn, setValue, columns, boards, URL])
 
   // Edit Task
-  useMemo(() => {
-    if (modalType === 'edit') {
-      tasks.map((task) => {
-        if (
-          task.id === currentTask.id &&
-          task.title === currentTask.taskTitle
-        ) {
-          setValue('task.updateColumn', currentColumn)
-          setValue('task.fromBoard', task.fromBoard)
-        }
-
-        return task
-      })
-    }
-  }, [currentColumn, setValue])
-
   useEffect(() => {
     if (modalType === 'edit') {
       tasks.map((task) => {
@@ -120,9 +104,10 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         ) {
           setValue(`task.id`, task.id)
           setValue(`task.title`, task.title)
-          setValue(`task.updateTitle`, task.updateTitle)
-          setValue(`task.columnID`, task.columnID)
+          setValue('task.fromBoard', task.fromBoard)
           setValue('task.fromColumn', task.fromColumn)
+          setValue('task.updateColumn', currentColumn)
+          setValue(`task.updateTitle`, task.updateTitle)
           setValue(`task.description`, task.description)
         }
 
@@ -156,7 +141,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         return item
       })
     }
-  }, [modalType, tasks, subtasks, currentTask, setValue])
+  }, [modalType, tasks, subtasks, currentTask, currentColumn, setValue])
 
   const axiosRequest = (url: string, data: TaskFormInputs) => {
     axios
@@ -182,7 +167,6 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   }
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
-    console.log(data)
     setLoading(true)
     if (modalType === 'add') axiosRequest('/api/tasks', data)
     if (modalType === 'edit') axiosRequest('/api/tasks/edit', data)
