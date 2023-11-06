@@ -21,8 +21,13 @@ const BoardContent = () => {
   const router = useRouter()
   const [update, setUpdate] = useState(false)
 
-  const [checkSubs, setCheckSubs] = useState<SubtaskProps[]>([])
+  const [firstColumn, setFirstColumn] = useState<string>()
+
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
+
+  const [seconds, setSeconds] = useState(1400)
+
+  const [checkSubs, setCheckSubs] = useState<SubtaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
   const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
 
@@ -30,14 +35,19 @@ const BoardContent = () => {
   const { onOpenEditBoard } = useOpenBoardModal()
 
   useEffect(() => {
-    setFormatedArr(columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
+    if (columns.length > 0) {
+      setFormatedArr(
+        columns.sort((a, b) => Number(a.itemID) - Number(b.itemID)),
+      )
+      setFirstColumn(columns[0].columnName)
+    }
   }, [columns])
 
   useEffect(() => {
     if (reorderTasks.length === 0) {
       setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
     }
-  }, [tasks, reorderTasks])
+  }, [])
 
   useMemo(() => {
     const newArr: SubtaskProps[] = []
@@ -53,73 +63,80 @@ const BoardContent = () => {
   const handleDragDrop = (results: any) => {
     if (!results.destination) return null
 
-    if (results.type === 'group') {
-      const reorderedTasks = [...reorderTasks]
+    const reorderedTasks = [...reorderTasks]
 
-      const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
-      // reorderedTasks.splice(results.destination.index, 0, reorderItem)
+    const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
+    // reorderedTasks.splice(results.destination.index, 0, reorderItem)
 
-      if (results.source.droppableId !== results.destination.droppableId) {
-        reorderedTasks.splice(results.destination.index, 0, {
-          ...reorderItem,
-          fromColumn: results.destination.droppableId,
-        })
-      } else {
-        reorderedTasks.splice(results.destination.index, 0, reorderItem)
-      }
-
-      setUpdate(true)
-      setReorderTasks(reorderedTasks)
+    // console.log(results)
+    if (reorderItem.updateColumn === results.destination.droppableId) {
+      reorderedTasks.splice(results.destination.index, 0, {
+        ...reorderItem,
+        updateColumn: results.destination.droppableId,
+      })
     }
+
+    if (reorderItem.updateColumn !== results.destination.droppableId) {
+      reorderedTasks.splice(
+        results.source.index < results.destination.index
+          ? results.destination.index - 1
+          : results.destination.index,
+        0,
+        {
+          ...reorderItem,
+          updateColumn: results.destination.droppableId,
+        },
+      )
+    }
+
+    setUpdate(true)
+    setSeconds(seconds + 500)
+    setReorderTasks(reorderedTasks)
   }
 
-  // useEffect(() => {
-  //   console.log(reorderTasks)
-  // }, [reorderTasks])
+  useEffect(() => {
+    if (reorderTasks.length > 0) {
+      const newArr: TaskProps[] = []
 
-  // useEffect(() => {q
-  //   if (reorderTasks.length > 0) {
-  //     const checkTasks: TaskProps[] = []
-  //     columns.map((col) => {
-  //       reorderTasks.map((updateTask) => {
-  //         if (
-  //           updateTask.fromBoard.replace(/\s/g, '') === URL &&
-  //           updateTask.fromColumn === col.columnName
-  //         ) {
-  //           checkTasks.push(updateTask)
-  //         }
+      reorderTasks.map((task, index) =>
+        newArr.push({ ...task, itemID: index.toString() }),
+      )
 
-  //         return updateTask
-  //       })
-  //       return col
-  //     })
+      setUpdateTasks(newArr)
+    }
+  }, [reorderTasks])
 
-  //     if (checkTasks.length > 0) {
-  //       const newArr: TaskProps[] = []
+  useEffect(() => {
+    if (
+      update &&
+      seconds > 0 &&
+      updateTasks !== undefined &&
+      updateTasks.length > 0
+    ) {
+      console.log(seconds)
+      const debounceId = setTimeout(() => {
+        axios
+          .post('/api/tasks/updateItemID', updateTasks)
+          .then(() => {
+            toast.success('update')
+          })
+          .catch((error) => {
+            if (error.request.status === 409)
+              toast.error(error.response.data.message)
+          })
+          .finally(() => {
+            setUpdate(false)
+            console.log('finished')
+          })
+        setUpdate(false)
+        setSeconds(1500)
+      }, seconds)
 
-  //       checkTasks.map((task, index) =>
-  //         newArr.push({ ...task, itemID: index.toString() }),
-  //       )
-
-  //       setUpdateTasks(newArr)
-  //     }
-  //   }
-  // }, [URL, columns, reorderTasks])
-
-  // useEffect(() => {
-  //   if (update && updateTasks !== undefined && updateTasks?.length > 0) {
-  //     axios
-  //       .post('/api/tasks/updateItemID', updateTasks)
-  //       .catch((error) => {
-  //         if (error.request.status === 409)
-  //           toast.error(error.response.data.message)
-  //         else toast.error('Something went wrong')
-  //       })
-  //       .finally(() => {
-  //         setUpdate(false)
-  //       })
-  //   }
-  // }, [updateTasks, update])
+      return () => {
+        clearTimeout(debounceId)
+      }
+    }
+  }, [update, updateTasks, seconds])
 
   if (columns.length > 0) {
     return (
@@ -152,7 +169,7 @@ const BoardContent = () => {
                     <ul
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="flex flex-col gap-y-6"
+                      className="flex h-full flex-col gap-y-6 "
                     >
                       <div className="flex w-40 gap-x-3">
                         <i
@@ -171,7 +188,7 @@ const BoardContent = () => {
                           reorderTasks.map(
                             (task, index) =>
                               task.fromBoard.replace(/\s/g, '') === URL &&
-                              task.fromColumn === col.columnName && (
+                              task.updateColumn === col.columnName && (
                                 <Draggable
                                   key={task.id}
                                   index={index}
