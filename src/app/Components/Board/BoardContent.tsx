@@ -25,7 +25,7 @@ const BoardContent = () => {
 
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
 
-  const [seconds, setSeconds] = useState(1400)
+  const [seconds, setSeconds] = useState(1200)
 
   const [checkSubs, setCheckSubs] = useState<SubtaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
@@ -66,12 +66,18 @@ const BoardContent = () => {
     const reorderedTasks = [...reorderTasks]
 
     const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
-    // reorderedTasks.splice(results.destination.index, 0, reorderItem)
+
+    const currentSubtasksIDS: string[] = []
+    subtasks.map(
+      (sub) =>
+        sub.fromTask === reorderItem.title && currentSubtasksIDS.push(sub.id),
+    )
 
     // console.log(results)
     if (reorderItem.updateColumn === results.destination.droppableId) {
       reorderedTasks.splice(results.destination.index, 0, {
         ...reorderItem,
+        subtasksIDS: currentSubtasksIDS,
         updateColumn: results.destination.droppableId,
       })
     }
@@ -84,13 +90,14 @@ const BoardContent = () => {
         0,
         {
           ...reorderItem,
+          subtasksIDS: currentSubtasksIDS,
           updateColumn: results.destination.droppableId,
         },
       )
     }
 
     setUpdate(true)
-    setSeconds(seconds + 500)
+    setSeconds(seconds + 250)
     setReorderTasks(reorderedTasks)
   }
 
@@ -113,30 +120,28 @@ const BoardContent = () => {
       updateTasks !== undefined &&
       updateTasks.length > 0
     ) {
-      console.log(seconds)
       const debounceId = setTimeout(() => {
-        axios
-          .post('/api/tasks/updateItemID', updateTasks)
-          .then(() => {
-            toast.success('update')
-          })
-          .catch((error) => {
-            if (error.request.status === 409)
-              toast.error(error.response.data.message)
-          })
-          .finally(() => {
-            setUpdate(false)
-            console.log('finished')
-          })
+        // axios
+        //   .post('/api/tasks/updateItemID', updateTasks)
+        //   .then(() => {
+        //     router.refresh()
+        //   })
+        //   .catch((error) => {
+        //     if (error.request.status === 409)
+        //       toast.error(error.response.data.message)
+        //   })
+        //   .finally(() => {
+        //     setUpdate(false)
+        //   })
         setUpdate(false)
-        setSeconds(1500)
+        setSeconds(1200)
       }, seconds)
 
       return () => {
         clearTimeout(debounceId)
       }
     }
-  }, [update, updateTasks, seconds])
+  }, [update, updateTasks, seconds, router])
 
   if (columns.length > 0) {
     return (

@@ -45,30 +45,32 @@ export async function POST(request: Request) {
 
     subtasks !== undefined &&
       (await Promise.all(
-        subtasks?.map(async (subtask: SubtaskProps) => {
-          await prisma.subtask.upsert({
-            where: {
-              id: subtask.id,
-              taskID: currentUser.id,
-              fromBoard: task.fromBoard,
-              fromColumn: task.fromColumn,
-            },
-            update: {
-              name: subtask.name,
-              fromTask: task.updateTitle,
-              fromColumn: task.updateColumn,
-            },
-            create: {
-              name: subtask.name,
-              fromTask: task.updateTitle,
-              taskID: currentUser.id,
-              fromColumn: task.updateColumn,
-              completed: subtask.completed,
-              fromBoard: task.fromBoard,
-              subtaskID: String(subtask.subtaskID),
-            },
-          })
-        }),
+        subtasks?.map(
+          async (subtask: SubtaskProps) =>
+            subtask.id !== '' &&
+            (await prisma.subtask.upsert({
+              where: {
+                id: subtask.id,
+                taskID: currentUser.id,
+                fromBoard: task.fromBoard,
+                fromColumn: task.fromColumn,
+              },
+              update: {
+                name: subtask.name,
+                fromTask: task.updateTitle,
+                fromColumn: task.updateColumn,
+              },
+              create: {
+                name: subtask.name,
+                fromTask: task.updateTitle,
+                taskID: currentUser.id,
+                fromColumn: task.updateColumn,
+                completed: subtask.completed,
+                fromBoard: task.fromBoard,
+                subtaskID: String(subtask.subtaskID),
+              },
+            })),
+        ),
       )),
   ]
 

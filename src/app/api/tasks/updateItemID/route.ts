@@ -29,20 +29,22 @@ export async function POST(request: Request) {
         },
       })
 
-      // task.subtasksIDS !== undefined &&
-      //   (await Promise.all(
-      //     task.subtasksIDS.map(async (id: string) => {
-      //       await prisma.subtask.update({
-      //         where: {
-      //           id,
-      //           fromBoard: task.fromBoard,
-      //         },
-      //         data: {
-      //           fromColumn: task.fromColumn,
-      //         },
-      //       })
-      //     }),
-      //   ))
+      task.subtasksIDS !== undefined &&
+        task.subtasksIDS.length > 0 &&
+        (await Promise.all(
+          task.subtasksIDS.map(async (subtaskID: string) => {
+            await prisma.subtask.update({
+              where: {
+                id: subtaskID,
+                fromBoard: task.fromBoard,
+                fromColumn: task.fromColumn,
+              },
+              data: {
+                fromColumn: task.updateColumn,
+              },
+            })
+          }),
+        ))
     }),
   )
 
