@@ -43,6 +43,25 @@ const BoardContent = () => {
     }
   }, [reorderTasks, tasks])
 
+  function updateSubtasks(task: TaskProps, destination: string) {
+    if (reorderTasks !== undefined) {
+      const uptadeSubs: SubtaskProps[] = [...subtasks]
+
+      uptadeSubs.map((sub, index) => {
+        if (
+          (sub.fromColumn === task.fromColumn && sub.fromTask === task.title) ||
+          (sub.fromColumn === task.updateColumn && sub.fromTask === task.title)
+        ) {
+          uptadeSubs.splice(index, 1, { ...sub, fromColumn: destination })
+        }
+
+        return sub
+      })
+
+      setSubTasks(uptadeSubs)
+    }
+  }
+
   const handleDragDrop = (results: any) => {
     if (!results.destination) return null
 
@@ -85,20 +104,7 @@ const BoardContent = () => {
         toast.error('Task already exists in this column')
         reorderedTasks.splice(results.source.index, 0, reorderItem)
       } else {
-        const updateSubtasks = [...subtasks]
-
-        subtasks.map(
-          (sub) =>
-            sub.fromTask === reorderItem.title &&
-            sub.fromColumn === reorderItem.fromColumn &&
-            sub.fromColumn !== results.destination.droppableId &&
-            updateSubtasks.push({
-              ...sub,
-              fromColumn: results.destination.droppableId,
-            }),
-        )
-
-        setSubTasks(updateSubtasks)
+        updateSubtasks(reorderItem, results.destination.droppableId)
 
         reorderedTasks.splice(
           results.source.index < results.destination.index
