@@ -46,6 +46,10 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
     })
   }, [URL, boards, columns])
 
+  useEffect(() => {
+    console.log(deleteBoard)
+  }, [deleteBoard])
+
   // Tasks
   useEffect(() => {
     if (deleteType === 'task') {
@@ -138,7 +142,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
           {deleteType === 'board'
             ? `Are you sure you want to delete the ‘${deleteBoard?.boardName}’ board? This
             action will remove all columns and tasks and cannot be reversed.`
-            : `Are you sure you want to delete the ‘${currentTask}’ task
+            : `Are you sure you want to delete the ‘${deleteTask?.title}’ task
               and its subtasks? This action cannot be reversed.`}
         </p>
 

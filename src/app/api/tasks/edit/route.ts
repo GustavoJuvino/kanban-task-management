@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const { task, subtasks } = body
 
   const existingTask =
-    task.title !== task.updateTitle &&
+    task.fromColumn !== task.updateColumn &&
     (await prisma.task.findFirst({
       where: { title: task.updateTitle, fromColumn: task.updateColumn },
     }))
@@ -40,6 +40,7 @@ export async function POST(request: Request) {
         title: task.updateTitle,
         description: task.description,
         fromColumn: task.updateColumn,
+        updateColumn: task.updateColumn,
       },
     }),
 

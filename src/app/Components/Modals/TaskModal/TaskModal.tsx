@@ -167,6 +167,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   }
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
+    console.log(data)
     setLoading(true)
     if (modalType === 'add') axiosRequest('/api/tasks', data)
     if (modalType === 'edit') axiosRequest('/api/tasks/edit', data)

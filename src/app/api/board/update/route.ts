@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         })
 
         tasks.map(async (task) => {
-          if (task.id !== '') {
+          if ((task.id !== '', task.fromColumn === column.columnName)) {
             await prisma.task.update({
               where: {
                 id: task.id,

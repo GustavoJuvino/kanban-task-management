@@ -10,43 +10,41 @@ export async function POST(request: Request) {
     return NextResponse.error()
   }
 
-  const body: TaskProps[] = await request.json()
+  const body = await request.json()
+  const { tasks, subtasks } = body
 
-  const currentTasks = await Promise.all(
-    body.map(async (task: any) => {
-      await prisma.task.update({
-        where: {
-          id: task.id,
-          title: task.title,
-          fromBoard: task.fromBoard,
-          fromColumn: task.fromColumn,
-        },
-        data: {
-          title: task.updateTitle,
-          fromColumn: task.updateColumn,
-          itemID: task.itemID.toString(),
-          updateColumn: task.updateColumn,
-        },
-      })
+  const currentTasks = [
+    await Promise.all(
+      tasks.map(async (task: TaskProps) => {
+        await prisma.task.update({
+          where: {
+            id: task.id,
+          },
+          data: {
+            title: task.title,
+            fromColumn: task.updateColumn,
+            itemID: task.itemID.toString(),
+            updateColumn: task.updateColumn,
+          },
+        })
+      }),
+    ),
 
-      task.subtasksIDS !== undefined &&
-        task.subtasksIDS.length > 0 &&
-        (await Promise.all(
-          task.subtasksIDS.map(async (subtaskID: string) => {
-            await prisma.subtask.update({
-              where: {
-                id: subtaskID,
-                fromBoard: task.fromBoard,
-                fromColumn: task.fromColumn,
-              },
-              data: {
-                fromColumn: task.updateColumn,
-              },
-            })
-          }),
-        ))
-    }),
-  )
+    await Promise.all(
+      subtasks.map(async (sub: SubtaskProps) => {
+        await prisma.subtask.update({
+          where: {
+            id: sub.id,
+            fromTask: sub.fromTask,
+            fromBoard: sub.fromBoard,
+          },
+          data: {
+            fromColumn: sub.fromColumn,
+          },
+        })
+      }),
+    ),
+  ]
 
   return NextResponse.json(currentTasks)
 }

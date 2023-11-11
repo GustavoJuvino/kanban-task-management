@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../Button'
 import PreviewTask from './Task/PreviewTask'
 
@@ -17,7 +17,8 @@ import { useRouter } from 'next/navigation'
 
 const BoardContent = () => {
   const [update, setUpdate] = useState(false)
-  const [seconds, setSeconds] = useState(1200)
+  const [seconds, setSeconds] = useState(900)
+
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
   const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
@@ -29,6 +30,13 @@ const BoardContent = () => {
   const { URL } = useGetCurrentURL()
   const { tasks, columns, subtasks, setSubTasks } = useGlobalContext()
 
+  // Just hiding the default props error, not fix
+  const error = console.error
+  console.error = (...args: any) => {
+    if (/defaultProps/.test(args[0])) return
+    error(...args)
+  }
+
   useEffect(() => {
     if (columns.length > 0) {
       setFormatedArr(
@@ -37,11 +45,15 @@ const BoardContent = () => {
     }
   }, [columns])
 
-  useMemo(() => {
+  useEffect(() => {
     if (reorderTasks.length === 0) {
       setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
     }
-  }, [reorderTasks, tasks])
+
+    // else {
+    //   setReorderTasks(tasks)
+    // }
+  }, [tasks, reorderTasks])
 
   function updateSubtasks(task: TaskProps, destination: string) {
     if (reorderTasks !== undefined) {
@@ -66,7 +78,6 @@ const BoardContent = () => {
     if (!results.destination) return null
 
     const reorderedTasks = [...reorderTasks]
-
     const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
 
     const currentSubtasksIDS: string[] = []
@@ -138,34 +149,41 @@ const BoardContent = () => {
   }, [reorderTasks])
 
   useEffect(() => {
-    if (
-      update &&
-      seconds > 0 &&
-      updateTasks !== undefined &&
-      updateTasks.length > 0
-    ) {
-      const debounceId = setTimeout(() => {
-        axios
-          .post('/api/tasks/updateItemID', updateTasks)
-          .then(() => {
-            router.refresh()
-          })
-          .catch((error) => {
-            if (error.request.status === 409)
-              toast.error(error.response.data.message)
-          })
-          .finally(() => {
-            setUpdate(false)
-          })
-        setUpdate(false)
-        setSeconds(1200)
-      }, seconds)
+    console.log(updateTasks)
+  }, [updateTasks])
 
-      return () => {
-        clearTimeout(debounceId)
-      }
-    }
-  }, [update, updateTasks, seconds, router])
+  // useEffect(() => {
+  //   if (
+  //     update &&
+  //     seconds > 0 &&
+  //     updateTasks !== undefined &&
+  //     updateTasks.length > 0
+  //   ) {
+  //     const debounceId = setTimeout(() => {
+  //       axios
+  //         .post('/api/tasks/updateItemID', {
+  //           tasks: updateTasks,
+  //           subtasks,
+  //         })
+  //         .then(() => {
+  //           router.refresh()
+  //         })
+  //         .catch((error) => {
+  //           if (error.request.status === 409)
+  //             toast.error(error.response.data.message)
+  //         })
+  //         .finally(() => {
+  //           setUpdate(false)
+  //         })
+  //       setUpdate(false)
+  //       setSeconds(900)
+  //     }, seconds)
+
+  //     return () => {
+  //       clearTimeout(debounceId)
+  //     }
+  //   }
+  // }, [update, updateTasks, subtasks, seconds, router])
 
   if (columns.length > 0) {
     return (
@@ -175,7 +193,7 @@ const BoardContent = () => {
             className="
             ml-6
             mt-6
-            flex
+            flex 
             h-full
             w-full 
             select-none 
