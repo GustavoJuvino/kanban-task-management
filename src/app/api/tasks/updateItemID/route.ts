@@ -21,9 +21,8 @@ export async function POST(request: Request) {
             id: task.id,
           },
           data: {
-            title: task.title,
             fromColumn: task.updateColumn,
-            itemID: task.itemID.toString(),
+            itemID: task.itemID,
             updateColumn: task.updateColumn,
           },
         })

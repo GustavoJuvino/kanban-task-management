@@ -148,10 +148,6 @@ const BoardContent = () => {
     }
   }, [reorderTasks])
 
-  useEffect(() => {
-    console.log(updateTasks)
-  }, [updateTasks])
-
   // useEffect(() => {
   //   if (
   //     update &&
@@ -167,6 +163,7 @@ const BoardContent = () => {
   //         })
   //         .then(() => {
   //           router.refresh()
+  //           toast.success('success!!')
   //         })
   //         .catch((error) => {
   //           if (error.request.status === 409)
@@ -184,6 +181,10 @@ const BoardContent = () => {
   //     }
   //   }
   // }, [update, updateTasks, subtasks, seconds, router])
+
+  useEffect(() => {
+    console.log(tasks)
+  }, [tasks])
 
   if (columns.length > 0) {
     return (

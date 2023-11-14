@@ -38,6 +38,7 @@ export async function POST(request: Request) {
       },
       data: {
         title: task.updateTitle,
+        updateTitle: task.updateTitle,
         description: task.description,
         fromColumn: task.updateColumn,
         updateColumn: task.updateColumn,
