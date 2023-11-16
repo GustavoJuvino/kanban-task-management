@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../Button'
 import PreviewTask from './Task/PreviewTask'
 
@@ -14,14 +14,12 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 
 const BoardContent = () => {
   const [update, setUpdate] = useState(false)
   const [seconds, setSeconds] = useState(1800)
 
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
-  // const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
   const { hidden } = useHideSidebar()
@@ -29,7 +27,6 @@ const BoardContent = () => {
 
   const router = useRouter()
   const { URL } = useGetCurrentURL()
-  const { currentTask } = useSaveCurrentTask()
   const { tasks, columns, subtasks, setTasks, setSubTasks } = useGlobalContext()
 
   // Just hiding the default props error, not fix
@@ -139,10 +136,6 @@ const BoardContent = () => {
     )
 
     setUpdateTasks(newArr)
-  }, [tasks])
-
-  useEffect(() => {
-    console.log(tasks)
   }, [tasks])
 
   useEffect(() => {
