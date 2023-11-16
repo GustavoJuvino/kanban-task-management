@@ -19,10 +19,14 @@ export async function POST(request: Request) {
         await prisma.task.update({
           where: {
             id: task.id,
+            title: task.title,
+            fromBoard: task.fromBoard,
+            fromColumn: task.fromColumn,
           },
           data: {
             fromColumn: task.updateColumn,
             itemID: task.itemID,
+            taskItemID: task.taskItemID,
             updateColumn: task.updateColumn,
           },
         })

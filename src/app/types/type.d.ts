@@ -15,6 +15,7 @@ interface BoardFormInputs {
     id: string
     title: string
     itemID: string
+    taskItemID: string
     fromBoard: string
     fromColumn: string
     updateColumn: string
@@ -34,6 +35,7 @@ interface TaskFormInputs {
     columnID: string
     title: string
     itemID: string
+    taskItemID: string
     status?: string
     description: string
     fromColumn: string

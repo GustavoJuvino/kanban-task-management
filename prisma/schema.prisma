@@ -47,6 +47,7 @@ model Task {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   columnID String @db.ObjectId
   itemID String
+  taskItemID String
   title String 
   status String?
   fromBoard String

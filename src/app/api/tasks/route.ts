@@ -37,7 +37,8 @@ export async function POST(request: Request) {
           await prisma.task.create({
             data: {
               title: task.updateTitle,
-              itemID: task.itemID,
+              itemID: col.itemID,
+              taskItemID: task.taskItemID,
               columnID: currentUser.id,
               fromBoard: task.fromBoard,
               updateTitle: task.updateTitle,

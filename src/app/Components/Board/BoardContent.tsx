@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Button from '../Button'
 import PreviewTask from './Task/PreviewTask'
 
@@ -14,13 +14,14 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 
 const BoardContent = () => {
   const [update, setUpdate] = useState(false)
-  const [seconds, setSeconds] = useState(900)
+  const [seconds, setSeconds] = useState(1800)
 
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
-  const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
+  // const [reorderTasks, setReorderTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
   const { hidden } = useHideSidebar()
@@ -28,7 +29,8 @@ const BoardContent = () => {
 
   const router = useRouter()
   const { URL } = useGetCurrentURL()
-  const { tasks, columns, subtasks, setSubTasks } = useGlobalContext()
+  const { currentTask } = useSaveCurrentTask()
+  const { tasks, columns, subtasks, setTasks, setSubTasks } = useGlobalContext()
 
   // Just hiding the default props error, not fix
   const error = console.error
@@ -45,40 +47,32 @@ const BoardContent = () => {
     }
   }, [columns])
 
-  useEffect(() => {
-    if (reorderTasks.length === 0) {
-      setReorderTasks(tasks.sort((a, b) => Number(a.itemID) - Number(b.itemID)))
-    }
-
-    // else {
-    //   setReorderTasks(tasks)
-    // }
-  }, [tasks, reorderTasks])
-
   function updateSubtasks(task: TaskProps, destination: string) {
-    if (reorderTasks !== undefined) {
-      const uptadeSubs: SubtaskProps[] = [...subtasks]
+    const uptadeSubs: SubtaskProps[] = [...subtasks]
 
-      uptadeSubs.map((sub, index) => {
-        if (
-          (sub.fromColumn === task.fromColumn && sub.fromTask === task.title) ||
-          (sub.fromColumn === task.updateColumn && sub.fromTask === task.title)
-        ) {
-          uptadeSubs.splice(index, 1, { ...sub, fromColumn: destination })
-        }
+    uptadeSubs.map((sub, index) => {
+      if (
+        (sub.fromColumn === task.fromColumn && sub.fromTask === task.title) ||
+        (sub.fromColumn === task.updateColumn && sub.fromTask === task.title)
+      ) {
+        uptadeSubs.splice(index, 1, { ...sub, fromColumn: destination })
+      }
 
-        return sub
-      })
+      return sub
+    })
 
-      setSubTasks(uptadeSubs)
-    }
+    setSubTasks(uptadeSubs)
   }
 
   const handleDragDrop = (results: any) => {
     if (!results.destination) return null
 
-    const reorderedTasks = [...reorderTasks]
+    const reorderedTasks = [...tasks]
     const [reorderItem] = reorderedTasks.splice(results.source.index, 1)
+
+    const destinationColumn = columns.filter(
+      (col) => col.columnName === results.destination.droppableId && col.itemID,
+    )
 
     const currentSubtasksIDS: string[] = []
 
@@ -125,6 +119,7 @@ const BoardContent = () => {
           {
             ...reorderItem,
             subtasksIDS: currentSubtasksIDS,
+            itemID: destinationColumn[0].itemID,
             updateColumn: results.destination.droppableId,
           },
         )
@@ -133,58 +128,51 @@ const BoardContent = () => {
 
     setUpdate(true)
     setSeconds(seconds + 150)
-    setReorderTasks(reorderedTasks)
+    setTasks(reorderedTasks)
   }
 
   useEffect(() => {
-    if (reorderTasks.length > 0) {
-      const newArr: TaskProps[] = []
+    const newArr: TaskProps[] = []
 
-      reorderTasks.map((task, index) =>
-        newArr.push({ ...task, itemID: index.toString() }),
-      )
+    tasks.map((task, index) =>
+      newArr.push({ ...task, taskItemID: index.toString() }),
+    )
 
-      setUpdateTasks(newArr)
-    }
-  }, [reorderTasks])
-
-  // useEffect(() => {
-  //   if (
-  //     update &&
-  //     seconds > 0 &&
-  //     updateTasks !== undefined &&
-  //     updateTasks.length > 0
-  //   ) {
-  //     const debounceId = setTimeout(() => {
-  //       axios
-  //         .post('/api/tasks/updateItemID', {
-  //           tasks: updateTasks,
-  //           subtasks,
-  //         })
-  //         .then(() => {
-  //           router.refresh()
-  //           toast.success('success!!')
-  //         })
-  //         .catch((error) => {
-  //           if (error.request.status === 409)
-  //             toast.error(error.response.data.message)
-  //         })
-  //         .finally(() => {
-  //           setUpdate(false)
-  //         })
-  //       setUpdate(false)
-  //       setSeconds(900)
-  //     }, seconds)
-
-  //     return () => {
-  //       clearTimeout(debounceId)
-  //     }
-  //   }
-  // }, [update, updateTasks, subtasks, seconds, router])
+    setUpdateTasks(newArr)
+  }, [tasks])
 
   useEffect(() => {
     console.log(tasks)
   }, [tasks])
+
+  useEffect(() => {
+    if (update && seconds > 0 && updateTasks.length > 0) {
+      const debounceId = setTimeout(() => {
+        axios
+          .post('/api/tasks/updateItemID', {
+            tasks: updateTasks,
+            subtasks,
+          })
+          .then(() => {
+            router.refresh()
+          })
+          .catch((error) => {
+            if (error.request.status === 409)
+              toast.error(error.response.data.message)
+          })
+          .finally(() => {
+            setUpdate(false)
+            console.log('finally')
+          })
+        setUpdate(false)
+        setSeconds(1800)
+      }, seconds)
+
+      return () => {
+        clearTimeout(debounceId)
+      }
+    }
+  }, [update, updateTasks, subtasks, seconds, router])
 
   if (columns.length > 0) {
     return (
@@ -226,37 +214,35 @@ const BoardContent = () => {
                       </div>
 
                       <section className="flex flex-col gap-y-6">
-                        {reorderTasks !== undefined &&
-                          reorderTasks.length > 0 &&
-                          reorderTasks.map(
-                            (task, index) =>
-                              task.fromBoard.replace(/\s/g, '') === URL &&
-                              task.updateColumn === col.columnName && (
-                                <Draggable
-                                  key={task.id}
-                                  index={index}
-                                  draggableId={task.itemID}
-                                >
-                                  {(provided) => (
-                                    <div
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      ref={provided.innerRef}
-                                    >
-                                      <PreviewTask
-                                        key={task.id}
-                                        taskID={task.id}
-                                        title={task.title}
-                                        taskBoard={task.fromBoard}
-                                        taskColumn={task.fromColumn}
-                                        description={task.description}
-                                        currentColumnName={col.columnName}
-                                      />
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ),
-                          )}
+                        {tasks.map(
+                          (task, index) =>
+                            task.fromBoard.replace(/\s/g, '') === URL &&
+                            task.updateColumn === col.columnName && (
+                              <Draggable
+                                key={task.id}
+                                index={index}
+                                draggableId={task.id}
+                              >
+                                {(provided) => (
+                                  <div
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    ref={provided.innerRef}
+                                  >
+                                    <PreviewTask
+                                      key={task.id}
+                                      taskID={task.id}
+                                      title={task.title}
+                                      taskBoard={task.fromBoard}
+                                      taskColumn={task.fromColumn}
+                                      description={task.description}
+                                      currentColumnName={col.columnName}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ),
+                        )}
                       </section>
                       {provided.placeholder}
                     </ul>

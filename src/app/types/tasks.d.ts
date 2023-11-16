@@ -1,6 +1,7 @@
 interface TaskProps {
   id: string
   itemID: string
+  taskItemID: string
   columnID: string
   title: string
   status?: string

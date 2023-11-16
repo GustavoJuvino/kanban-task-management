@@ -44,7 +44,13 @@ const Main = ({
     setURL(boardURL)
     setBoards(currentBoards)
     setColumns(currentColumns)
-    setTasks(currentTasks)
+    setTasks(
+      currentTasks.sort((a, b) =>
+        Number(a.itemID) === Number(b.itemID)
+          ? Number(a.taskItemID) - Number(b.taskItemID)
+          : Number(a.itemID) - Number(b.itemID),
+      ),
+    )
     setSubTasks(currentSubtasks)
   }, [
     boardURL,

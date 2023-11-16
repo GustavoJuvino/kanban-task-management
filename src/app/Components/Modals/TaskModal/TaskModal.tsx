@@ -71,10 +71,10 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   // Add Task
   useEffect(() => {
     if (modalType === 'add') {
-      const itemID = tasks.map((task) => Number(task.itemID))
+      const itemID = tasks.map((task) => Number(task.taskItemID))
 
       setValue(
-        'task.itemID',
+        'task.taskItemID',
         itemID.length > 0 ? String(Math.max(...itemID) + 1) : '0',
       )
       setValue('task.updateColumn', currentColumn)
@@ -167,7 +167,6 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   }
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
-    console.log(data)
     setLoading(true)
     if (modalType === 'add') axiosRequest('/api/tasks', data)
     if (modalType === 'edit') axiosRequest('/api/tasks/edit', data)

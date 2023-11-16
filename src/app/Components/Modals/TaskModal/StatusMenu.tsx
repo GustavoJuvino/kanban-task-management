@@ -16,7 +16,7 @@ interface StatusMenuProps {
 const stats = ['Todo', 'Doing', 'Done']
 
 const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
-  const [status, setStatus] = useState<string | undefined>()
+  const [status, setStatus] = useState<string>('')
 
   const { tasks, columns } = useGlobalContext()
   const [openMenu, setOpenMenu] = useState(false)
@@ -39,7 +39,7 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
     })
   }, [])
 
-  useMemo(() => {
+  useEffect(() => {
     setFirstValue !== undefined && setFirstValue('task.status', status)
   }, [setFirstValue, status])
 
@@ -54,7 +54,6 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
         className="relative flex select-none flex-col"
       >
         <Form.Input
-          readOnly
           type="text"
           value={menuType === 'add' ? currentColumn : status}
           name={menuType === 'add' ? 'task.updateColumn' : 'task.status'}

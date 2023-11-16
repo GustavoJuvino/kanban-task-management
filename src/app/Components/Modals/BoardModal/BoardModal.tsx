@@ -76,7 +76,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       tasks.map((task, index) => {
         setValue(`tasks.${index}.id`, task.id)
         setValue(`tasks.${index}.title`, task.title)
-        setValue(`tasks.${index}.itemID`, task.itemID)
+        setValue(`tasks.${index}.taskItemID`, task.taskItemID)
         setValue(`tasks.${index}.fromColumn`, task.fromColumn)
         return task
       })
