@@ -18,7 +18,6 @@ export async function DELETE(request: Request) {
       (await prisma.board.delete({
         where: {
           id: board.id,
-          boardName: board.name,
           userID: currentUser.id,
         },
       })),
@@ -37,7 +36,7 @@ export async function DELETE(request: Request) {
             where: {
               fromColumn: col.columnName,
               columnID: currentUser.id,
-              fromBoard: board.name,
+              fromBoard: board.boardName.replace(/\s/g, ''),
             },
           })
 
@@ -45,7 +44,7 @@ export async function DELETE(request: Request) {
             where: {
               fromColumn: col.columnName,
               taskID: currentUser.id,
-              fromBoard: board.name,
+              fromBoard: board.boardName.replace(/\s/g, ''),
             },
           })
         }),

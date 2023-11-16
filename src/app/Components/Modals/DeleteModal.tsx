@@ -46,10 +46,6 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
     })
   }, [URL, boards, columns])
 
-  useEffect(() => {
-    console.log(deleteBoard)
-  }, [deleteBoard])
-
   // Tasks
   useEffect(() => {
     if (deleteType === 'task') {
@@ -82,7 +78,6 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
           toast.error('Something went wrong')
         })
     }
-
     if (deleteType === 'task') {
       axios
         .delete(url, {
@@ -100,6 +95,11 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         })
     }
   }
+
+  useEffect(() => {
+    console.log(deleteBoard)
+    console.log(tasks)
+  }, [deleteBoard, tasks])
 
   return (
     <section

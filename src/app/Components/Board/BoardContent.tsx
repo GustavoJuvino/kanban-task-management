@@ -155,7 +155,6 @@ const BoardContent = () => {
           })
           .finally(() => {
             setUpdate(false)
-            console.log('finally')
           })
         setUpdate(false)
         setSeconds(1800)
