@@ -121,7 +121,17 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
   // }
 
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    console.log(data)
+    const checkCols = data.boardColumns.map((col) => {
+      const test = columns.map((currentCol) => {
+        if (!col.columnName && currentCol.columnName === col.updateColumnName) {
+          return true
+        } else return false
+      })
+
+      if (test.some((x) => x)) return true
+      else return false
+    })
+
     setLoading(true)
     if (modalType === 'add') {
       axios
@@ -143,7 +153,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         })
     }
 
-    if (modalType === 'edit') {
+    if (modalType === 'edit' && !checkCols.some((x) => x)) {
       axios
         .post('/api/board/update', data)
         .then(() => {
@@ -160,6 +170,9 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         .finally(() => {
           setLoading(false)
         })
+    } else {
+      setLoading(false)
+      toast.error('Column already exists')
     }
   }
 
