@@ -96,13 +96,17 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
     axios
       .post(url, data)
       .then(() => {
-        modalType === 'add' ? onOpenNewBoard(false) : onOpenEditBoard(false)
-        router.push(`${data.board.name.replace(/\s/g, '')}`)
-        setTimeout(() => {
-          modalType === 'add'
-            ? toast.success('Board created successfully!')
-            : toast.success('Board updated successfully!')
-        }, 2000)
+        if (modalType === 'add') {
+          router.refresh()
+          onOpenNewBoard(false)
+          toast.success('Board created successfully!')
+        }
+
+        if (modalType === 'edit') {
+          router.refresh()
+          onOpenEditBoard(false)
+          toast.success('Board updated successfully!')
+        }
       })
       .catch((error) => {
         if (error.request.status === 409)
@@ -114,65 +118,30 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       })
   }
 
-  // const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-  //   setLoading(true)
-  //   if (modalType === 'add') axiosRequest('/api/board', data)
-  //   if (modalType === 'edit') axiosRequest('/api/board/update', data)
-  // }
-
   const onSubmit: SubmitHandler<BoardFormInputs> = (data) => {
-    const checkCols = data.boardColumns.map((col) => {
-      const test = columns.map((currentCol) => {
-        if (!col.columnName && currentCol.columnName === col.updateColumnName) {
-          return true
-        } else return false
+    setLoading(true)
+    if (modalType === 'add') axiosRequest('/api/board', data)
+    if (modalType === 'edit') {
+      const checkCols = data.boardColumns.map((col) => {
+        const test = columns.map((currentCol) => {
+          if (
+            !col.columnName &&
+            currentCol.columnName === col.updateColumnName
+          ) {
+            return true
+          } else return false
+        })
+
+        if (test.some((x) => x)) return true
+        else return false
       })
 
-      if (test.some((x) => x)) return true
-      else return false
-    })
-
-    setLoading(true)
-    if (modalType === 'add') {
-      axios
-        .post('/api/board', data)
-        .then(() => {
-          onOpenNewBoard(false)
-          router.push(`${data.board.name.replace(/\s/g, '')}`)
-          setTimeout(() => {
-            toast.success('Board created successfully!')
-          }, 2000)
-        })
-        .catch((error) => {
-          if (error.request.status === 409)
-            toast.error(error.response.data.message)
-          else toast.error('Something went wrong')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-
-    if (modalType === 'edit' && !checkCols.some((x) => x)) {
-      axios
-        .post('/api/board/update', data)
-        .then(() => {
-          onOpenEditBoard(false)
-          router.refresh()
-          router.push(`${data.board.name.replace(/\s/g, '')}`)
-          setTimeout(() => {
-            toast.success('Board updated successfully!')
-          }, 2000)
-        })
-        .catch(() => {
-          toast.error('Something went wrong')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    } else {
-      setLoading(false)
-      toast.error('Column already exists')
+      if (!checkCols.some((x) => x)) {
+        axiosRequest('/api/board/update', data)
+      } else {
+        toast.error('Column already exists')
+        setLoading(false)
+      }
     }
   }
 

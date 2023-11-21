@@ -4,7 +4,7 @@ interface TaskProps {
   taskItemID: string
   columnID: string
   title: string
-  status?: string
+  status: string | null
   fromBoard: string
   fromColumn: string
   description: string

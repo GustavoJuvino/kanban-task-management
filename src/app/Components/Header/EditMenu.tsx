@@ -3,6 +3,8 @@ import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
 import { VariantProps, tv } from 'tailwind-variants'
+import { signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 
 const menu = tv({
   base: `
@@ -10,10 +12,13 @@ const menu = tv({
     absolute 
     right-4
     mt-[22px] 
-    h-[94px] 
+    h-auto 
     w-32
+    flex
+    flex-col
+    gap-y-4
     rounded-lg 
-    bg-very-dark-gray
+    bg-dark-gray
     p-4
     text-body-l
     sm:w-48
@@ -30,43 +35,61 @@ interface EditMenuProps
 }
 
 const EditMenu = ({ open, menuType, className }: EditMenuProps) => {
-  const { onOpenEditBoard } = useOpenBoardModal()
+  const pathname = usePathname()
   const { onOpenEditTask } = useOpenTaskModal()
+  const { onOpenEditBoard } = useOpenBoardModal()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
 
   if (open)
     return (
       <section>
         <ul className={menu({ className })}>
+          {pathname !== '/' && (
+            <>
+              <li
+                className="
+                  w-fit 
+                  cursor-pointer 
+                  text-medium-gray 
+                  duration-300 
+                  hover:text-main-purple  
+                "
+              >
+                <span
+                  onClick={() => {
+                    menuType === 'board'
+                      ? onOpenEditBoard(true)
+                      : onOpenEditTask(true)
+                  }}
+                >
+                  {menuType === 'board' ? 'Edit Board' : 'Edit Task'}
+                </span>
+              </li>
+              <li className="w-fit cursor-pointer text-red duration-300 hover:text-light-red">
+                <span
+                  onClick={() => {
+                    menuType === 'board'
+                      ? onOpenDeleteBoard(true)
+                      : onOpenDeleteTask(true)
+                  }}
+                >
+                  {menuType === 'board' ? 'Delete Board' : 'Delete Task'}
+                </span>
+              </li>
+            </>
+          )}
+
           <li
+            onClick={() => signOut()}
             className="
-                w-fit 
-                cursor-pointer 
-                text-medium-gray 
-                duration-300 
-                hover:text-main-purple  
-              "
+              w-fit 
+              cursor-pointer 
+              text-medium-gray 
+              duration-300 
+              hover:text-main-purple  
+            "
           >
-            <span
-              onClick={() => {
-                menuType === 'board'
-                  ? onOpenEditBoard(true)
-                  : onOpenEditTask(true)
-              }}
-            >
-              {menuType === 'board' ? 'Edit Board' : 'Edit Task'}
-            </span>
-          </li>
-          <li className="mt-4 w-fit cursor-pointer text-red duration-300 hover:text-light-red">
-            <span
-              onClick={() => {
-                menuType === 'board'
-                  ? onOpenDeleteBoard(true)
-                  : onOpenDeleteTask(true)
-              }}
-            >
-              {menuType === 'board' ? 'Delete Board' : 'Delete Task'}
-            </span>
+            Sign Out
           </li>
         </ul>
       </section>

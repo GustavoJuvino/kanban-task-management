@@ -23,6 +23,12 @@ interface MainProps {
   currentTasks: TaskProps[]
   currentColumns: ColumnsProps[]
   currentSubtasks: SubtaskProps[]
+  currentUser: void | {
+    id: string
+    username: string
+    email: string
+    hashedPassword: string
+  } | null
 }
 
 const Main = ({
@@ -31,6 +37,7 @@ const Main = ({
   currentColumns,
   currentTasks,
   currentSubtasks,
+  currentUser,
 }: MainProps) => {
   const { openEditTask } = useOpenTaskModal()
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
@@ -54,15 +61,11 @@ const Main = ({
     setSubTasks(currentSubtasks)
   }, [
     boardURL,
-    setURL,
     currentBoards,
-    setBoards,
     currentColumns,
-    setColumns,
     currentTasks,
-    setTasks,
     currentSubtasks,
-    setSubTasks,
+    currentUser,
   ])
 
   const currentBoardsURL = boards.map((board) =>

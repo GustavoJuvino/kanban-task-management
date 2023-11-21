@@ -4,17 +4,9 @@ import HomePage from './Components/HomePage'
 import getBoard from './actions/getBoard'
 
 export default async function Home() {
-  const currentUser = await getCurrentUser()
   const boards = await getBoard()
+  const currentUser = await getCurrentUser()
 
-  if (currentUser)
-    return (
-      <HomePage
-        // currentBoards={boards.map((board) =>
-        //   board.boardName ? board.boardName : '',
-        // )}
-        currentBoards={boards}
-      />
-    )
+  if (currentUser) return <HomePage currentBoards={boards} />
   else redirect('/login')
 }

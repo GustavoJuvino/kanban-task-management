@@ -11,11 +11,15 @@ import { useWindowSize } from '@uidotdev/usehooks'
 import { useHideSidebar } from '@/app/helper/useHideSidebar'
 import SidebarColumns from './SidebarColumns'
 import { useGlobalContext } from '@/app/context/store'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import { useRouter } from 'next/navigation'
 
 const Sidebar = () => {
   const size = useWindowSize()
   const { hidden, setHidden } = useHideSidebar()
   const { boards } = useGlobalContext()
+  const { setURL } = useGetCurrentURL()
+  const router = useRouter()
 
   useEffect(() => {
     if (size.width && size.width <= 640) setHidden(true)
@@ -46,7 +50,13 @@ const Sidebar = () => {
           "
         >
           <section>
-            <LogoLight className="ml-6 mt-8 max-sm:hidden sm:ml-[26px] lg:ml-[34px]" />
+            <LogoLight
+              onClick={() => {
+                router.push('/')
+                setURL('/')
+              }}
+              className="ml-6 mt-8 cursor-pointer max-sm:hidden sm:ml-[26px] lg:ml-[34px]"
+            />
 
             <div className="mt-4 sm:mt-[54px]">
               <div className="flex items-center justify-between max-sm:pr-6">

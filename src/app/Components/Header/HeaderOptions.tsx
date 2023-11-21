@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import Button from '../Button'
 import EditMenu from './EditMenu'
 import { EditMenuIcon, IconAdd } from '../../../../public/svgs'
-
-import { usePathname } from 'next/navigation'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { useGlobalContext } from '@/app/context/store'
 import useClickOutside from '@/app/hooks/useClickOutside'
@@ -19,23 +17,21 @@ const HeaderOptions = () => {
   const { setCurrentColumn } = useSaveCurrentColumn()
 
   const size = useWindowSize()
-  const pathname = usePathname()
   const editMenuRef = useRef(null)
 
   useEffect(() => {
     if (editMenuRef) clickOutside(editMenuRef, setOpenMenu)
   }, [clickOutside])
 
-  if (pathname !== '/')
-    return (
-      <section className="flex items-center gap-x-4 sm:gap-x-6">
-        {columns.length > 0 && (
-          <Button
-            onClick={() => {
-              onOpenNewTask(true)
-              setCurrentColumn(columns[0].columnName)
-            }}
-            className="
+  return (
+    <section className="flex items-center gap-x-4 sm:gap-x-6">
+      {columns.length > 0 && (
+        <Button
+          onClick={() => {
+            onOpenNewTask(true)
+            setCurrentColumn(columns[0].columnName)
+          }}
+          className="
             flex
             w-12
             items-center
@@ -43,23 +39,23 @@ const HeaderOptions = () => {
             max-sm:h-8
             sm:w-[164px]
           "
-          >
-            {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
-          </Button>
-        )}
-        <div ref={editMenuRef}>
-          <EditMenuIcon
-            onClick={() => setOpenMenu(!openMenu)}
-            className="
+        >
+          {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
+        </Button>
+      )}
+      <div ref={editMenuRef}>
+        <EditMenuIcon
+          onClick={() => setOpenMenu(!openMenu)}
+          className="
               cursor-pointer
               fill-medium-gray
               hover:fill-main-purple
             "
-          />
-          <EditMenu open={openMenu} menuType="board" />
-        </div>
-      </section>
-    )
+        />
+        <EditMenu open={openMenu} menuType="board" />
+      </div>
+    </section>
+  )
 }
 
 export default HeaderOptions
