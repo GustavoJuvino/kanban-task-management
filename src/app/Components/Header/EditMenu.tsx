@@ -1,10 +1,11 @@
-import React, { ComponentProps } from 'react'
+import React, { ComponentProps, useEffect } from 'react'
 import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
 import { VariantProps, tv } from 'tailwind-variants'
 import { signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 
 const menu = tv({
   base: `
@@ -18,7 +19,8 @@ const menu = tv({
     flex-col
     gap-y-4
     rounded-lg 
-    bg-dark-gray
+    bg-light-grey
+    dark:bg-dark-gray
     p-4
     text-body-l
     sm:w-48
@@ -36,6 +38,7 @@ interface EditMenuProps
 
 const EditMenu = ({ open, menuType, className }: EditMenuProps) => {
   const pathname = usePathname()
+  const { openTask } = useOpenTask()
   const { onOpenEditTask } = useOpenTaskModal()
   const { onOpenEditBoard } = useOpenBoardModal()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
@@ -79,18 +82,20 @@ const EditMenu = ({ open, menuType, className }: EditMenuProps) => {
             </>
           )}
 
-          <li
-            onClick={() => signOut()}
-            className="
-              w-fit 
-              cursor-pointer 
-              text-medium-gray 
-              duration-300 
-              hover:text-main-purple  
-            "
-          >
-            Sign Out
-          </li>
+          {!openTask && (
+            <li
+              onClick={() => signOut()}
+              className="
+                w-fit 
+                cursor-pointer 
+                text-medium-gray 
+                duration-300 
+                hover:text-main-purple  
+              "
+            >
+              Sign Out
+            </li>
+          )}
         </ul>
       </section>
     )

@@ -24,20 +24,20 @@ const Subtasks = () => {
   useEffect(() => {
     const newArr: SubtaskProps[] = []
     if (subtasks.length > 0) {
-      subtasks.map(
-        (sub) =>
-          sub.fromTask === currentTask.taskTitle &&
-          sub.fromColumn === currentColumn &&
-          sub.fromBoard.replace(/\s/g, '') === URL &&
-          newArr.push(sub),
-      )
-      if (newArr.length > 0) {
-        setFormatedArr(
-          newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)),
+      subtasks
+        .sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID))
+        .map(
+          (sub) =>
+            sub.fromTask === currentTask.taskTitle &&
+            sub.fromColumn === currentColumn &&
+            sub.fromBoard.replace(/\s/g, '') === URL &&
+            newArr.push(sub),
         )
+      if (newArr.length > 0) {
+        setFormatedArr(newArr)
       }
     }
-  }, [])
+  }, [URL, currentColumn, currentTask])
 
   useEffect(() => {
     if (formatedArr !== undefined) {
@@ -84,12 +84,18 @@ const Subtasks = () => {
   if (formatedArr !== undefined)
     return (
       <>
-        <h6 className="text-body-m text-white">
+        <h6 className="text-body-m text-medium-gray dark:text-white">
           {`Subtasks (${subsChecked?.length} of ${formatedArr.length})`}
         </h6>
         <Form.Field className="mb-6 mt-4 flex max-h-[90px] flex-col gap-y-2 overflow-auto pr-4 sm:max-h-[185px]">
           {fields.map((field, index) => (
-            <Form.LabelCheck key={field.id}>
+            <Form.LabelCheck
+              key={field.id}
+              className={
+                value[index] &&
+                `${value[index].completed === true && `line-through`}`
+              }
+            >
               <div className="relative">
                 <Form.InputCheck
                   type="checkbox"

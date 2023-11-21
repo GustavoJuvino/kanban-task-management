@@ -15,12 +15,14 @@ import { Form } from '../../form'
 import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
+import { useTheme } from 'next-themes'
 
 interface BoardModalProps {
   modalType: ModalTypeProps
 }
 
 const BoardModal = ({ modalType }: BoardModalProps) => {
+  const { theme } = useTheme()
   const router = useRouter()
   const { URL } = useGetCurrentURL()
   const { randomColor } = useGetRandomColor()
@@ -161,9 +163,9 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       "
     >
       <ModalBackground />
-      <div className="absolute z-50 h-[429px] w-[80%] rounded-md bg-dark-gray p-8 sm:w-[480px]">
+      <div className="absolute z-50 h-[429px] w-[80%] rounded-md bg-white p-8 dark:bg-dark-gray sm:w-[480px]">
         <div className="flex items-center justify-between">
-          <h2 className="text-heading-l text-white">
+          <h2 className="text-heading-l text-black dark:text-white">
             {`${modalType === 'add' ? 'Add New' : 'Edit'} Board`}
           </h2>
           <Close
@@ -189,7 +191,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
             <Form.Field className="flex flex-col gap-y-2">
               <Form.Label htmlFor="form_input">Board Name</Form.Label>
               <Form.Input
-                id="form_input"
+                id={theme === 'light' ? 'form_input_light' : 'form_input_dark'}
                 name="board.name"
                 type="text"
                 placeholder="e.g Web Design"

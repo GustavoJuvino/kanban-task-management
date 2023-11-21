@@ -128,8 +128,9 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
           flex-col
           gap-y-6 
           rounded-md 
-          bg-dark-gray 
-          p-8 
+          bg-white 
+          p-8
+          dark:bg-dark-gray 
           sm:h-[229px] 
           sm:w-[480px]
         "

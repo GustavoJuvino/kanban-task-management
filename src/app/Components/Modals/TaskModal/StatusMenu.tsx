@@ -45,7 +45,7 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
 
   return (
     <Form.Field className="block">
-      <Form.Label className="flex flex-col text-body-m text-white">
+      <Form.Label className="flex flex-col text-body-m text-medium-gray dark:text-white">
         {menuType === 'add' ? 'Current Column' : 'Current Status'}
       </Form.Label>
       <div
@@ -61,8 +61,10 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
             mt-2
             cursor-pointer
             select-none
+            text-black
             duration-300
-          focus:border-main-purple
+            focus:border-main-purple
+            dark:text-white
           "
         />
         <Arrow
@@ -86,10 +88,11 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
               w-full 
               flex-col 
               rounded-lg 
-              bg-very-dark-gray 
-              p-2 
+              bg-light-grey 
+              p-2
               text-body-l 
-              text-medium-gray
+              dark:bg-very-dark-gray 
+              dark:text-medium-gray
               mobile:gap-y-2
               mobile:p-4
             "
@@ -99,7 +102,7 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
                   <li
                     key={col.id}
                     onClick={() => setCurrentColumn(col.columnName)}
-                    className="w-fit cursor-pointer duration-300 hover:text-white"
+                    className="w-fit cursor-pointer duration-300 hover:text-medium-gray dark:hover:text-white"
                   >
                     {col.columnName}
                   </li>
@@ -108,7 +111,7 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
                   <li
                     key={stat}
                     onClick={() => setStatus(stat)}
-                    className="w-fit cursor-pointer duration-300 hover:text-white"
+                    className="w-fit cursor-pointer duration-300 hover:text-medium-gray dark:hover:text-white"
                   >
                     {stat}
                   </li>

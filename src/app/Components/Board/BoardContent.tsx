@@ -14,6 +14,10 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
+import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
+import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 
 const BoardContent = () => {
   const [update, setUpdate] = useState(false)
@@ -23,10 +27,14 @@ const BoardContent = () => {
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
   const { hidden } = useHideSidebar()
-  const { onOpenEditBoard } = useOpenBoardModal()
+  const { onOpenEditBoard, openNewBoard, openEditBoard } = useOpenBoardModal()
 
   const router = useRouter()
   const { URL } = useGetCurrentURL()
+  const { theme } = useTheme()
+
+  const { openTask } = useOpenTask()
+
   const { tasks, columns, subtasks, setTasks, setSubTasks } = useGlobalContext()
 
   // Just hiding the default props error, not fix
@@ -138,33 +146,33 @@ const BoardContent = () => {
     setUpdateTasks(newArr)
   }, [tasks])
 
-  useEffect(() => {
-    if (update && seconds > 0 && updateTasks.length > 0) {
-      const debounceId = setTimeout(() => {
-        axios
-          .post('/api/tasks/updateItemID', {
-            tasks: updateTasks,
-            subtasks,
-          })
-          .then(() => {
-            router.refresh()
-          })
-          .catch((error) => {
-            if (error.request.status === 409)
-              toast.error(error.response.data.message)
-          })
-          .finally(() => {
-            setUpdate(false)
-          })
-        setUpdate(false)
-        setSeconds(1800)
-      }, seconds)
+  // useEffect(() => {
+  //   if (update && seconds > 0 && updateTasks.length > 0) {
+  //     const debounceId = setTimeout(() => {
+  //       axios
+  //         .post('/api/tasks/updateItemID', {
+  //           tasks: updateTasks,
+  //           subtasks,
+  //         })
+  //         .then(() => {
+  //           router.refresh()
+  //         })
+  //         .catch((error) => {
+  //           if (error.request.status === 409)
+  //             toast.error(error.response.data.message)
+  //         })
+  //         .finally(() => {
+  //           setUpdate(false)
+  //         })
+  //       setUpdate(false)
+  //       setSeconds(1800)
+  //     }, seconds)
 
-      return () => {
-        clearTimeout(debounceId)
-      }
-    }
-  }, [update, updateTasks, subtasks, seconds, router])
+  //     return () => {
+  //       clearTimeout(debounceId)
+  //     }
+  //   }
+  // }, [update, updateTasks, subtasks, seconds, router])
 
   if (columns.length > 0) {
     return (
@@ -245,14 +253,13 @@ const BoardContent = () => {
 
             <section className="relative mt-10 h-auto w-[280px]">
               <div
+                id={`${
+                  theme === 'light' ? 'new_column_light' : 'new_column_dark'
+                }`}
                 className="
                   h-full
                   w-[280px]
                   rounded-md
-                  bg-gradient-to-b
-                  from-dark-gray
-                  to-[#2b2c3750]
-                  opacity-25
                 "
               />
               <div

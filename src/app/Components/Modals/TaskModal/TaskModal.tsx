@@ -195,14 +195,15 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
           h-auto
           w-full
           rounded-md
-          bg-dark-gray
+          bg-white
           p-6
+          dark:bg-dark-gray
           sm:w-[480px]
           sm:p-8
         "
       >
         <div className="flex w-full items-center justify-between">
-          <h2 className="text-heading-m text-white sm:text-heading-l">
+          <h2 className="text-heading-m text-black dark:text-white sm:text-heading-l">
             {modalType === 'add' ? 'Add New Task' : 'Edit Task'}
           </h2>
           <Close
@@ -221,14 +222,11 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         <FormProvider {...createTaskForm}>
           <form
             id="task_form"
-            className="mt-6 flex flex-col gap-y-6"
+            className="mt-6 flex flex-col gap-y-6 text-medium-gray dark:text-white"
             onSubmit={handleSubmit((data) => onSubmit(data))}
           >
             <Form.Field className="flex flex-col gap-y-2">
-              <Form.Label
-                htmlFor="task_input"
-                className="text-body-m text-white"
-              >
+              <Form.Label htmlFor="task_input" className="text-body-m ">
                 Title
               </Form.Label>
               <Form.Input
@@ -243,9 +241,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
 
             <Form.Field className="flex flex-col">
               <div className="flex items-center gap-x-2">
-                <Form.Label className="text-body-m text-white">
-                  Description
-                </Form.Label>
+                <Form.Label className="text-body-m ">Description</Form.Label>
                 {errors.task?.description?.message && (
                   <span className="text-[12px] text-red sm:text-body-l">
                     {errors.task?.description?.message}

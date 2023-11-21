@@ -18,7 +18,8 @@ const input = tv({
         text-[10px]
         font-medium
         leading-[23px]
-        text-white
+        dark:text-white
+        text-black
         outline-none
         duration-300
         focus:border-main-purple

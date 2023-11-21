@@ -6,19 +6,21 @@ import Theme from './Theme'
 import ModalBackground from '../ModalBackground'
 import CreateNewBoard from '../Board/CreateNewBoard'
 import { Cross } from '../../../../public/modal'
-import { LogoLight } from '../../../../public/svgs'
+import { LogoDark, LogoLight } from '../../../../public/svgs'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { useHideSidebar } from '@/app/helper/useHideSidebar'
-import SidebarColumns from './SidebarColumns'
+import SidebarColumns from './SideBarBoards'
 import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
 
 const Sidebar = () => {
   const size = useWindowSize()
   const { hidden, setHidden } = useHideSidebar()
   const { boards } = useGlobalContext()
   const { setURL } = useGetCurrentURL()
+  const { theme } = useTheme()
   const router = useRouter()
 
   useEffect(() => {
@@ -37,8 +39,10 @@ const Sidebar = () => {
             w-[264px] 
             flex-col 
             justify-between 
-            border-lines-dark 
-            bg-dark-gray 
+            border-lines-white
+            bg-white 
+            dark:border-lines-dark
+            dark:bg-dark-gray 
             max-sm:absolute 
             max-sm:top-40 
             max-sm:rounded-lg
@@ -50,13 +54,37 @@ const Sidebar = () => {
           "
         >
           <section>
-            <LogoLight
-              onClick={() => {
-                router.push('/')
-                setURL('/')
-              }}
-              className="ml-6 mt-8 cursor-pointer max-sm:hidden sm:ml-[26px] lg:ml-[34px]"
-            />
+            {theme === 'dark' ? (
+              <LogoLight
+                onClick={() => {
+                  router.push('/')
+                  setURL('/')
+                }}
+                className="
+                  ml-6 
+                  mt-8
+                  cursor-pointer 
+                  max-sm:hidden 
+                  sm:ml-[26px] 
+                  lg:ml-[34px]
+                "
+              />
+            ) : (
+              <LogoDark
+                onClick={() => {
+                  router.push('/')
+                  setURL('/')
+                }}
+                className="
+                  ml-6 
+                  mt-8 
+                  cursor-pointer 
+                  max-sm:hidden 
+                  sm:ml-[26px] 
+                  lg:ml-[34px]
+                "
+              />
+            )}
 
             <div className="mt-4 sm:mt-[54px]">
               <div className="flex items-center justify-between max-sm:pr-6">

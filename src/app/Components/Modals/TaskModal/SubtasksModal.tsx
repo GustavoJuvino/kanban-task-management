@@ -70,7 +70,7 @@ const SubtasksModal = ({
         completed: false,
       })
     } else getPlaceholders()
-  }, [modalType, append])
+  }, [modalType, append, itemID])
 
   //  Edit Subtasks
   useEffect(() => {
@@ -82,6 +82,9 @@ const SubtasksModal = ({
         sub,
     )
     currentSubs.filter((sub) => sub !== false)
+    const lastItem = currentSubs.length - 1
+
+    setItemID(Number(subtasks[lastItem].subtaskID))
 
     if (modalType === 'edit' && currentSubs.length > 1) {
       const newArr: SubtaskProps[] = []
@@ -106,6 +109,8 @@ const SubtasksModal = ({
     }
   }, [modalType, insert, currentTask])
 
+  useEffect(() => console.log(itemID), [itemID])
+
   // Exclude subtasks in Edit Subtasks modal
   useEffect(() => {
     if (isSubmitting && excludeSubs.length > 0) {
@@ -126,7 +131,9 @@ const SubtasksModal = ({
   return (
     <section className="flex flex-col gap-y-3">
       <div className="flex items-center gap-x-2">
-        <h6 className="text-body-m text-white">Subtasks</h6>
+        <h6 className="text-body-m text-medium-gray dark:text-white">
+          Subtasks
+        </h6>
         {subtasksErrors !== undefined && (
           <span className="text-[12px] text-red sm:text-body-l">
             Can&apos;t be empty

@@ -6,6 +6,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: ['class'],
   theme: {
     extend: {
       colors: {
@@ -72,6 +73,7 @@ const config: Config = {
       },
       dropShadow: {
         custom: '0 10px 20px rgba(54, 78, 126, 0.25)',
+        md: '0px 4px 6px 0px rgba(54, 78, 126, 0.10)',
       },
     },
   },

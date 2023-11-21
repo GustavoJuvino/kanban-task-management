@@ -68,7 +68,7 @@ const Task = () => {
 
   useEffect(() => {
     tasks.map((task) => {
-      if (task.id === currentTask.id) {
+      if (task.id === currentTask.id && task.status) {
         setValue('task.id', task.id)
         setValue('task.title', task.title)
         setValue('task.status', task.status)
@@ -79,7 +79,6 @@ const Task = () => {
   }, [setValue, tasks])
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
-    console.log(data)
     setLoading(true)
 
     axios
@@ -100,7 +99,7 @@ const Task = () => {
     return (
       <>
         <div className="flex items-center justify-between">
-          <h2 className="w-full text-heading-l text-white">
+          <h2 className="w-[387px] text-heading-l text-black dark:text-white">
             {currentTask.taskTitle}
           </h2>
           <div ref={editMenuRef} className="relative">
