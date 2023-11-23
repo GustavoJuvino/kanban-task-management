@@ -1,8 +1,16 @@
-import React from 'react'
-import { LogoLight } from '../../../public/svgs'
+'use client'
+
+import React, { useEffect, useState } from 'react'
+import { LogoDark, LogoLight } from '../../../public/svgs'
 import LoginForm from './LoginForm'
 
-const page = () => {
+const LoginPage = () => {
+  const [HTML, setHTML] = useState<string>()
+
+  useEffect(() => {
+    setHTML(document.getElementById('HTML')?.className)
+  }, [])
+
   return (
     <main
       className="
@@ -11,7 +19,8 @@ const page = () => {
         w-full 
         items-center 
         justify-center 
-        bg-very-dark-gray
+        bg-light-grey
+        dark:bg-very-dark-gray
         max-sm:px-7
       "
     >
@@ -20,20 +29,21 @@ const page = () => {
           h-auto 
           w-full 
           rounded-lg 
-          bg-lines-dark 
+          bg-white
           px-8 
           py-8 
+          dark:bg-lines-dark 
           sm:w-[550px] 
           sm:px-[50px] 
           sm:py-14
         "
       >
         <span className="flex justify-center">
-          <LogoLight />
+          {HTML === 'light' ? <LogoDark /> : <LogoLight />}
         </span>
 
         <div className="mt-[50px]">
-          <h1 className="text-heading-l text-white sm:text-heading-xl">
+          <h1 className="text-heading-l text-black dark:text-white sm:text-heading-xl">
             Loggin Acount
           </h1>
           <p
@@ -68,9 +78,9 @@ const page = () => {
             href="/register"
             className="
               cursor-pointer 
-              text-white 
               duration-300 
-              hover:text-main-purple     
+              hover:text-main-purple 
+              dark:text-white     
             "
           >
             {' '}
@@ -82,4 +92,4 @@ const page = () => {
   )
 }
 
-export default page
+export default LoginPage

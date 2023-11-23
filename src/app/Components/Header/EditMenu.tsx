@@ -19,7 +19,7 @@ const menu = tv({
     flex-col
     gap-y-4
     rounded-lg 
-    bg-light-grey
+    bg-white
     dark:bg-dark-gray
     p-4
     text-body-l

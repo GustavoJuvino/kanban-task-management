@@ -20,6 +20,7 @@ import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 
 // interface TaskProps {
 //   title: string
@@ -27,6 +28,8 @@ import { toast } from 'react-toastify'
 // }
 
 const Task = () => {
+  const taskRef = useRef(null)
+
   const [loading, setLoading] = useState(false)
 
   const editMenuRef = useRef(null)
@@ -34,6 +37,7 @@ const Task = () => {
 
   const router = useRouter()
 
+  const { openTask, onOpenTask } = useOpenTask()
   const { clickOutside } = useClickOutside()
   const { currentTask } = useSaveCurrentTask()
   const { tasks } = useGlobalContext()
@@ -78,6 +82,17 @@ const Task = () => {
     })
   }, [setValue, tasks])
 
+  const [clickOutsideTask, setClickOutsideTask] = useState(true)
+
+  useEffect(() => {
+    if (taskRef) clickOutside(taskRef, setClickOutsideTask)
+  }, [clickOutside])
+
+  useEffect(() => {
+    if (openTask) setClickOutsideTask(true)
+    if (!clickOutsideTask) onOpenTask(false)
+  }, [openTask, onOpenTask, clickOutsideTask])
+
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
     setLoading(true)
 
@@ -97,7 +112,23 @@ const Task = () => {
 
   if (!openDeleteTask)
     return (
-      <>
+      <div
+        ref={taskRef}
+        className="
+          z-[500]
+          flex 
+          h-auto
+          w-full 
+          flex-col
+          gap-y-6
+          rounded-md 
+          bg-white 
+          p-6
+          dark:bg-dark-gray
+          sm:w-[480px] 
+          sm:p-8
+        "
+      >
         <div className="flex items-center justify-between">
           <h2 className="w-[387px] text-heading-l text-black dark:text-white">
             {currentTask.taskTitle}
@@ -136,7 +167,7 @@ const Task = () => {
             </Button>
           </form>
         </FormProvider>
-      </>
+      </div>
     )
 }
 

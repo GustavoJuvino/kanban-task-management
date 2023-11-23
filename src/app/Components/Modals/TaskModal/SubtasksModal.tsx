@@ -70,46 +70,46 @@ const SubtasksModal = ({
         completed: false,
       })
     } else getPlaceholders()
-  }, [modalType, append, itemID])
+  }, [modalType, append])
 
   //  Edit Subtasks
   useEffect(() => {
-    const currentSubs = subtasks.map(
-      (sub) =>
-        sub.fromColumn === currentColumn &&
-        sub.fromTask === currentTask.taskTitle &&
-        sub.fromBoard === currentTask.taskBoard &&
-        sub,
-    )
-    currentSubs.filter((sub) => sub !== false)
-    const lastItem = currentSubs.length - 1
-
-    setItemID(Number(subtasks[lastItem].subtaskID))
-
-    if (modalType === 'edit' && currentSubs.length > 1) {
-      const newArr: SubtaskProps[] = []
-      currentSubs.map((sub) => {
-        if (sub) newArr.push(sub)
-        return sub
-      })
-
-      newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)).shift()
-
-      insert(
-        1,
-        newArr.map((sub) => ({
-          id: sub.id,
-          name: sub.name,
-          subtaskID: sub.subtaskID,
-          fromTask: sub.fromTask,
-          fromColumn: sub.fromColumn,
-          completed: sub.completed,
-        })),
+    if (subtasks.length > 0) {
+      const currentSubs = subtasks.map(
+        (sub) =>
+          sub.fromColumn === currentColumn &&
+          sub.fromTask === currentTask.taskTitle &&
+          sub.fromBoard === currentTask.taskBoard &&
+          sub,
       )
+      currentSubs.filter((sub) => sub !== false)
+      const lastItem = currentSubs.length - 1
+
+      setItemID(Number(subtasks[lastItem].subtaskID))
+
+      if (modalType === 'edit' && currentSubs.length > 1) {
+        const newArr: SubtaskProps[] = []
+        currentSubs.map((sub) => {
+          if (sub) newArr.push(sub)
+          return sub
+        })
+
+        newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)).shift()
+
+        insert(
+          1,
+          newArr.map((sub) => ({
+            id: sub.id,
+            name: sub.name,
+            subtaskID: sub.subtaskID,
+            fromTask: sub.fromTask,
+            fromColumn: sub.fromColumn,
+            completed: sub.completed,
+          })),
+        )
+      }
     }
   }, [modalType, insert, currentTask])
-
-  useEffect(() => console.log(itemID), [itemID])
 
   // Exclude subtasks in Edit Subtasks modal
   useEffect(() => {

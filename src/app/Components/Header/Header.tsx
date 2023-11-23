@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NoSsr } from '@mui/material'
 import HeaderOptions from './HeaderOptions'
 import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
@@ -12,6 +12,12 @@ const Header = () => {
   const { theme } = useTheme()
   const { hidden, setHidden } = useHideSidebar()
   const { openNewTask } = useOpenTaskModal()
+
+  const [HTML, setHTML] = useState<string>()
+
+  useEffect(() => {
+    setHTML(document.getElementById('HTML')?.className)
+  }, [])
 
   return (
     <>
@@ -44,7 +50,11 @@ const Header = () => {
                 max-sm:hidden
               "
             >
-              {theme === 'dark' ? <LogoLight /> : <LogoDark />}
+              {(theme === 'system' && HTML === 'dark') || theme === 'dark' ? (
+                <LogoLight />
+              ) : (
+                <LogoDark />
+              )}
             </div>
           </NoSsr>
         )}

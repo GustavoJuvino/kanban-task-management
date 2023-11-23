@@ -32,6 +32,7 @@ ul, li{
   background: linear-gradient(180deg, #E9EFFA 0%, rgba(233, 239, 250, 0.50) 100%);
 }
 
+
 #new_column_dark {
   background: linear-gradient(180deg, rgba(43, 44, 55, 0.25) 0%, rgba(43, 44, 55, 0.13) 100%);
 }
@@ -59,17 +60,6 @@ ul, li{
   }
 
 }
-
-/* #form_input::-webkit-input-placeholder {
-  color: white;
-  opacity: 25%;
-  
-}
-
-#form_input::placeholder {
-  color: white;
-  opacity: 25%;
-} */
 
 
 #form_input_dark::-webkit-input-placeholder {

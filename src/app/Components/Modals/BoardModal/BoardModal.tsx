@@ -9,6 +9,7 @@ import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import { useGetRandomColor } from '@/app/helper/useGetRandomColor'
 import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
+import HashLoader from 'react-spinners/HashLoader'
 
 import axios from 'axios'
 import { Form } from '../../form'
@@ -16,6 +17,7 @@ import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
 import { useTheme } from 'next-themes'
+import { motion } from 'framer-motion'
 
 interface BoardModalProps {
   modalType: ModalTypeProps
@@ -63,6 +65,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       boards.map((board) => {
         const formatBoard = board.boardName.replace(/\s/g, '')
         if (formatBoard === URL) {
+          setValue('board.id', board.id)
           setValue('board.name', board.boardName, { shouldValidate: true })
           setValue('board.currentBoard', board.boardName, {
             shouldValidate: true,
@@ -163,7 +166,12 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       "
     >
       <ModalBackground />
-      <div className="absolute z-50 h-[429px] w-[80%] rounded-md bg-white p-8 dark:bg-dark-gray sm:w-[480px]">
+      <motion.div
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="absolute z-50 h-[429px] w-[80%] rounded-md bg-white p-8 dark:bg-dark-gray sm:w-[480px]"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-heading-l text-black dark:text-white">
             {`${modalType === 'add' ? 'Add New' : 'Edit'} Board`}
@@ -205,16 +213,22 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
               isSubmitting={isSubmitting}
               modalType={modalType === 'add' ? 'add' : 'edit'}
             />
-            <Button
-              type="submit"
-              disabled={!!loading}
-              className={`${loading && 'cursor-wait opacity-40'}`}
-            >
-              {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
-            </Button>
+
+            {loading ? (
+              <span className="flex w-full justify-center">
+                <HashLoader color="#635FC7" />
+              </span>
+            ) : (
+              <Button
+                type="submit"
+                className={`${loading && 'cursor-wait opacity-40'}`}
+              >
+                {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
+              </Button>
+            )}
           </form>
         </FormProvider>
-      </div>
+      </motion.div>
     </section>
   )
 }

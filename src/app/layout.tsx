@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html id="HTML" lang="en">
       <body className={jakarta.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <GlobalContextProvider>

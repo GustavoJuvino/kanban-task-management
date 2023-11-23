@@ -17,6 +17,8 @@ import SubtasksModal from './SubtasksModal'
 import { useRouter } from 'next/navigation'
 import ObjectID from 'bson-objectid'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import HashLoader from 'react-spinners/HashLoader'
+import { motion } from 'framer-motion'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
@@ -188,10 +190,13 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       "
     >
       <ModalBackground />
-      <section
+      <motion.section
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
         id="task_container"
-        className=" 
-          z-50 
+        className="
+          z-50
           h-auto
           w-full
           rounded-md
@@ -211,9 +216,9 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
               modalType === 'add' ? onOpenNewTask(false) : onOpenEditTask(false)
             }
             className="
-              cursor-pointer 
-              fill-[#828FA3] 
-              duration-300 
+              cursor-pointer
+              fill-[#828FA3]
+              duration-300
               hover:fill-red
             "
           />
@@ -262,12 +267,20 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
             />
             <StatusMenu menuType="add" />
 
-            <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
-              {modalType === 'add' ? 'Create Task' : 'Save Changes'}
-            </Button>
+            {loading ? (
+              <span className="flex w-full justify-center">
+                <HashLoader color="#635FC7" />
+              </span>
+            ) : (
+              <Button
+                className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}
+              >
+                {modalType === 'add' ? 'Create Task' : 'Save Changes'}
+              </Button>
+            )}
           </form>
         </FormProvider>
-      </section>
+      </motion.section>
     </section>
   )
 }

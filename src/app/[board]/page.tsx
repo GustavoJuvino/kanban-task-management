@@ -5,7 +5,6 @@ import getColumns from '../actions/getColumns'
 import getTasks from '../actions/getTasks'
 import getSubtasks from '../actions/getSubtasks'
 import getCurrentUser from '../actions/getCurrentUser'
-import HomePage from '../Components/HomePage'
 
 export default async function Page({ params }: { params: { board: string } }) {
   const { board } = params
@@ -15,9 +14,7 @@ export default async function Page({ params }: { params: { board: string } }) {
   const subtasks = await getSubtasks()
   const currentUser = await getCurrentUser()
 
-  if (currentUser && board === '/login')
-    return <HomePage currentBoards={boards} />
-  else if (currentUser && board !== '/login') {
+  if (currentUser) {
     return (
       <Main
         boardURL={board}

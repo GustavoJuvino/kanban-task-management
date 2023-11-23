@@ -12,6 +12,7 @@ import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { motion } from 'framer-motion'
 
 type DelteTypeProps = 'board' | 'task'
 
@@ -118,7 +119,10 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
     >
       <ToastContainer position="top-center" autoClose={3000} theme="dark" />
       <ModalBackground />
-      <section
+      <motion.section
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
         className="
           absolute 
           z-50 
@@ -169,7 +173,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
             Cancel
           </Button>
         </div>
-      </section>
+      </motion.section>
     </section>
   )
 }

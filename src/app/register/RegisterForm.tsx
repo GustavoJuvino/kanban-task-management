@@ -8,6 +8,9 @@ import { z } from 'zod'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
+import HashLoader from 'react-spinners/HashLoader'
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 const RegisterFormSchema = z.object({
   username: z.string().nonempty('Username is required'),
@@ -29,9 +32,11 @@ const RegisterFormSchema = z.object({
 type RegisterFormProps = z.infer<typeof RegisterFormSchema>
 
 const RegisterForm = () => {
+  const [loading, setLoading] = useState(false)
   const [visibility, setVisibility] = useState(false)
   const [visibilityCheck, setVisibilityCheck] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   const createRegisterForm = useForm<RegisterFormProps>({
     resolver: zodResolver(RegisterFormSchema),
@@ -43,11 +48,27 @@ const RegisterForm = () => {
   } = createRegisterForm
 
   const onSubmit: SubmitHandler<RegisterFormProps> = (data) => {
+    setLoading(true)
     axios
       .post('/api/register', data)
-      .then(() => setError(null))
+      .then(() => {
+        setError(null)
+        signIn('credentials', {
+          ...data,
+          redirect: false,
+        }).then((callback) => {
+          if (!callback?.error) {
+            router.push('/')
+            setLoading(false)
+          } else if (callback?.error) {
+            setError(callback.error)
+            setLoading(false)
+          }
+        })
+      })
       .catch((error) => {
         setError(error.response.data.message)
+        setLoading(false)
       })
   }
 
@@ -125,7 +146,13 @@ const RegisterForm = () => {
           </div>
         </Form.Field>
 
-        <Button style={'form'}> Register </Button>
+        {loading ? (
+          <span className="flex w-full justify-center">
+            <HashLoader color="#635FC7" />
+          </span>
+        ) : (
+          <Button style={'form'}> Register </Button>
+        )}
       </form>
     </FormProvider>
   )

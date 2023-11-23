@@ -15,7 +15,8 @@ const input = tv({
     small-mobile:text-sm
     text-[12px]
     font-bold
-    text-white
+    dark:text-white
+    text-black
     outline-none
     duration-300
     focus:border-main-purple

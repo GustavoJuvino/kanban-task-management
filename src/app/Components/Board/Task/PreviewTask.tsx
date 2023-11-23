@@ -11,6 +11,7 @@ import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import { IconDrag } from '../../../../../public/svgs'
 import { useTheme } from 'next-themes'
 import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
+import { motion } from 'framer-motion'
 
 interface PreviewTaskProps {
   title: string
@@ -66,8 +67,10 @@ const PreviewTask = ({ ...props }: PreviewTaskProps) => {
   }, [subtasks])
 
   return (
-    <section>
-      <div
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         onMouseEnter={() => setTaskHover(props.taskID)}
         onMouseLeave={() => setTaskHover('-1')}
         onClick={() => {
@@ -85,11 +88,11 @@ const PreviewTask = ({ ...props }: PreviewTaskProps) => {
           flex 
           h-auto
           w-[280px] 
-          cursor-pointer 
-          gap-x-2
-          rounded-lg 
+          cursor-pointer
+          gap-x-2 
+          rounded-lg
           bg-white 
-          px-4
+          px-4 
           py-[23px]
           shadow-md
           dark:bg-dark-gray
@@ -122,8 +125,8 @@ const PreviewTask = ({ ...props }: PreviewTaskProps) => {
             </span>
           )}
         </article>
-      </div>
-    </section>
+      </motion.div>
+    </>
   )
 }
 

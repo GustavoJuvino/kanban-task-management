@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { DarkTheme, LightTheme } from '../../../../public/sidebar'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 
 const Theme = () => {
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const [HTML, setHTML] = useState<string>()
+
+  useEffect(() => {
+    setHTML(document.getElementById('HTML')?.className)
+  }, [HTML])
 
   if (!mounted) {
     return null
@@ -17,7 +26,15 @@ const Theme = () => {
   return (
     <section className="flex h-auto w-full justify-center">
       <div
-        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        onClick={() => {
+          if (theme === 'system') {
+            router.refresh()
+            setTheme(HTML === 'dark' ? 'light' : 'dark')
+          } else {
+            router.refresh()
+            setTheme(theme === 'dark' ? 'light' : 'dark')
+          }
+        }}
         className="
           flex
           h-12
@@ -33,7 +50,8 @@ const Theme = () => {
       >
         <LightTheme />
 
-        <div
+        <motion.div
+          layout
           className={`
             flex 
             h-5 
@@ -43,11 +61,18 @@ const Theme = () => {
             rounded-full 
             bg-main-purple 
             px-[3px]
-            ${theme === 'dark' ? 'justify-end ' : 'justify-start'}
+            ${
+              (theme === 'system' && HTML === 'dark') || theme === 'dark'
+                ? 'justify-end '
+                : 'justify-start'
+            }
           `}
         >
-          <span className="h-[14px] w-[14px] rounded-full bg-white" />
-        </div>
+          <motion.span
+            layout
+            className="h-[14px] w-[14px] rounded-full bg-white"
+          />
+        </motion.div>
 
         <DarkTheme />
       </div>

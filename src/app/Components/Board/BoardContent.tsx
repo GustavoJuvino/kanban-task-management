@@ -146,33 +146,39 @@ const BoardContent = () => {
     setUpdateTasks(newArr)
   }, [tasks])
 
-  // useEffect(() => {
-  //   if (update && seconds > 0 && updateTasks.length > 0) {
-  //     const debounceId = setTimeout(() => {
-  //       axios
-  //         .post('/api/tasks/updateItemID', {
-  //           tasks: updateTasks,
-  //           subtasks,
-  //         })
-  //         .then(() => {
-  //           router.refresh()
-  //         })
-  //         .catch((error) => {
-  //           if (error.request.status === 409)
-  //             toast.error(error.response.data.message)
-  //         })
-  //         .finally(() => {
-  //           setUpdate(false)
-  //         })
-  //       setUpdate(false)
-  //       setSeconds(1800)
-  //     }, seconds)
+  useEffect(() => {
+    if (update && seconds > 0 && updateTasks.length > 0) {
+      const debounceId = setTimeout(() => {
+        axios
+          .post('/api/tasks/updateItemID', {
+            tasks: updateTasks,
+            subtasks,
+          })
+          .then(() => {
+            router.refresh()
+          })
+          .catch((error) => {
+            if (error.request.status === 409)
+              toast.error(error.response.data.message)
+          })
+          .finally(() => {
+            setUpdate(false)
+          })
+        setUpdate(false)
+        setSeconds(1800)
+      }, seconds)
 
-  //     return () => {
-  //       clearTimeout(debounceId)
-  //     }
-  //   }
-  // }, [update, updateTasks, subtasks, seconds, router])
+      return () => {
+        clearTimeout(debounceId)
+      }
+    }
+  }, [update, updateTasks, subtasks, seconds, router])
+
+  const [HTML, setHTML] = useState<string>()
+
+  useEffect(() => {
+    setHTML(document.getElementById('HTML')?.className)
+  }, [])
 
   if (columns.length > 0) {
     return (
@@ -254,7 +260,9 @@ const BoardContent = () => {
             <section className="relative mt-10 h-auto w-[280px]">
               <div
                 id={`${
-                  theme === 'light' ? 'new_column_light' : 'new_column_dark'
+                  (theme === 'system' && HTML === 'light') || theme === 'light'
+                    ? 'new_column_light'
+                    : 'new_column_dark'
                 }`}
                 className="
                   h-full

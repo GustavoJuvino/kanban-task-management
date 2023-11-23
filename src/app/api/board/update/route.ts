@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const currentBoard = [
     await prisma.board.update({
       where: {
-        // eslint-disable-next-line object-shorthand
+        id: board.id,
         boardName: board.currentBoard,
       },
       data: {

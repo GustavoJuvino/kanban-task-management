@@ -20,6 +20,7 @@ import useOpenTask from '../helper/ModalHooks/useOpenTask'
 import Task from '../Components/Board/Task/Task'
 import ModalBackground from '../Components/ModalBackground'
 import useClickOutside from '../hooks/useClickOutside'
+import useSaveCurrentUser from '../hooks/useSaveCurrentUser'
 
 interface MainProps {
   boardURL: string
@@ -27,7 +28,7 @@ interface MainProps {
   currentTasks: TaskProps[]
   currentColumns: ColumnsProps[]
   currentSubtasks: SubtaskProps[]
-  currentUser: void | {
+  currentUser: {
     id: string
     username: string
     email: string
@@ -43,16 +44,13 @@ const Main = ({
   currentSubtasks,
   currentUser,
 }: MainProps) => {
-  const [activeTask, setActiveTask] = useState(false)
-
-  const taskRef = useRef(null)
-
   const { openEditTask } = useOpenTaskModal()
-  const { openTask, onOpenTask } = useOpenTask()
+  const { openTask } = useOpenTask()
   const { clickOutside } = useClickOutside()
 
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
+  const { setCurrentUser } = useSaveCurrentUser()
 
   const { setURL } = useGetCurrentURL()
   const { boards, setBoards, setColumns, setTasks, setSubTasks } =
@@ -70,6 +68,7 @@ const Main = ({
       ),
     )
     setSubTasks(currentSubtasks)
+    setCurrentUser(currentUser)
   }, [
     boardURL,
     currentBoards,
@@ -78,10 +77,6 @@ const Main = ({
     currentSubtasks,
     currentUser,
   ])
-
-  useEffect(() => {
-    if (taskRef) clickOutside(taskRef, onOpenTask)
-  }, [clickOutside, onOpenTask])
 
   const currentBoardsURL = boards.map((board) =>
     board.boardName.replace(/\s/g, ''),
@@ -123,33 +118,22 @@ const Main = ({
             max-sm:px-4
           "
         >
-          <div
-            ref={taskRef}
-            className="
-              z-[500]
-              flex 
-              h-auto
-              w-full 
-              flex-col
-              gap-y-6
-              rounded-md 
-              bg-white 
-              p-6
-              dark:bg-dark-gray
-              sm:w-[480px] 
-              sm:p-8
-            "
-          >
-            <Task />
-          </div>
-
+          <Task />
           <ModalBackground />
         </section>
       )}
 
       <section className="flex h-full w-full flex-col overflow-x-hidden">
         <Header />
-        {isBoard(boardURL) ? <BoardContent /> : <h1>Board not founded</h1>}
+        {isBoard(boardURL) ? (
+          <BoardContent />
+        ) : (
+          <span className="relative flex h-52 w-full items-center justify-center">
+            <h2 className="text-center text-heading-m text-medium-gray sm:text-heading-l">
+              Board Not Founded
+            </h2>
+          </span>
+        )}
       </section>
     </>
   )
