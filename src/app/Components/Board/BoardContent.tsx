@@ -19,7 +19,7 @@ import { useTheme } from 'next-themes'
 const BoardContent = () => {
   const [HTML, setHTML] = useState<string>()
   const [update, setUpdate] = useState(false)
-  const [seconds, setSeconds] = useState(1800)
+  const [seconds, setSeconds] = useState(4000)
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
@@ -152,7 +152,7 @@ const BoardContent = () => {
             setUpdate(false)
           })
         setUpdate(false)
-        setSeconds(1800)
+        setSeconds(4000)
       }, seconds)
 
       return () => {
@@ -199,7 +199,7 @@ const BoardContent = () => {
                           className="h-[15px] w-[15px] rounded-full"
                         />
 
-                        <h4 className="text-heading-s uppercase text-medium-gray">
+                        <h4 className="w-full text-heading-s uppercase text-medium-gray">
                           {`${col.columnName}`}
                         </h4>
                       </div>

@@ -103,7 +103,7 @@ const Sidebar = () => {
                 )}
 
                 {URL && (
-                  <span className="ml-[15px] mt-6 flex gap-x-[15px] ">
+                  <span className="ml-5 mt-6 flex gap-x-[15px] lg:ml-7  ">
                     <IconAccount className="fill-medium-gray" />
                     <h3 className="font-bold text-medium-gray">
                       {currentUser && currentUser.username}
