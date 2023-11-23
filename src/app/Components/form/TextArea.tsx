@@ -17,7 +17,8 @@ const textArea = tv({
         pl-4
         text-[13px]
         font-medium
-        text-white
+        dark:text-white
+        text-black
         outline-none
         duration-300
         focus:border-main-purple

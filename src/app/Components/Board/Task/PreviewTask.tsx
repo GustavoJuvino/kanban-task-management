@@ -8,6 +8,10 @@ import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import { IconDrag } from '../../../../../public/svgs'
+import { useTheme } from 'next-themes'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
+import { motion } from 'framer-motion'
 
 interface PreviewTaskProps {
   title: string
@@ -19,22 +23,19 @@ interface PreviewTaskProps {
 }
 
 const PreviewTask = ({ ...props }: PreviewTaskProps) => {
-  const taskRef = useRef(null)
-  const [openTask, setOpenTask] = useState(false)
+  const [taskHover, setTaskHover] = useState<string>()
   const [subArr, setSubArr] = useState<SubtaskProps[]>([])
   const [completedSubs, setCompletedSubs] = useState<SubtaskProps[]>([])
 
+  const { theme } = useTheme()
   const { URL } = useGetCurrentURL()
   const { subtasks } = useGlobalContext()
-  const { clickOutside } = useClickOutside()
   const { openEditTask } = useOpenTaskModal()
   const { openDeleteTask } = useOpenDeleteModal()
   const { setCurrentTask } = useSaveCurrentTask()
   const { setCurrentColumn } = useSaveCurrentColumn()
 
-  useEffect(() => {
-    if (taskRef) clickOutside(taskRef, setOpenTask)
-  }, [clickOutside, setOpenTask])
+  const { onOpenTask } = useOpenTask()
 
   useEffect(() => {
     const formatSubs = [...subtasks]
@@ -66,10 +67,14 @@ const PreviewTask = ({ ...props }: PreviewTaskProps) => {
   }, [subtasks])
 
   return (
-    <section>
-      <div
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        onMouseEnter={() => setTaskHover(props.taskID)}
+        onMouseLeave={() => setTaskHover('-1')}
         onClick={() => {
-          setOpenTask(true)
+          onOpenTask(true)
           setCurrentTask({
             id: props.taskID,
             taskColumn: props.taskColumn,
@@ -80,64 +85,48 @@ const PreviewTask = ({ ...props }: PreviewTaskProps) => {
           setCurrentColumn(props.currentColumnName)
         }}
         className="
+          flex 
           h-auto
           w-[280px] 
-          cursor-pointer 
-          rounded-lg 
-          bg-dark-gray 
+          cursor-pointer
+          gap-x-2 
+          rounded-lg
+          bg-white 
           px-4 
           py-[23px]
+          shadow-md
+          dark:bg-dark-gray
         "
       >
-        <h3 className="text-heading-m text-white duration-300 hover:text-main-purple">
-          {props.title}
-        </h3>
-        {subArr.length > 0 && (
-          <span className="text-body-m text-medium-gray">
-            {` ${completedSubs.length} of ${subArr.length} subtasks`}
-          </span>
-        )}
-      </div>
-
-      {openTask && !openDeleteTask && !openEditTask && (
-        <section
-          className="
-            absolute
-            left-0
-            top-0
-            flex
-            h-full
-            w-full
-            cursor-default 
-            flex-col
-            items-center
-            justify-center
-            max-sm:px-4
-          "
-        >
-          <div
-            ref={taskRef}
-            className="
-              z-[500]
-              flex 
-              h-auto
-              w-full 
-              flex-col
-              gap-y-6
-              rounded-md 
-              bg-dark-gray 
-              p-6
-              sm:w-[480px] 
-              sm:p-8
-            "
+        <IconDrag
+          className={`            
+            duration-300
+            ${
+              taskHover === props.taskID
+                ? 'fill-main-purple'
+                : 'fill-medium-gray'
+            }
+          `}
+        />
+        <article>
+          <h3
+            className={`
+            w-fit
+            text-heading-m 
+            duration-300
+            ${taskHover === props.taskID && 'text-main-purple'}
+          `}
           >
-            <Task />
-          </div>
-
-          <ModalBackground />
-        </section>
-      )}
-    </section>
+            {props.title}
+          </h3>
+          {subArr.length > 0 && (
+            <span className="text-body-m text-medium-gray">
+              {` ${completedSubs.length} of ${subArr.length} subtasks`}
+            </span>
+          )}
+        </article>
+      </motion.div>
+    </>
   )
 }
 

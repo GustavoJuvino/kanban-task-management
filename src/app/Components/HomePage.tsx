@@ -33,7 +33,18 @@ const HomePage = ({ currentBoards }: HomePageProps) => {
 
       <section className="flex h-full w-full flex-col overflow-x-hidden">
         <Header />
-        <section className="flex h-full w-full flex-col items-center justify-center text-center text-medium-gray">
+        <section
+          className="
+            flex 
+            h-full 
+            w-full 
+            flex-col 
+            items-center 
+            justify-center 
+            text-center 
+            text-medium-gray
+          "
+        >
           <h1 className="text-heading-xl">Welcome to Kanban task management</h1>
           <div className="mt-2 text-body-l">
             <p>You can start selecting a created board</p>

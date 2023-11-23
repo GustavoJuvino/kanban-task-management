@@ -11,7 +11,8 @@ const inputCheck = tv({
         border-[1px] 
         border-[#828FA3] 
         border-opacity-25 
-        bg-dark-gray
+        dark:bg-dark-gray
+        bg-white
     `,
 })
 

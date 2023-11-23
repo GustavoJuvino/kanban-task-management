@@ -28,6 +28,17 @@ ul, li{
   cursor: pointer;
 }
 
+#new_column_light {
+  background: linear-gradient(180deg, #E9EFFA 0%, rgba(233, 239, 250, 0.50) 100%);
+}
+
+
+#new_column_dark {
+  background: linear-gradient(180deg, rgba(43, 44, 55, 0.25) 0%, rgba(43, 44, 55, 0.13) 100%);
+}
+
+
+
 @media only screen and (max-height: 690px){
   #form-page {
     height: auto;
@@ -50,21 +61,30 @@ ul, li{
 
 }
 
-#form_input::-webkit-input-placeholder {
+
+#form_input_dark::-webkit-input-placeholder {
   color: white;
   opacity: 25%;
   
 }
 
-#form_input::placeholder {
+#form_input_dark::placeholder {
   color: white;
   opacity: 25%;
 }
 
-#edit_board::placeholder {
-  color: white;
-  opacity: 100%;
+
+#form_input_light::-webkit-input-placeholder {
+  color: black;
+  opacity: 25%;
+  
 }
+
+#form_input_light::placeholder {
+  color: black;
+  opacity: 25%;
+}
+
 
 
 input::-webkit-input-placeholder {

@@ -14,11 +14,12 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
 
 const BoardContent = () => {
+  const [HTML, setHTML] = useState<string>()
   const [update, setUpdate] = useState(false)
-  const [seconds, setSeconds] = useState(1800)
-
+  const [seconds, setSeconds] = useState(4000)
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
@@ -27,14 +28,8 @@ const BoardContent = () => {
 
   const router = useRouter()
   const { URL } = useGetCurrentURL()
+  const { theme } = useTheme()
   const { tasks, columns, subtasks, setTasks, setSubTasks } = useGlobalContext()
-
-  // Just hiding the default props error, not fix
-  const error = console.error
-  console.error = (...args: any) => {
-    if (/defaultProps/.test(args[0])) return
-    error(...args)
-  }
 
   useEffect(() => {
     if (columns.length > 0) {
@@ -157,7 +152,7 @@ const BoardContent = () => {
             setUpdate(false)
           })
         setUpdate(false)
-        setSeconds(1800)
+        setSeconds(4000)
       }, seconds)
 
       return () => {
@@ -166,24 +161,28 @@ const BoardContent = () => {
     }
   }, [update, updateTasks, subtasks, seconds, router])
 
+  useEffect(() => {
+    setHTML(document.getElementById('HTML')?.className)
+  }, [])
+
   if (columns.length > 0) {
     return (
       <NoSsr>
         <DragDropContext onDragEnd={handleDragDrop}>
           <section
             className="
-            ml-6
-            mt-6
-            flex 
-            h-full
-            w-full 
-            select-none 
-            snap-x 
-            gap-x-6
-            overflow-auto
-            scroll-smooth
-            pb-[50px]
-          "
+              ml-6
+              mt-6
+              flex 
+              h-full
+              w-full 
+              select-none 
+              snap-x 
+              gap-x-6
+              overflow-auto
+              scroll-smooth
+              pb-[50px]
+            "
           >
             {formatedArr?.map((col) => (
               <section key={col.itemID}>
@@ -200,7 +199,7 @@ const BoardContent = () => {
                           className="h-[15px] w-[15px] rounded-full"
                         />
 
-                        <h4 className="text-heading-s uppercase text-medium-gray">
+                        <h4 className="w-full text-heading-s uppercase text-medium-gray">
                           {`${col.columnName}`}
                         </h4>
                       </div>
@@ -245,14 +244,15 @@ const BoardContent = () => {
 
             <section className="relative mt-10 h-auto w-[280px]">
               <div
+                id={`${
+                  (theme === 'system' && HTML === 'light') || theme === 'light'
+                    ? 'new_column_light'
+                    : 'new_column_dark'
+                }`}
                 className="
                   h-full
                   w-[280px]
                   rounded-md
-                  bg-gradient-to-b
-                  from-dark-gray
-                  to-[#2b2c3750]
-                  opacity-25
                 "
               />
               <div
@@ -270,12 +270,12 @@ const BoardContent = () => {
               >
                 <h1
                   className="
-                  cursor-pointer 
-                  text-heading-xl 
-                  text-medium-gray 
-                  duration-300 
-                  hover:text-main-purple
-                "
+                    cursor-pointer 
+                    text-heading-xl 
+                    text-medium-gray 
+                    duration-300 
+                    hover:text-main-purple
+                  "
                 >
                   + New Column
                 </h1>

@@ -10,18 +10,20 @@ const labelCheck = tv({
         cursor-pointer
         gap-x-4
         rounded-[4px]
-        bg-very-dark-gray
+        bg-light-grey
+        dark:bg-very-dark-gray
         py-3
         pl-4
         text-body-m
         text-[12px]
         leading-[15px]
         font-bold
-        text-white
+        dark:text-white
+        text-black
         text-opacity-50
         duration-300
-        hover:bg-main-purple
-        hover:bg-opacity-25
+        dark:hover:bg-main-purple
+        dark:hover:bg-opacity-25
     `,
 })
 

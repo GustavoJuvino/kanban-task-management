@@ -1,6 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import ModalBackground from '../ModalBackground'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import Button from '../Button'
+import ModalBackground from '../ModalBackground'
+import 'react-toastify/dist/ReactToastify.css'
 
 import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
@@ -11,7 +14,6 @@ import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 type DelteTypeProps = 'board' | 'task'
 
@@ -25,10 +27,9 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
   const [deleteBoard, setDeleteBoard] = useState<BoardProps>()
   const [deleteCols, setDeleteCols] = useState<ColumnsProps[]>([])
 
+  const { URL } = useGetCurrentURL()
   const { currentTask } = useSaveCurrentTask()
   const { currentColumn } = useSaveCurrentColumn()
-
-  const { URL } = useGetCurrentURL()
   const { boards, columns, tasks } = useGlobalContext()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
 
@@ -68,6 +69,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
           data: { board: deleteBoard, columns: deleteCols },
         })
         .then(() => {
+          router.refresh()
           router.push('/')
           onOpenDeleteBoard(false)
           setTimeout(() => {
@@ -118,7 +120,10 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
     >
       <ToastContainer position="top-center" autoClose={3000} theme="dark" />
       <ModalBackground />
-      <section
+      <motion.section
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
         className="
           absolute 
           z-50 
@@ -128,8 +133,9 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
           flex-col
           gap-y-6 
           rounded-md 
-          bg-dark-gray 
-          p-8 
+          bg-white 
+          p-8
+          dark:bg-dark-gray 
           sm:h-[229px] 
           sm:w-[480px]
         "
@@ -168,7 +174,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
             Cancel
           </Button>
         </div>
-      </section>
+      </motion.section>
     </section>
   )
 }

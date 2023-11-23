@@ -23,7 +23,7 @@ model User {
 model Board {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   userID String @db.ObjectId
-  boardName String @unique
+  boardName String 
   currentBoard String?
 
   user User @relation(fields: [userID], references: [id], onDelete: Cascade)

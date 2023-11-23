@@ -1,18 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Cross } from '../../../../../public/modal'
 import Button from '../../Button'
+import { Cross } from '../../../../../public/modal'
 import { SubtasksErrorsProps } from '@/app/types/errors'
 
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 import axios from 'axios'
 import { Form } from '../../form'
-import { useFieldArray } from 'react-hook-form'
-import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import { useRouter } from 'next/navigation'
 import ObjectID from 'bson-objectid'
-import { toast } from 'react-toastify'
+import { useFieldArray } from 'react-hook-form'
 
 interface SubtasksModalProps {
   modalType: ModalTypeProps
@@ -74,35 +75,40 @@ const SubtasksModal = ({
 
   //  Edit Subtasks
   useEffect(() => {
-    const currentSubs = subtasks.map(
-      (sub) =>
-        sub.fromColumn === currentColumn &&
-        sub.fromTask === currentTask.taskTitle &&
-        sub.fromBoard === currentTask.taskBoard &&
-        sub,
-    )
-    currentSubs.filter((sub) => sub !== false)
-
-    if (modalType === 'edit' && currentSubs.length > 1) {
-      const newArr: SubtaskProps[] = []
-      currentSubs.map((sub) => {
-        if (sub) newArr.push(sub)
-        return sub
-      })
-
-      newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)).shift()
-
-      insert(
-        1,
-        newArr.map((sub) => ({
-          id: sub.id,
-          name: sub.name,
-          subtaskID: sub.subtaskID,
-          fromTask: sub.fromTask,
-          fromColumn: sub.fromColumn,
-          completed: sub.completed,
-        })),
+    if (subtasks.length > 0) {
+      const currentSubs = subtasks.map(
+        (sub) =>
+          sub.fromColumn === currentColumn &&
+          sub.fromTask === currentTask.taskTitle &&
+          sub.fromBoard === currentTask.taskBoard &&
+          sub,
       )
+      currentSubs.filter((sub) => sub !== false)
+      const lastItem = currentSubs.length - 1
+
+      setItemID(Number(subtasks[lastItem].subtaskID))
+
+      if (modalType === 'edit' && currentSubs.length > 1) {
+        const newArr: SubtaskProps[] = []
+        currentSubs.map((sub) => {
+          if (sub) newArr.push(sub)
+          return sub
+        })
+
+        newArr.sort((a, b) => Number(a.subtaskID) - Number(b.subtaskID)).shift()
+
+        insert(
+          1,
+          newArr.map((sub) => ({
+            id: sub.id,
+            name: sub.name,
+            subtaskID: sub.subtaskID,
+            fromTask: sub.fromTask,
+            fromColumn: sub.fromColumn,
+            completed: sub.completed,
+          })),
+        )
+      }
     }
   }, [modalType, insert, currentTask])
 
@@ -126,7 +132,9 @@ const SubtasksModal = ({
   return (
     <section className="flex flex-col gap-y-3">
       <div className="flex items-center gap-x-2">
-        <h6 className="text-body-m text-white">Subtasks</h6>
+        <h6 className="text-body-m text-medium-gray dark:text-white">
+          Subtasks
+        </h6>
         {subtasksErrors !== undefined && (
           <span className="text-[12px] text-red sm:text-body-l">
             Can&apos;t be empty

@@ -3,7 +3,11 @@ import Button from '../../Button'
 import BoardColumns from './BoardColumns'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
+import HashLoader from 'react-spinners/HashLoader'
+import 'react-toastify/dist/ReactToastify.css'
 
+import { motion } from 'framer-motion'
+import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
@@ -14,13 +18,13 @@ import axios from 'axios'
 import { Form } from '../../form'
 import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import 'react-toastify/dist/ReactToastify.css'
 
 interface BoardModalProps {
   modalType: ModalTypeProps
 }
 
 const BoardModal = ({ modalType }: BoardModalProps) => {
+  const { theme } = useTheme()
   const router = useRouter()
   const { URL } = useGetCurrentURL()
   const { randomColor } = useGetRandomColor()
@@ -61,6 +65,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       boards.map((board) => {
         const formatBoard = board.boardName.replace(/\s/g, '')
         if (formatBoard === URL) {
+          setValue('board.id', board.id)
           setValue('board.name', board.boardName, { shouldValidate: true })
           setValue('board.currentBoard', board.boardName, {
             shouldValidate: true,
@@ -161,9 +166,23 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       "
     >
       <ModalBackground />
-      <div className="absolute z-50 h-[429px] w-[80%] rounded-md bg-dark-gray p-8 sm:w-[480px]">
+      <motion.div
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="
+          absolute 
+          z-50
+          h-[429px] 
+          w-[80%] 
+          rounded-md 
+          bg-white p-8 
+          dark:bg-dark-gray 
+          sm:w-[480px]
+        "
+      >
         <div className="flex items-center justify-between">
-          <h2 className="text-heading-l text-white">
+          <h2 className="text-heading-l text-black dark:text-white">
             {`${modalType === 'add' ? 'Add New' : 'Edit'} Board`}
           </h2>
           <Close
@@ -189,7 +208,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
             <Form.Field className="flex flex-col gap-y-2">
               <Form.Label htmlFor="form_input">Board Name</Form.Label>
               <Form.Input
-                id="form_input"
+                id={theme === 'light' ? 'form_input_light' : 'form_input_dark'}
                 name="board.name"
                 type="text"
                 placeholder="e.g Web Design"
@@ -203,16 +222,22 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
               isSubmitting={isSubmitting}
               modalType={modalType === 'add' ? 'add' : 'edit'}
             />
-            <Button
-              type="submit"
-              disabled={!!loading}
-              className={`${loading && 'cursor-wait opacity-40'}`}
-            >
-              {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
-            </Button>
+
+            {loading ? (
+              <span className="flex w-full justify-center">
+                <HashLoader color="#635FC7" />
+              </span>
+            ) : (
+              <Button
+                type="submit"
+                className={`${loading && 'cursor-wait opacity-40'}`}
+              >
+                {modalType === 'add' ? 'Create New Board' : 'Save Changes'}
+              </Button>
+            )}
           </form>
         </FormProvider>
-      </div>
+      </motion.div>
     </section>
   )
 }

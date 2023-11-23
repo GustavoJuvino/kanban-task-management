@@ -1,22 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import Button from '../../Button'
 import StatusMenu from './StatusMenu'
+import { motion } from 'framer-motion'
+import SubtasksModal from './SubtasksModal'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
+import HashLoader from 'react-spinners/HashLoader'
 
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
 
 import axios from 'axios'
 import { Form } from '../../form'
-import { toast } from 'react-toastify'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import SubtasksModal from './SubtasksModal'
-import { useRouter } from 'next/navigation'
 import ObjectID from 'bson-objectid'
-import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
@@ -188,21 +191,25 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       "
     >
       <ModalBackground />
-      <section
+      <motion.section
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
         id="task_container"
-        className=" 
-          z-50 
+        className="
+          z-50
           h-auto
           w-full
           rounded-md
-          bg-dark-gray
+          bg-white
           p-6
+          dark:bg-dark-gray
           sm:w-[480px]
           sm:p-8
         "
       >
         <div className="flex w-full items-center justify-between">
-          <h2 className="text-heading-m text-white sm:text-heading-l">
+          <h2 className="text-heading-m text-black dark:text-white sm:text-heading-l">
             {modalType === 'add' ? 'Add New Task' : 'Edit Task'}
           </h2>
           <Close
@@ -210,9 +217,9 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
               modalType === 'add' ? onOpenNewTask(false) : onOpenEditTask(false)
             }
             className="
-              cursor-pointer 
-              fill-[#828FA3] 
-              duration-300 
+              cursor-pointer
+              fill-[#828FA3]
+              duration-300
               hover:fill-red
             "
           />
@@ -221,14 +228,11 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
         <FormProvider {...createTaskForm}>
           <form
             id="task_form"
-            className="mt-6 flex flex-col gap-y-6"
+            className="mt-6 flex flex-col gap-y-6 text-medium-gray dark:text-white"
             onSubmit={handleSubmit((data) => onSubmit(data))}
           >
             <Form.Field className="flex flex-col gap-y-2">
-              <Form.Label
-                htmlFor="task_input"
-                className="text-body-m text-white"
-              >
+              <Form.Label htmlFor="task_input" className="text-body-m ">
                 Title
               </Form.Label>
               <Form.Input
@@ -243,9 +247,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
 
             <Form.Field className="flex flex-col">
               <div className="flex items-center gap-x-2">
-                <Form.Label className="text-body-m text-white">
-                  Description
-                </Form.Label>
+                <Form.Label className="text-body-m ">Description</Form.Label>
                 {errors.task?.description?.message && (
                   <span className="text-[12px] text-red sm:text-body-l">
                     {errors.task?.description?.message}
@@ -266,12 +268,20 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
             />
             <StatusMenu menuType="add" />
 
-            <Button className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}>
-              {modalType === 'add' ? 'Create Task' : 'Save Changes'}
-            </Button>
+            {loading ? (
+              <span className="flex w-full justify-center">
+                <HashLoader color="#635FC7" />
+              </span>
+            ) : (
+              <Button
+                className={`${loading ? 'cursor-wait' : 'cursor-pointer'}`}
+              >
+                {modalType === 'add' ? 'Create Task' : 'Save Changes'}
+              </Button>
+            )}
           </form>
         </FormProvider>
-      </section>
+      </motion.section>
     </section>
   )
 }

@@ -25,13 +25,12 @@ const HeaderOptions = () => {
 
   return (
     <section className="flex items-center gap-x-4 sm:gap-x-6">
-      {columns.length > 0 && (
-        <Button
-          onClick={() => {
-            onOpenNewTask(true)
-            setCurrentColumn(columns[0].columnName)
-          }}
-          className="
+      <Button
+        onClick={() => {
+          onOpenNewTask(true)
+          setCurrentColumn(columns[0].columnName)
+        }}
+        className="
             flex
             w-12
             items-center
@@ -39,10 +38,9 @@ const HeaderOptions = () => {
             max-sm:h-8
             sm:w-[164px]
           "
-        >
-          {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
-        </Button>
-      )}
+      >
+        {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
+      </Button>
       <div ref={editMenuRef}>
         <EditMenuIcon
           onClick={() => setOpenMenu(!openMenu)}

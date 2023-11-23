@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Button from '../Components/Button'
+import HashLoader from 'react-spinners/HashLoader'
 
 const LoginFormSchema = z.object({
   email: z
@@ -21,6 +22,7 @@ const LoginFormSchema = z.object({
 type LoginFormProps = z.infer<typeof LoginFormSchema>
 
 const LoginForm = () => {
+  const [loading, setLoading] = useState(false)
   const [visibility, setVisibility] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -35,14 +37,20 @@ const LoginForm = () => {
   } = createLoginForm
 
   const onSubmit: SubmitHandler<LoginFormProps> = (data) => {
+    setLoading(true)
+
     signIn('credentials', {
       ...data,
       redirect: false,
     }).then((callback) => {
       if (!callback?.error) {
         router.push('/')
+        setTimeout(() => {
+          setLoading(false)
+        }, 900)
       } else if (callback?.error) {
         setError(callback.error)
+        setLoading(false)
       }
     })
   }
@@ -86,9 +94,15 @@ const LoginForm = () => {
           </div>
         </Form.Field>
 
-        <Button style={'form'} className="max-sm:text-lg">
-          Sign In
-        </Button>
+        {loading ? (
+          <span className="flex w-full justify-center">
+            <HashLoader color="#635FC7" />
+          </span>
+        ) : (
+          <Button style={'form'} className="max-sm:text-lg">
+            Sign In
+          </Button>
+        )}
       </form>
     </FormProvider>
   )

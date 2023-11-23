@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 // eslint-disable-next-line camelcase
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import { GlobalContextProvider } from './context/store'
+import { ThemeProvider } from './Theme_provider'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'] })
 
@@ -17,13 +18,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html id="HTML" lang="en">
       <body className={jakarta.className}>
-        <GlobalContextProvider>
-          <main className="flex h-full w-full bg-very-dark-gray max-sm:flex-col">
-            {children}
-          </main>
-        </GlobalContextProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <GlobalContextProvider>
+            <main className="flex h-full w-full bg-light-grey dark:bg-very-dark-gray max-sm:flex-col">
+              {children}
+            </main>
+          </GlobalContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

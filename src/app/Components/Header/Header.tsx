@@ -1,15 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NoSsr } from '@mui/material'
 import HeaderOptions from './HeaderOptions'
 import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
 import { useHideSidebar } from '@/app/helper/useHideSidebar'
 import { Arrow } from '../../../../public/modal'
-import { LogoLight, LogoMobile } from '../../../../public/svgs'
+import { LogoDark, LogoLight, LogoMobile } from '../../../../public/svgs'
 import TaskModal from '../Modals/TaskModal/TaskModal'
+import { useTheme } from 'next-themes'
 
 const Header = () => {
+  const { theme } = useTheme()
   const { hidden, setHidden } = useHideSidebar()
   const { openNewTask } = useOpenTaskModal()
+
+  const [HTML, setHTML] = useState<string>()
+
+  useEffect(() => {
+    setHTML(document.getElementById('HTML')?.className)
+  }, [])
 
   return (
     <>
@@ -18,7 +26,8 @@ const Header = () => {
           flex 
           h-auto 
           w-full 
-          bg-dark-gray 
+          bg-white
+          dark:bg-dark-gray 
           max-sm:py-5 
           sm:h-20 
           lg:h-24
@@ -35,12 +44,17 @@ const Header = () => {
                 justify-center 
                 border-b-[1px] 
                 border-r-[1px] 
-                border-lines-dark 
-                px-6
+                border-lines-white
+                px-6 
+                dark:border-lines-dark
                 max-sm:hidden
               "
             >
-              <LogoLight />
+              {(theme === 'system' && HTML === 'dark') || theme === 'dark' ? (
+                <LogoLight />
+              ) : (
+                <LogoDark />
+              )}
             </div>
           </NoSsr>
         )}
@@ -52,8 +66,9 @@ const Header = () => {
             w-full 
             items-center 
             justify-between 
-            border-lines-dark 
-            px-4 
+            border-lines-white
+            px-4
+            dark:border-lines-dark 
             sm:border-b-[1px]
             sm:px-6
             lg:px-8
@@ -63,13 +78,14 @@ const Header = () => {
             <LogoMobile className="sm:hidden" />
             <h1
               className="
-              text-[14px] 
-              font-bold 
-              text-white 
-              mobile:text-heading-l 
-              sm:text-xl 
-              lg:text-heading-xl
-            "
+                text-[14px] 
+                font-bold 
+                text-black 
+                dark:text-white 
+                mobile:text-heading-l 
+                sm:text-xl 
+                lg:text-heading-xl
+              "
             >
               Plataform Launch
             </h1>
