@@ -1,24 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import Button from '../../Button'
 import StatusMenu from './StatusMenu'
+import { motion } from 'framer-motion'
+import SubtasksModal from './SubtasksModal'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
+import HashLoader from 'react-spinners/HashLoader'
 
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
 
 import axios from 'axios'
 import { Form } from '../../form'
-import { toast } from 'react-toastify'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import SubtasksModal from './SubtasksModal'
-import { useRouter } from 'next/navigation'
 import ObjectID from 'bson-objectid'
-import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
-import HashLoader from 'react-spinners/HashLoader'
-import { motion } from 'framer-motion'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 interface TaskModalProps {
   modalType: ModalTypeProps

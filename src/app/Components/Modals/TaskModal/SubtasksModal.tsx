@@ -1,18 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Cross } from '../../../../../public/modal'
 import Button from '../../Button'
+import { Cross } from '../../../../../public/modal'
 import { SubtasksErrorsProps } from '@/app/types/errors'
 
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 import axios from 'axios'
 import { Form } from '../../form'
-import { useFieldArray } from 'react-hook-form'
-import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import { useRouter } from 'next/navigation'
 import ObjectID from 'bson-objectid'
-import { toast } from 'react-toastify'
+import { useFieldArray } from 'react-hook-form'
 
 interface SubtasksModalProps {
   modalType: ModalTypeProps

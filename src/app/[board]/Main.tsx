@@ -1,26 +1,26 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import Sidebar from '../Components/Sidebar/Sidebar'
+import React, { useEffect } from 'react'
+import Task from '../Components/Board/Task/Task'
 import Header from '../Components/Header/Header'
-import BoardContent from '../Components/Board/BoardContent'
+import Sidebar from '../Components/Sidebar/Sidebar'
 import DeleteModal from '../Components/Modals/DeleteModal'
+import BoardContent from '../Components/Board/BoardContent'
+import ModalBackground from '../Components/ModalBackground'
 import TaskModal from '../Components/Modals/TaskModal/TaskModal'
 import BoardModal from '../Components/Modals/BoardModal/BoardModal'
 
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-
 import { useGlobalContext } from '../context/store'
 import useGetCurrentURL from '../hooks/useGetCurrentURL'
+import useOpenTask from '../helper/ModalHooks/useOpenTask'
+import useSaveCurrentUser from '../hooks/useSaveCurrentUser'
 import useOpenTaskModal from '../helper/ModalHooks/useOpenTaskModal'
 import useOpenBoardModal from '../helper/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '../helper/ModalHooks/useOpenDeleteModal'
-import useOpenTask from '../helper/ModalHooks/useOpenTask'
-import Task from '../Components/Board/Task/Task'
-import ModalBackground from '../Components/ModalBackground'
-import useClickOutside from '../hooks/useClickOutside'
-import useSaveCurrentUser from '../hooks/useSaveCurrentUser'
+
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface MainProps {
   boardURL: string
@@ -44,13 +44,11 @@ const Main = ({
   currentSubtasks,
   currentUser,
 }: MainProps) => {
-  const { openEditTask } = useOpenTaskModal()
   const { openTask } = useOpenTask()
-  const { clickOutside } = useClickOutside()
-
+  const { openEditTask } = useOpenTaskModal()
+  const { setCurrentUser } = useSaveCurrentUser()
   const { openNewBoard, openEditBoard } = useOpenBoardModal()
   const { openDeleteBoard, openDeleteTask } = useOpenDeleteModal()
-  const { setCurrentUser } = useSaveCurrentUser()
 
   const { setURL } = useGetCurrentURL()
   const { boards, setBoards, setColumns, setTasks, setSubTasks } =
@@ -93,7 +91,7 @@ const Main = ({
         <Sidebar />
       </section>
 
-      <ToastContainer position="top-center" autoClose={2000} theme="dark" />
+      <ToastContainer position="top-center" autoClose={2000} theme={'dark'} />
       {openEditTask && <TaskModal modalType="edit" />}
 
       {openEditBoard && <BoardModal modalType="edit" />}

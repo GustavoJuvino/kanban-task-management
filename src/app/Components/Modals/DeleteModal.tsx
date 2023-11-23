@@ -1,6 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import ModalBackground from '../ModalBackground'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import Button from '../Button'
+import ModalBackground from '../ModalBackground'
+import 'react-toastify/dist/ReactToastify.css'
 
 import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
@@ -11,8 +14,6 @@ import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { motion } from 'framer-motion'
 
 type DelteTypeProps = 'board' | 'task'
 
@@ -26,10 +27,9 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
   const [deleteBoard, setDeleteBoard] = useState<BoardProps>()
   const [deleteCols, setDeleteCols] = useState<ColumnsProps[]>([])
 
+  const { URL } = useGetCurrentURL()
   const { currentTask } = useSaveCurrentTask()
   const { currentColumn } = useSaveCurrentColumn()
-
-  const { URL } = useGetCurrentURL()
   const { boards, columns, tasks } = useGlobalContext()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
 
@@ -69,6 +69,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
           data: { board: deleteBoard, columns: deleteCols },
         })
         .then(() => {
+          router.refresh()
           router.push('/')
           onOpenDeleteBoard(false)
           setTimeout(() => {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
-import { DarkTheme, LightTheme } from '../../../../public/sidebar'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import { DarkTheme, LightTheme } from '../../../../public/sidebar'
 
 const Theme = () => {
   const router = useRouter()

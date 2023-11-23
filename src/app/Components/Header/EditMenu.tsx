@@ -1,11 +1,11 @@
-import React, { ComponentProps, useEffect } from 'react'
+import React, { ComponentProps } from 'react'
+import { signOut } from 'next-auth/react'
+import { VariantProps, tv } from 'tailwind-variants'
+import { usePathname } from 'next/navigation'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
 import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
-import { VariantProps, tv } from 'tailwind-variants'
-import { signOut } from 'next-auth/react'
-import { usePathname } from 'next/navigation'
-import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 
 const menu = tv({
   base: `

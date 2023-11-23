@@ -3,21 +3,21 @@ import Button from '../../Button'
 import BoardColumns from './BoardColumns'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
+import HashLoader from 'react-spinners/HashLoader'
+import 'react-toastify/dist/ReactToastify.css'
 
+import { motion } from 'framer-motion'
+import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import { useGetRandomColor } from '@/app/helper/useGetRandomColor'
 import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
-import HashLoader from 'react-spinners/HashLoader'
 
 import axios from 'axios'
 import { Form } from '../../form'
 import { toast } from 'react-toastify'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import 'react-toastify/dist/ReactToastify.css'
-import { useTheme } from 'next-themes'
-import { motion } from 'framer-motion'
 
 interface BoardModalProps {
   modalType: ModalTypeProps
@@ -170,7 +170,16 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="absolute z-50 h-[429px] w-[80%] rounded-md bg-white p-8 dark:bg-dark-gray sm:w-[480px]"
+        className="
+          absolute 
+          z-50
+          h-[429px] 
+          w-[80%] 
+          rounded-md 
+          bg-white p-8 
+          dark:bg-dark-gray 
+          sm:w-[480px]
+        "
       >
         <div className="flex items-center justify-between">
           <h2 className="text-heading-l text-black dark:text-white">

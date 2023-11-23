@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef, useState } from 'react'
 import { Arrow } from '../../../../../public/modal'
 import { Form } from '../../form'
 
 import { UseFormSetValue } from 'react-hook-form'
 import { useGlobalContext } from '@/app/context/store'
 import useClickOutside from '@/app/hooks/useClickOutside'
-import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 interface StatusMenuProps {
   menuType: ModalTypeProps
@@ -45,7 +46,15 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
 
   return (
     <Form.Field className="block">
-      <Form.Label className="flex flex-col text-body-m text-medium-gray dark:text-white">
+      <Form.Label
+        className="
+          flex 
+          flex-col 
+          text-body-m 
+          text-medium-gray 
+          dark:text-white
+        "
+      >
         {menuType === 'add' ? 'Current Column' : 'Current Status'}
       </Form.Label>
       <div
@@ -102,7 +111,12 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
                   <li
                     key={col.id}
                     onClick={() => setCurrentColumn(col.columnName)}
-                    className="w-fit cursor-pointer duration-300 hover:text-medium-gray dark:hover:text-white"
+                    className="
+                      w-fit 
+                      cursor-pointer 
+                      duration-300 
+                      hover:text-medium-gray
+                      dark:hover:text-white"
                   >
                     {col.columnName}
                   </li>
@@ -111,7 +125,13 @@ const StatusMenu = ({ menuType, setFirstValue }: StatusMenuProps) => {
                   <li
                     key={stat}
                     onClick={() => setStatus(stat)}
-                    className="w-fit cursor-pointer duration-300 hover:text-medium-gray dark:hover:text-white"
+                    className="
+                      w-fit
+                      cursor-pointer
+                      duration-300
+                      hover:text-medium-gray
+                      dark:hover:text-white
+                    "
                   >
                     {stat}
                   </li>

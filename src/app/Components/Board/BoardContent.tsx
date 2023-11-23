@@ -15,34 +15,21 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
-import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
-import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
-import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 
 const BoardContent = () => {
+  const [HTML, setHTML] = useState<string>()
   const [update, setUpdate] = useState(false)
   const [seconds, setSeconds] = useState(1800)
-
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
   const { hidden } = useHideSidebar()
-  const { onOpenEditBoard, openNewBoard, openEditBoard } = useOpenBoardModal()
+  const { onOpenEditBoard } = useOpenBoardModal()
 
   const router = useRouter()
   const { URL } = useGetCurrentURL()
   const { theme } = useTheme()
-
-  const { openTask } = useOpenTask()
-
   const { tasks, columns, subtasks, setTasks, setSubTasks } = useGlobalContext()
-
-  // Just hiding the default props error, not fix
-  const error = console.error
-  console.error = (...args: any) => {
-    if (/defaultProps/.test(args[0])) return
-    error(...args)
-  }
 
   useEffect(() => {
     if (columns.length > 0) {
@@ -174,8 +161,6 @@ const BoardContent = () => {
     }
   }, [update, updateTasks, subtasks, seconds, router])
 
-  const [HTML, setHTML] = useState<string>()
-
   useEffect(() => {
     setHTML(document.getElementById('HTML')?.className)
   }, [])
@@ -186,18 +171,18 @@ const BoardContent = () => {
         <DragDropContext onDragEnd={handleDragDrop}>
           <section
             className="
-            ml-6
-            mt-6
-            flex 
-            h-full
-            w-full 
-            select-none 
-            snap-x 
-            gap-x-6
-            overflow-auto
-            scroll-smooth
-            pb-[50px]
-          "
+              ml-6
+              mt-6
+              flex 
+              h-full
+              w-full 
+              select-none 
+              snap-x 
+              gap-x-6
+              overflow-auto
+              scroll-smooth
+              pb-[50px]
+            "
           >
             {formatedArr?.map((col) => (
               <section key={col.itemID}>
@@ -285,12 +270,12 @@ const BoardContent = () => {
               >
                 <h1
                   className="
-                  cursor-pointer 
-                  text-heading-xl 
-                  text-medium-gray 
-                  duration-300 
-                  hover:text-main-purple
-                "
+                    cursor-pointer 
+                    text-heading-xl 
+                    text-medium-gray 
+                    duration-300 
+                    hover:text-main-purple
+                  "
                 >
                   + New Column
                 </h1>

@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from 'react'
+import Theme from './Theme'
 import ShowMenu from './ShowMenu'
 import HideMenu from './HideMenu'
 import { NoSsr } from '@mui/material'
-import Theme from './Theme'
-import ModalBackground from '../ModalBackground'
-import CreateNewBoard from '../Board/CreateNewBoard'
-import { Cross } from '../../../../public/modal'
-import { IconAccount, LogoDark, LogoLight } from '../../../../public/svgs'
-import { useWindowSize } from '@uidotdev/usehooks'
-import { useHideSidebar } from '@/app/helper/useHideSidebar'
 import SidebarColumns from './SideBarBoards'
+import ModalBackground from '../ModalBackground'
+import { Cross } from '../../../../public/modal'
+import CreateNewBoard from '../Board/CreateNewBoard'
+import { motion, AnimatePresence } from 'framer-motion'
+import { IconAccount, LogoDark, LogoLight } from '../../../../public/svgs'
+
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/navigation'
+import { useWindowSize } from '@uidotdev/usehooks'
 import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
-import { useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
+import { useHideSidebar } from '@/app/helper/useHideSidebar'
 import useSaveCurrentUser from '@/app/hooks/useSaveCurrentUser'
-import { motion, AnimatePresence } from 'framer-motion'
 
 const Sidebar = () => {
+  const router = useRouter()
   const size = useWindowSize()
-  const { hidden, setHidden } = useHideSidebar()
+  const { theme } = useTheme()
+  const { URL } = useGetCurrentURL()
   const { boards } = useGlobalContext()
   const { setURL } = useGetCurrentURL()
-  const { theme } = useTheme()
-  const router = useRouter()
+  const [HTML, setHTML] = useState<string>()
   const { currentUser } = useSaveCurrentUser()
-  const { URL } = useGetCurrentURL()
+  const { hidden, setHidden } = useHideSidebar()
 
   useEffect(() => {
     if (size.width && size.width <= 640) setHidden(true)
   }, [size, setHidden])
-  const [HTML, setHTML] = useState<string>()
 
   useEffect(() => {
     setHTML(document.getElementById('HTML')?.className)
