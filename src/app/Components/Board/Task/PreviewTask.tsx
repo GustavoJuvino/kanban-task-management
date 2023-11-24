@@ -1,17 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Task from './Task'
-import useClickOutside from '@/app/hooks/useClickOutside'
-import ModalBackground from '../../ModalBackground'
-import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
-import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
-import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
-import { useGlobalContext } from '@/app/context/store'
-import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
-import { IconDrag } from '../../../../../public/svgs'
-import { useTheme } from 'next-themes'
-import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { IconDrag } from '../../../../../public/svgs'
+import { useGlobalContext } from '@/app/context/store'
+import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 interface PreviewTaskProps {
   title: string
@@ -27,11 +22,8 @@ const PreviewTask = ({ ...props }: PreviewTaskProps) => {
   const [subArr, setSubArr] = useState<SubtaskProps[]>([])
   const [completedSubs, setCompletedSubs] = useState<SubtaskProps[]>([])
 
-  const { theme } = useTheme()
   const { URL } = useGetCurrentURL()
   const { subtasks } = useGlobalContext()
-  const { openEditTask } = useOpenTaskModal()
-  const { openDeleteTask } = useOpenDeleteModal()
   const { setCurrentTask } = useSaveCurrentTask()
   const { setCurrentColumn } = useSaveCurrentColumn()
 

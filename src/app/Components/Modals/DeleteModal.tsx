@@ -14,6 +14,7 @@ import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 
 type DelteTypeProps = 'board' | 'task'
 
@@ -31,6 +32,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
   const { currentTask } = useSaveCurrentTask()
   const { currentColumn } = useSaveCurrentColumn()
   const { boards, columns, tasks } = useGlobalContext()
+  const { onOpenTask } = useOpenTask()
   const { onOpenDeleteBoard, onOpenDeleteTask } = useOpenDeleteModal()
 
   // Boards
@@ -87,6 +89,7 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         })
         .then(() => {
           router.refresh()
+          onOpenTask(false)
           onOpenDeleteTask(false)
           setTimeout(() => {
             toast.success('Task deleted successfully!')
@@ -97,11 +100,6 @@ const DeleteModal = ({ deleteType }: DeleteModalProps) => {
         })
     }
   }
-
-  useEffect(() => {
-    console.log(deleteBoard)
-    console.log(tasks)
-  }, [deleteBoard, tasks])
 
   return (
     <section

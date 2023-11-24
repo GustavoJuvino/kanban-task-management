@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useMemo, useState } from 'react'
 import { Form } from '../../form'
-import { useFieldArray, useForm, useWatch } from 'react-hook-form'
-import { useGlobalContext } from '@/app/context/store'
 import CheckIcon from '@mui/icons-material/Check'
-import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
-import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
+import useSaveCurrentColumn from '@/app/hooks/useSaveCurrentColumn'
 
 const Subtasks = () => {
   const [subsChecked, setSubsChecked] = useState<boolean[]>()
   const [formatedArr, setFormatedArr] = useState<SubtaskProps[]>()
 
   const { URL } = useGetCurrentURL()
-  const { tasks, subtasks } = useGlobalContext()
+  const { subtasks } = useGlobalContext()
   const { currentTask } = useSaveCurrentTask()
   const { currentColumn } = useSaveCurrentColumn()
 

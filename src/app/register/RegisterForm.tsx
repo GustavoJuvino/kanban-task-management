@@ -3,14 +3,15 @@
 import React, { useState } from 'react'
 import { Form } from '../Components/form'
 import Button from '../Components/Button'
-import { VisibilityOff, VisibilityOn } from '../../../public/svgs'
-import { z } from 'zod'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
 import HashLoader from 'react-spinners/HashLoader'
-import { useRouter } from 'next/navigation'
+import { VisibilityOff, VisibilityOn } from '../../../public/svgs'
+
+import axios from 'axios'
+import { z } from 'zod'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 const RegisterFormSchema = z.object({
   username: z.string().nonempty('Username is required'),
@@ -49,8 +50,6 @@ const RegisterForm = () => {
   } = createRegisterForm
   const watchPassword = watch('password')
   const watchConfirmPass = watch('confirmPswrd')
-
-  console.log(watchConfirmPass)
 
   const onSubmit: SubmitHandler<RegisterFormProps> = (data) => {
     setLoading(true)

@@ -5,6 +5,8 @@ import Button from '../Button'
 import PreviewTask from './Task/PreviewTask'
 
 import { NoSsr } from '@mui/material'
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
 import useGetCurrentURL from '@/app/hooks/useGetCurrentURL'
 import { useHideSidebar } from '@/app/helper/useHideSidebar'
@@ -13,8 +15,6 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
 
 const BoardContent = () => {
   const [HTML, setHTML] = useState<string>()

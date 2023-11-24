@@ -1,31 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Subtasks from './Subtasks'
 import Button from '../../Button'
 import EditMenu from '../../Header/EditMenu'
 import StatusMenu from '../../Modals/TaskModal/StatusMenu'
-import ModalBackground from '../../ModalBackground'
 import { EditMenuIcon } from '../../../../../public/svgs'
 
-import useClickOutside from '@/app/hooks/useClickOutside'
+import { useRouter } from 'next/navigation'
 import { useGlobalContext } from '@/app/context/store'
+import useClickOutside from '@/app/hooks/useClickOutside'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
+import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import useOpenDeleteModal from '@/app/helper/ModalHooks/useOpenDeleteModal'
 
-import {
-  FormProvider,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from 'react-hook-form'
-import useSaveCurrentTask from '@/app/hooks/useSaveCurrentTask'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
-
-// interface TaskProps {
-//   title: string
-//   description: string
-// }
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 const Task = () => {
   const taskRef = useRef(null)
@@ -71,7 +60,7 @@ const Task = () => {
   }, [clickOutside])
 
   useEffect(() => {
-    tasks.map((task) => {
+    tasks.map((task: TaskProps) => {
       if (currentTask.id === task.id) {
         setValue('task.id', currentTask.id)
         setValue('task.title', task.title)
@@ -81,10 +70,6 @@ const Task = () => {
       return task
     })
   }, [setValue, tasks, currentTask])
-
-  useEffect(() => {
-    console.log(currentTask)
-  }, [currentTask])
 
   const [clickOutsideTask, setClickOutsideTask] = useState(true)
 
@@ -98,21 +83,20 @@ const Task = () => {
   }, [openTask, onOpenTask, clickOutsideTask])
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
-    console.log(data)
-    // setLoading(true)
+    setLoading(true)
 
-    // axios
-    //   .post('/api/tasks/update', data)
-    //   .then(() => {
-    //     router.refresh()
-    //     toast.success('Task updated successfully!')
-    //   })
-    //   .catch(() => {
-    //     toast.error('Something went wrong')
-    //   })
-    //   .finally(() => {
-    //     setLoading(false)
-    //   })
+    axios
+      .post('/api/tasks/update', data)
+      .then(() => {
+        router.refresh()
+        toast.success('Task updated successfully!')
+      })
+      .catch(() => {
+        toast.error('Something went wrong')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   if (!openDeleteTask)

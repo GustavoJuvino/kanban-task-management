@@ -70,7 +70,6 @@ const Account = ({
           href={loginPage ? '/register' : '/login'}
           className="cursor-pointer text-white duration-300 hover:text-main-purple"
         >
-          {' '}
           {secondMessage}
         </a>
       </p>

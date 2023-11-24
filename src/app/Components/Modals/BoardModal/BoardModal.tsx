@@ -4,7 +4,6 @@ import BoardColumns from './BoardColumns'
 import ModalBackground from '../../ModalBackground'
 import { Close } from '../../../../../public/modal'
 import HashLoader from 'react-spinners/HashLoader'
-import 'react-toastify/dist/ReactToastify.css'
 
 import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
@@ -17,6 +16,7 @@ import useOpenBoardModal from '@/app/helper/ModalHooks/useOpenBoardModal'
 import axios from 'axios'
 import { Form } from '../../form'
 import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 interface BoardModalProps {

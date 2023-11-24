@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { NoSsr } from '@mui/material'
-import HeaderOptions from './HeaderOptions'
-import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
-import { useHideSidebar } from '@/app/helper/useHideSidebar'
-import { Arrow } from '../../../../public/modal'
-import { LogoDark, LogoLight, LogoMobile } from '../../../../public/svgs'
-import TaskModal from '../Modals/TaskModal/TaskModal'
 import { useTheme } from 'next-themes'
+import HeaderOptions from './HeaderOptions'
+import { Arrow } from '../../../../public/modal'
+import TaskModal from '../Modals/TaskModal/TaskModal'
+import { useHideSidebar } from '@/app/helper/useHideSidebar'
+import useOpenTaskModal from '@/app/helper/ModalHooks/useOpenTaskModal'
+import { LogoDark, LogoLight, LogoMobile } from '../../../../public/svgs'
 
 const Header = () => {
   const { theme } = useTheme()
