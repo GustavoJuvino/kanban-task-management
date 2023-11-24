@@ -72,15 +72,19 @@ const Task = () => {
 
   useEffect(() => {
     tasks.map((task) => {
-      if (task.id === currentTask.id && task.status) {
-        setValue('task.id', task.id)
+      if (currentTask.id === task.id) {
+        setValue('task.id', currentTask.id)
         setValue('task.title', task.title)
-        setValue('task.status', task.status)
+        setValue('task.status', task.status ? task.status : undefined)
         setValue('task.fromColumn', task.fromColumn)
       }
       return task
     })
-  }, [setValue, tasks])
+  }, [setValue, tasks, currentTask])
+
+  useEffect(() => {
+    console.log(currentTask)
+  }, [currentTask])
 
   const [clickOutsideTask, setClickOutsideTask] = useState(true)
 
@@ -94,20 +98,21 @@ const Task = () => {
   }, [openTask, onOpenTask, clickOutsideTask])
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
-    setLoading(true)
+    console.log(data)
+    // setLoading(true)
 
-    axios
-      .post('/api/tasks/update', data)
-      .then(() => {
-        router.refresh()
-        toast.success('Task updated successfully!')
-      })
-      .catch(() => {
-        toast.error('Something went wrong')
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    // axios
+    //   .post('/api/tasks/update', data)
+    //   .then(() => {
+    //     router.refresh()
+    //     toast.success('Task updated successfully!')
+    //   })
+    //   .catch(() => {
+    //     toast.error('Something went wrong')
+    //   })
+    //   .finally(() => {
+    //     setLoading(false)
+    //   })
   }
 
   if (!openDeleteTask)
