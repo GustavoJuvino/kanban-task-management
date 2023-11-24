@@ -17,7 +17,6 @@ const HeaderOptions = () => {
   const { clickOutside } = useClickOutside()
   const { onOpenNewTask } = useOpenTaskModal()
   const { setCurrentColumn } = useSaveCurrentColumn()
-
   const size = useWindowSize()
   const editMenuRef = useRef(null)
 

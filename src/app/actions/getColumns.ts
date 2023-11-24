@@ -11,6 +11,7 @@ export default async function getColumns(currentBoard: string) {
     const columns = await prisma.column.findMany({
       where: {
         fromBoard: currentBoard,
+        boardID: currentUser.id,
       },
     })
 
