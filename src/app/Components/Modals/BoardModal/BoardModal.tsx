@@ -103,6 +103,7 @@ const BoardModal = ({ modalType }: BoardModalProps) => {
       .then(() => {
         if (modalType === 'add') {
           router.refresh()
+          router.push(data.board.name.replace(/\s/g, ''))
           onOpenNewBoard(false)
           toast.success('Board created successfully!')
         }

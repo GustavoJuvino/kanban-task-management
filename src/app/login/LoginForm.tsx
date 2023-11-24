@@ -47,7 +47,7 @@ const LoginForm = () => {
         router.push('/')
         setTimeout(() => {
           setLoading(false)
-        }, 900)
+        }, 1200)
       } else if (callback?.error) {
         setError(callback.error)
         setLoading(false)
