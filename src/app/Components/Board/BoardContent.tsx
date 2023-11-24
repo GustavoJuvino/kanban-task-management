@@ -19,7 +19,6 @@ import { useTheme } from 'next-themes'
 const BoardContent = () => {
   const [HTML, setHTML] = useState<string>()
   const [update, setUpdate] = useState(false)
-  const [seconds, setSeconds] = useState(4000)
   const [updateTasks, setUpdateTasks] = useState<TaskProps[]>([])
   const [formatedArr, setFormatedArr] = useState<ColumnsProps[]>([])
 
@@ -119,7 +118,6 @@ const BoardContent = () => {
     }
 
     setUpdate(true)
-    setSeconds(seconds + 150)
     setTasks(reorderedTasks)
   }
 
@@ -134,32 +132,23 @@ const BoardContent = () => {
   }, [tasks])
 
   useEffect(() => {
-    if (update && seconds > 0 && updateTasks.length > 0) {
-      const debounceId = setTimeout(() => {
-        axios
-          .post('/api/tasks/updateItemID', {
-            tasks: updateTasks,
-            subtasks,
-          })
-          .then(() => {
-            router.refresh()
-          })
-          .catch((error) => {
-            if (error.request.status === 409)
-              toast.error(error.response.data.message)
-          })
-          .finally(() => {
-            setUpdate(false)
-          })
-        setUpdate(false)
-        setSeconds(4000)
-      }, seconds)
-
-      return () => {
-        clearTimeout(debounceId)
-      }
+    if (update && updateTasks.length > 0) {
+      axios
+        .post('/api/tasks/updateItemID', {
+          tasks: updateTasks,
+          subtasks,
+        })
+        .catch((error) => {
+          setUpdate(false)
+          if (error.request.status === 409)
+            toast.error(error.response.data.message)
+        })
+        .finally(() => {
+          router.refresh()
+          setUpdate(false)
+        })
     }
-  }, [update, updateTasks, subtasks, seconds, router])
+  }, [update, updateTasks, subtasks, router])
 
   useEffect(() => {
     setHTML(document.getElementById('HTML')?.className)
@@ -168,16 +157,30 @@ const BoardContent = () => {
   if (columns.length > 0) {
     return (
       <NoSsr>
+        {update && (
+          <div
+            className="
+              absolute
+              left-0
+              top-0
+              z-40
+              h-full
+              w-full
+              bg-[#000000]
+              opacity-20
+            "
+          />
+        )}
         <DragDropContext onDragEnd={handleDragDrop}>
           <section
             className="
               ml-6
-              mt-6
-              flex 
-              h-full
+              mt-6 
+              flex
+              h-full 
               w-full 
               select-none 
-              snap-x 
+              snap-x
               gap-x-6
               overflow-auto
               scroll-smooth

@@ -103,7 +103,7 @@ const Sidebar = () => {
                 )}
 
                 {URL && (
-                  <span className="ml-5 mt-6 flex gap-x-[15px] lg:ml-7  ">
+                  <span className="ml-4 mt-6 flex gap-x-[15px] md:ml-7  ">
                     <IconAccount className="fill-medium-gray" />
                     <h3 className="font-bold text-medium-gray">
                       {currentUser && currentUser.username}
@@ -121,13 +121,24 @@ const Sidebar = () => {
 
                     <Cross
                       onClick={() => setHidden(true)}
-                      className="
-                        cursor-pointer 
-                        fill-medium-gray 
-                        duration-300 
-                        hover:fill-red
-                        sm:hidden
-                      "
+                      className={`${
+                        boards.length > 0
+                          ? `
+                          cursor-pointer 
+                          fill-medium-gray 
+                          duration-300 
+                          hover:fill-red
+                          sm:hidden
+                      `
+                          : `
+                            absolute 
+                            right-4
+                            cursor-pointer 
+                            fill-medium-gray 
+                            duration-300
+                            hover:fill-red
+                          `
+                      }`}
                     />
                   </div>
 

@@ -35,7 +35,6 @@ const RegisterForm = () => {
   const [loading, setLoading] = useState(false)
   const [visibility, setVisibility] = useState(false)
   const [visibilityCheck, setVisibilityCheck] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   const createRegisterForm = useForm<RegisterFormProps>({
@@ -44,32 +43,44 @@ const RegisterForm = () => {
 
   const {
     handleSubmit,
+    watch,
+    setError,
     formState: { errors },
   } = createRegisterForm
+  const watchPassword = watch('password')
+  const watchConfirmPass = watch('confirmPswrd')
+
+  console.log(watchConfirmPass)
 
   const onSubmit: SubmitHandler<RegisterFormProps> = (data) => {
     setLoading(true)
-    axios
-      .post('/api/register', data)
-      .then(() => {
-        setError(null)
-        signIn('credentials', {
-          ...data,
-          redirect: false,
-        }).then((callback) => {
-          if (!callback?.error) {
-            router.push('/')
-            setLoading(false)
-          } else if (callback?.error) {
-            setError(callback.error)
-            setLoading(false)
-          }
+
+    if (watchPassword === watchConfirmPass) {
+      axios
+        .post('/api/register', data)
+        .then(() => {
+          signIn('credentials', {
+            ...data,
+            redirect: false,
+          }).then((callback) => {
+            if (!callback?.error) {
+              router.push('/')
+              setLoading(false)
+            } else if (callback?.error) {
+              setLoading(false)
+            }
+          })
         })
+        .catch(() => {
+          setLoading(false)
+        })
+    } else {
+      setLoading(false)
+      setError('confirmPswrd', {
+        type: 'custom',
+        message: 'Passwords must be equal',
       })
-      .catch((error) => {
-        setError(error.response.data.message)
-        setLoading(false)
-      })
+    }
   }
 
   return (
@@ -91,7 +102,6 @@ const RegisterForm = () => {
 
         <Form.Field>
           <Form.Error>{errors.email?.message}</Form.Error>
-          {error && <Form.Error>{error}</Form.Error>}
           <Form.InputLogin
             type="email"
             name="email"
