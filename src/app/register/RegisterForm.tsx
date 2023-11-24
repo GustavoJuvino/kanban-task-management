@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from '../Components/form'
 import Button from '../Components/Button'
 import HashLoader from 'react-spinners/HashLoader'
@@ -70,8 +70,13 @@ const RegisterForm = () => {
             }
           })
         })
-        .catch(() => {
+        .catch((error) => {
           setLoading(false)
+          if (error.request.status === 409)
+            setError('email', {
+              type: 'custom',
+              message: 'Email already registered',
+            })
         })
     } else {
       setLoading(false)
@@ -81,6 +86,10 @@ const RegisterForm = () => {
       })
     }
   }
+
+  useEffect(() => {
+    console.log(errors.email)
+  }, [errors])
 
   return (
     <FormProvider {...createRegisterForm}>
