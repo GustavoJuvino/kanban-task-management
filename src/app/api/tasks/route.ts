@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       title: task.updateTitle,
       fromColumn: task.updateColumn,
       fromBoard: task.fromBoard,
+      columnID: currentUser.id,
     },
   })
 
