@@ -26,18 +26,20 @@ const HeaderOptions = () => {
   return (
     <section className="flex items-center gap-x-4 sm:gap-x-6">
       <Button
+        disabled={!(columns.length > 0)}
         onClick={() => {
           onOpenNewTask(true)
           setCurrentColumn(columns[0].columnName)
         }}
-        className="
-            flex
-            w-12
-            items-center
-            justify-center
-            max-sm:h-8
-            sm:w-[164px]
-          "
+        className={`
+          flex
+          w-12
+          items-center
+          justify-center
+          max-sm:h-8
+          sm:w-[164px]
+          ${columns.length < 1 && 'bg-light-purple'}
+        `}
       >
         {size.width && size.width <= 640 ? <IconAdd /> : '+ Add new task'}
       </Button>
