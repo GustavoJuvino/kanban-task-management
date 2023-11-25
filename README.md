@@ -10,7 +10,7 @@
 <br>
 
 <h4 align="center">
-    <a align="center" href="https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB/hub">Front-end mentor challenge.</a> //
+    <a align="center" href="https://www.frontendmentor.io/solutions/-kanban-task-management-8Dt3FSmpRg">Front-end mentor challenge.</a> //
      <a align="center" href="https://kanban-task-management-kappa.vercel.app/">Kanban Task Management Website</a>
 </h4>
 
