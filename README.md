@@ -33,7 +33,7 @@
 <h2 align="center">Web Version 🖥️ Light mode ☀️</h2>
 
 <img src="./github-imgs/LightMode/Login-light.png" title="Login">
-<img src="./github-imgs/LightMode/register-light.png" title="Register">
+<img src="./github-imgs/LightMode/Register-light.png" title="Register">
 <img src="./github-imgs/LightMode/Dashboard-light-web.png" title="Dashboard">
 <img src="./github-imgs/LightMode/Task-Light.png" title="Task">
 <img src="./github-imgs/LightMode/Edit-Task-Light.png" title="Edit">
@@ -56,7 +56,7 @@
 <img src="./github-imgs/LightMode/mobile-light-task.png" title="Form-Mobile-1">
 <img src="./github-imgs/LightMode/mobile-menu-light.png" title="Form-Mobile-2">
 
-<h2 align="center">Mobile Version 📱 Light mode ☀️</h2>
+<h2 align="center">Mobile Version 📱 Dark mode 🌙</h2>
 <img src="./github-imgs/DarkMode/dashboard-dark.png" title="Home-Mobile">
 <img src="./github-imgs/DarkMode/mobile-dark-task.png" title="Form-Mobile-1">
 <img src="./github-imgs/DarkMode/mobile-menu-dark.png" title="Form-Mobile-2">
