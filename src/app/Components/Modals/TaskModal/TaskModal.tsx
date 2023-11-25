@@ -20,6 +20,7 @@ import axios from 'axios'
 import { Form } from '../../form'
 import ObjectID from 'bson-objectid'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import useOpenTask from '@/app/helper/ModalHooks/useOpenTask'
 
 interface TaskModalProps {
   modalType: ModalTypeProps
@@ -31,6 +32,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
   const router = useRouter()
   const { URL } = useGetCurrentURL()
   const { currentTask } = useSaveCurrentTask()
+  const { onOpenTask } = useOpenTask()
   const { currentColumn } = useSaveCurrentColumn()
   const { onOpenNewTask, onOpenEditTask } = useOpenTaskModal()
   const { boards, columns, tasks, subtasks } = useGlobalContext()
@@ -155,6 +157,7 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
           onOpenNewTask(false)
           toast.success('Task created successfully!')
         } else {
+          onOpenTask(false)
           onOpenEditTask(false)
           toast.success('Task edited successfully!')
         }
