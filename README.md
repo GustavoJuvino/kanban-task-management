@@ -1,4 +1,4 @@
-<h1 align="center">📝 ✏️Kanban Task Management</h1>
+<h1 align="center">📝 🚀Kanban Task Management</h1>
 
 <h4 align="center">
     This project is a challenge that I took from <a href="https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB">frontendmentor.io </a><br>
