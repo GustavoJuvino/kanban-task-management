@@ -147,7 +147,6 @@ const TaskModal = ({ modalType }: TaskModalProps) => {
       })
     }
   }, [modalType, tasks, subtasks, currentTask, currentColumn, setValue])
-
   const axiosRequest = (url: string, data: TaskFormInputs) => {
     axios
       .post(url, data)

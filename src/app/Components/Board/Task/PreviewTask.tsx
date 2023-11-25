@@ -84,7 +84,7 @@ const PreviewTask = ({ ...props }: PreviewTaskProps) => {
           gap-x-2 
           rounded-lg
           bg-white 
-          px-4 
+          px-4
           py-[23px]
           shadow-md
           dark:bg-dark-gray

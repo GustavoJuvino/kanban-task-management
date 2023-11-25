@@ -19,7 +19,7 @@ const RegisterPage = () => {
         w-full 
         items-center 
         justify-center 
-        bg-white
+        bg-light-grey
         px-7 
         dark:bg-very-dark-gray
       "
@@ -30,7 +30,7 @@ const RegisterPage = () => {
           h-auto 
           w-full 
           rounded-lg 
-          bg-light-grey
+          bg-white
           p-7 
           dark:bg-lines-dark 
           sm:w-[550px] 

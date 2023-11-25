@@ -1,34 +1,66 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">🥘🥖Kanban Task Management</h1>
 
-## Getting Started
+<h4 align="center">
+    This project is a challenge that I took from <a href="https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB">frontendmentor.io </a><br>
+    which consists of building a responsible kanban task management website<br>
+    where you can create boards, columns, tasks and subtasks and manage all of them with <br>
+    a drag and drop system! You must create an account to save all of your work inside of this website. <br>
+     ( it's not necessary to use a valid email) <br>
+</h4>
+<br>
 
-First, run the development server:
+<h4 align="center">
+    <a align="center" href="https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB/hub">Front-end mentor challenge.</a> //
+     <a align="center" href="https://kanban-task-management-kappa.vercel.app/">Dine Restaurant</a>
+</h4>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+<br />
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<h6 align="center"> This project was created with:</h6>
+<br>
+ <div align="center">
+    <img src="https://www.svgrepo.com/show/493719/react-javascript-js-framework-facebook.svg" width=60px height=60px alt="React"/>
+    <img src="https://www.svgrepo.com/show/342062/next-js.svg" width=60px height=60px alt="Next"/>
+    <img src="https://www.svgrepo.com/show/374146/typescript-official.svg"  width=60px height=60px alt="TypeScript"/>
+    <img src="https://www.svgrepo.com/show/374118/tailwind.svg"  width=60px height=60px alt="Tailwind CSS"/>
+    <img src="https://www.svgrepo.com/show/331488/mongodb.svg"  width=60px height=60px alt="Mongo DB"/>
+    <img src="https://www.svgrepo.com/show/373776/light-prisma.svg"  width=60px height=60px alt="Prisma"/>
+ </div>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<br><br>
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+<!-- Web -->
+<h2 align="center">Web Version 🖥️ Light mode ☀️</h2>
 
-## Learn More
+<img src="./github-imgs/LightMode/Login-light.png" title="Login">
+<img src="./github-imgs/LightMode/register-light.png" title="Register">
+<img src="./github-imgs/LightMode/Dashboard-light-web.png" title="Dashboard">
+<img src="./github-imgs/LightMode/Task-Light.png" title="Task">
+<img src="./github-imgs/LightMode/Edit-Task-Light.png" title="Edit">
+<img src="./github-imgs/LightMode/New-Task-Light.png" title="NewTask">
+<img src="./github-imgs/LightMode/New-Board-Light.png" title="Newboard">
 
-To learn more about Next.js, take a look at the following resources:
+<h2 align="center">Web Version 🖥️ Dark mode 🌙 </h2>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<img src="./github-imgs/DarkMode/Login-dark.png" title="Login">
+<img src="./github-imgs/DarkMode/Register-dark.png" title="Register">
+<img src="./github-imgs/DarkMode/Dashboard-dark-web.png" title="Dashboard">
+<img src="./github-imgs/DarkMode/Task-Dark.png" title="Task">
+<img src="./github-imgs/DarkMode/Edit-Task-Dark.png" title="Edit">
+<img src="./github-imgs/DarkMode/New-Task-Dark.png" title="NewTask">
+<img src="./github-imgs/DarkMode/New-Board-Dark.png" title="Newboard">
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<!-- Mobile -->
+<h2 align="center">Mobile Version 📱 Light mode ☀️</h2>
+<img src="./github-imgs/LightMode/dashboard-light.png" title="Home-Mobile">
+<img src="./github-imgs/LightMode/mobile-light-task.png" title="Form-Mobile-1">
+<img src="./github-imgs/LightMode/mobile-menu-light.png" title="Form-Mobile-2">
 
-## Deploy on Vercel
+<h2 align="center">Mobile Version 📱 Light mode ☀️</h2>
+<img src="./github-imgs/DarkMode/dashboard-dark.png" title="Home-Mobile">
+<img src="./github-imgs/DarkMode/mobile-dark-task.png" title="Form-Mobile-1">
+<img src="./github-imgs/DarkMode/mobile-menu-dark.png" title="Form-Mobile-2">
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+<!--Made By Gustavo J. Souza -->

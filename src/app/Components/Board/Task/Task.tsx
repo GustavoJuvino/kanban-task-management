@@ -119,7 +119,7 @@ const Task = () => {
         "
       >
         <div className="flex items-center justify-between">
-          <h2 className="w-[387px] text-heading-l text-black dark:text-white">
+          <h2 className="text-heading-l text-black dark:text-white max-sm:px-2 sm:w-[387px]">
             {currentTask.taskTitle}
           </h2>
           <div ref={editMenuRef} className="relative">
